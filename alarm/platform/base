@@ -1,0 +1,17 @@
+#!/bin/bash
+####################################################################
+# Prey Alarm Module Base Functions - by Tomas Pollak (bootlog.org)
+# URL: http://preyproject.com
+# License: GPLv3
+####################################################################
+
+function sound_alarm {
+	player="mpg123"
+	if [ "$os" == "windows" ]; then
+		player="$module_path/lib/$player"
+	elif [ "$os" == "darwin" ]; then
+		player=afplay
+	fi
+	# $player -q $alarm_sound --loop $alarm_loops &> /dev/null &
+	$player $alarm_sound &> /dev/null &
+}

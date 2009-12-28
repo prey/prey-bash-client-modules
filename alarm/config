@@ -1,0 +1,12 @@
+#!/bin/bash
+####################################################################
+# Prey Alarm Module Configuration File - by Tomas Pollak (bootlog.org)
+# URL: http://preyproject.com
+# License: GPLv3
+####################################################################
+
+# file to play
+alarm_sound="$module_path/lib/siren.mp3"
+
+# in seconds
+alarm_loops="3"

@@ -1,0 +1,8 @@
+#!/bin/bash
+####################################################################
+# Prey Alarm Module - by Tomas Pollak (bootlog.org)
+# URL: http://preyproject.com
+# License: GPLv3
+####################################################################
+
+sound_alarm
