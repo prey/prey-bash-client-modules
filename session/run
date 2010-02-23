@@ -13,7 +13,11 @@ add_trace running_programs "$running_programs"
 if [ "$get_modified_files" == 'y' ]; then
 	echo "$STRING_MODIFIED_FILES"
 	get_modified_files
-	add_trace modified_files "$modified_files"
+	if [ -n "$modified_files" ]; then
+		add_trace modified_files "$modified_files"
+	else
+		echo ' !! Nothing found. Make sure you type in a valid path.'
+	fi
 fi
 
 if [ "$get_active_connections" == 'y' ]; then
