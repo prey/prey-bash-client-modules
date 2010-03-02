@@ -5,10 +5,10 @@
 # License: GPLv3
 ####################################################################
 
-function get_screenshot {
+get_screenshot() {
 
-	scrot=`which scrot` # scrot es mas liviano y mas rapido
-	import=`which import` # viene con imagemagick, mas obeso
+	local scrot=`which scrot` # scrot is lighter
+	local import=`which import` # imagemagick
 
 	if [ -n "$scrot" ]; then
 
@@ -20,7 +20,7 @@ function get_screenshot {
 
 	elif [ -n "$import" ]; then
 
-		args="-window root -display :0"
+		local args="-window root -display :0"
 
 		if [ `whoami` == 'root' ]; then # friggin su command, cannot pass args with "-" since it gets confused
 			su $logged_user -c "$import $args $screenshot"

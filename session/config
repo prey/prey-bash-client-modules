@@ -5,7 +5,7 @@
 # License: GPLv3
 ####################################################################
 
-screenshot=/tmp/prey-screenshot.jpg
+screenshot="$tmpdir/prey-screenshot.jpg"
 
 # should we get modified files
 get_modified_files='n'

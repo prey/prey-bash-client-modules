@@ -5,28 +5,30 @@
 # License: GPLv3
 ####################################################################
 
-function take_picture {
+tmp_picture="$tmpdir/picture.jpeg"
+
+take_picture() {
 
 	# do we have streamer installed ?
-	streamer=`which streamer`
+	local streamer=`which streamer`
 	if [ -n "$streamer" ]; then
 
-		$streamer -o /tmp/imagen.jpeg &> /dev/null # streamer necesita que sea JPEG (con la E) para detectar el formato
+		$streamer -o "$tmp_picture" &> /dev/null # streamer necesita que sea JPEG (con la E) para detectar el formato
 
-		if [ -e '/tmp/imagen.jpeg' ]; then
+		if [ -f "$tmp_picture" ]; then
 
-			mv /tmp/imagen.jpeg $picture > /dev/null
+			mv "$tmp_picture" "$picture" > /dev/null
 
 		else # by Vanscot, http://www.hometown.cl/ --> some webcams are unable to take JPGs so we grab a PPM
 
-			$streamer -o /tmp/imagen.ppm &> /dev/null
-			if [ -e '/tmp/imagen.ppm' ]; then
+			$streamer -o "$tmpdir/picture.ppm" &> /dev/null
+			if [ -f "$tmpdir/picture.ppm" ]; then
 
-				convert=`which convert`
+				local convert=`which convert`
 				if [ -n "$convert" ]; then # lets convert it to JPG if we have imagemagick installed
-					$convert /tmp/imagen.ppm $picture > /dev/null
+					$convert "$tmpdir/picture.ppm" $picture > /dev/null
 				else # lets just send it as a PPM
-					picture='/tmp/imagen.ppm'
+					picture="$tmpdir/picture.ppm"
 				fi
 
 			fi
@@ -34,14 +36,15 @@ function take_picture {
 		fi
 
 	fi
+
 }
 
-function capture_video {
+capture_video() {
 
 	# we should already know if we do have streamer
 	if [ -n "$streamer" ]; then
 
-		frames=$(( $video_capture_time * $frames_per_second ))
+		local frames=$(( $video_capture_time * $frames_per_second ))
 		$streamer -o $video -f yuv2 -F stereo -r $frames_per_second -t $frames
 
 	fi
