@@ -1,11 +1,14 @@
 #!/bin/bash
 ####################################################################
-# PREY Location Module Windows Functions - by Tomas Pollak (bootlog.org)
+# Prey Geo Module Windows Functions - by Tomas Pollak (bootlog.org)
 # URL : http://preyproject.com
 # License: GPLv3
 ####################################################################
 
 function get_wifi_access_points {
-	# $base_path/lib/wifi_config.exe -aps | sed 's/PUT_THE_MAGIC_IN_HERE//'
-	echo ' ** Wifi geolocation still in development in Windows.'
+	if [ `is_net_framework_installed $required_net_version` == 1 ]; then
+		echo autowc -list
+	else
+		echo " !! .NET framework version $required_net_version or newer not installed! Cannot obtain geo information."
+	fi
 }
