@@ -5,10 +5,12 @@
 # License: GPLv3
 ####################################################################
 
-function get_wifi_access_points {
-	if [ `is_net_framework_installed $required_net_version` == 1 ]; then
-		echo autowc -list
+get_wifi_access_points() {
+
+	if [ "`is_net_framework_installed`" == 1 ]; then
+		wifi_points=`autowc -list`
 	else
 		echo " !! .NET framework version $required_net_version or newer not installed! Cannot obtain geo information."
 	fi
+
 }

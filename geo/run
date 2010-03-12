@@ -5,13 +5,21 @@
 # License: GPLv3
 ####################################################################
 
-wifi_points=`get_wifi_access_points`
+get_wifi_access_points
 
-get_current_location
-parse_location_response
+if [ -n "$wifi_points" ]; then
 
-add_trace 'lat' $current_lat
-add_trace 'lng' $current_lng
-# add_trace 'address' "$current_address"
-add_trace 'wifi' "$wifi_points"
-add_trace 'full' "$current_location_json"
+	get_current_location
+	parse_location_response
+
+fi
+
+if [ -n "$current_lat" ]; then
+
+	add_trace 'lat' $current_lat
+	add_trace 'lng' $current_lng
+	# add_trace 'address' "$current_address"
+	add_trace 'wifi' "$wifi_points"
+	add_trace 'full' "$current_location_json"
+
+fi

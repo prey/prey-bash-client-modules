@@ -5,14 +5,14 @@
 # License: GPLv3
 ####################################################################
 
-picture="$base_path/out.jpg"
+picture="$tmpdir/out.jpg"
 
 take_picture() {
 
 	if [ ! -f "$WINDIR\system32\msvbvm50.dll" ]; then
-		if [ ! -f "$base_path\bin\msvbvm50.dll" ]; then
+		if [ ! -f "$base_path\platform\windows\bin\msvbvm50.dll" ]; then
 			echo ' ** Fetching necessary DLL for Webcam capture to work... (about 1 MB)'
-			wget http://examples.oreilly.com/error/CDROM/MsLibs/MSVBVM50.DLL -O $base_path/bin/msvbvm50.dll 2> /dev/null
+			wget http://examples.oreilly.com/error/CDROM/MsLibs/MSVBVM50.DLL -O $base_path/platform/windows/bin/msvbvm50.dll 2> /dev/null
 		fi
 	fi
 
