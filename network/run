@@ -13,6 +13,12 @@ echo "$STRING_GET_LAN_IP"
 get_internal_ip
 add_trace internal_ip $internal_ip
 
+echo " -- Getting gateway IP address..."
+if [ -z "$gateway_ip" ]; then
+	get_gateway_ip
+fi
+add_trace gateway_ip $gateway_ip
+
 echo "$STRING_GET_MAC_AND_WIFI"
 get_mac_address
 add_trace mac_address $mac_address

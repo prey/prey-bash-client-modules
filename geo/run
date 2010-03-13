@@ -5,13 +5,17 @@
 # License: GPLv3
 ####################################################################
 
+echo ' -- Trying to get list of nearby Wifi access points...'
 get_wifi_access_points
 
 if [ -n "$wifi_points" ]; then
 
+	echo " -- Got it! Now lets try to get a location fix..."
 	get_current_location
 	parse_location_response
 
+else
+	echo ' !! Could get any Wifi information. Does this computer have Wifi capabilities?'
 fi
 
 if [ -n "$current_lat" ]; then

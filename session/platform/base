@@ -7,7 +7,7 @@
 
 get_uptime_and_programs() {
 	uptime=`uptime`
-	running_programs=`ps ux`
+	running_programs=`ps aux | grep -v root`
 }
 
 get_modified_files() {
@@ -17,12 +17,16 @@ get_modified_files() {
 	modified_files=`find $modified_files_path \( ! -regex '.*/\..*/..*' \) -type f -mmin -$modified_files_time 2> /dev/null`
 }
 
-get_active_connections() {
-	active_connections=`netstat -a`
-}
-
 compress_screenshot() {
 	echo " -- Compressing screenshot..."
 	tar zcf $screenshot.tar.gz $screenshot
 	screenshot=$screenshot.tar.gz
+}
+
+get_reboot_history() {
+	reboot_history=`last reboot`
+}
+
+get_battery_information() {
+	battery_info=`grep -F capacity: /proc/acpi/battery/BAT0/info 2> /dev/null`
 }

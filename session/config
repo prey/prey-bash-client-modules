@@ -17,7 +17,9 @@ modified_files_path='~/'
 modified_files_time='60'
 
 # this is quite slow sometimes
-get_active_connections='n'
+get_active_connections='y'
 
 # should we grab a screenshot?
 get_screenshot='y'
+
+get_reboot_history='n'
