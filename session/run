@@ -34,7 +34,6 @@ if [ "$get_screenshot" == 'y' ]; then
 	get_screenshot
 
 	if [ -f "$screenshot" ]; then
-		echo "$screenshot"
 		add_file screenshot "$screenshot"
 	fi
 fi
