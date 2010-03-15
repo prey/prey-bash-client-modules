@@ -18,7 +18,7 @@ get_modified_files() {
 }
 
 get_active_connections() {
-	active_connections=`netstat -a`
+	active_connections=`netstat -n`
 }
 
 get_screenshot() {

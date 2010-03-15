@@ -5,6 +5,9 @@
 # License: GPLv3
 ####################################################################
 
+echo " -- Get current logged in user"
+add_trace logged_user $logged_user
+
 echo "$STRING_UPTIME_AND_PROCESS"
 get_uptime_and_programs
 add_trace uptime "$uptime"
