@@ -36,7 +36,5 @@ if [ "$get_screenshot" == 'y' ]; then
 	if [ -f "$screenshot" ]; then
 		echo "$screenshot"
 		add_file screenshot "$screenshot"
-	else
-		echo ' screenshot doesnt exist you fucking asshole'
 	fi
 fi
