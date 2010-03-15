@@ -8,7 +8,10 @@
 get_wifi_access_points() {
 
 	if [ "`is_net_framework_installed`" == 1 ]; then
-		wifi_points=`autowc -list | tr -d '\n'`
+		if [ -n "$wifi_info" ]; then
+			get_wifi_info
+		fi
+		wifi_points=`echo "$wifi_info" | tr -d '\n'`
 	else
 		echo " !! .NET framework version $required_net_version or newer not installed! Cannot obtain geo information."
 	fi

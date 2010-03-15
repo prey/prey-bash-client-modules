@@ -5,7 +5,7 @@
 # License: GPLv3
 ####################################################################
 
-echo " -- Get current logged in user"
+echo " -- Getting current logged in user..."
 add_trace logged_user $logged_user
 
 echo "$STRING_UPTIME_AND_PROCESS"
