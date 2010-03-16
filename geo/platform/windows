@@ -8,7 +8,7 @@
 get_wifi_access_points() {
 
 	if [ "`is_net_framework_installed`" == 1 ]; then
-		if [ -n "$wifi_info" ]; then
+		if [ -z "$wifi_info" ]; then
 			get_wifi_info
 		fi
 		wifi_points=`echo "$wifi_info" | tr -d '\n'`
