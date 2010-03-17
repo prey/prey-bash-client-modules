@@ -1,12 +1,12 @@
 #!/bin/bash
 ####################################################################
-# PREY Alert Module Base Functions - by Tomas Pollak (bootlog.org)
-# URL : http://preyproject.com
+# PREY Alert Module Core Functions - by Tomas Pollak (bootlog.org)
+# URL: http://preyproject.com
 # License: GPLv3
 ####################################################################
 
 # Added by Rodrigo Linfati (linfati.cl)
-function put_email_on_wallpaper {
+put_email_on_wallpaper() {
 	convert=`which convert`
 	if [ -n "$convert" ]; then
 		cp $wallpaper $wallpaper.orig

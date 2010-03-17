@@ -1,11 +1,11 @@
 #!/bin/bash
 ####################################################################
-# PREY Alert Module Linux Functions - by Tomas Pollak (bootlog.org)
-# URL : http://preyproject.com
+# Prey Alert Module Linux Functions - by Tomas Pollak (bootlog.org)
+# URL: http://preyproject.com
 # License: GPLv3
 ####################################################################
 
-function change_wallpaper {
+change_wallpaper() {
 	gconftool=`which gconftool-2`
 	kdesktop=`which kdesktop`
 	xfce=`which xfconf-query`

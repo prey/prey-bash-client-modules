@@ -1,11 +1,11 @@
 #!/bin/bash
 ####################################################################
-# PREY Alert Module Darwin (Mac) Functions - by Tomas Pollak (bootlog.org)
+# Prey Alert Module Mac Functions - by Tomas Pollak (bootlog.org)
 # URL : http://preyproject.com
 # License: GPLv3
 ####################################################################
 
-function change_wallpaper {
+change_wallpaper() {
 	# this code belongs to Katy Richard
 	# http://thingsthatwork.net/index.php/2008/02/07/fun-with-os-x-defaults-and-launchd/
 
@@ -16,7 +16,7 @@ function change_wallpaper {
 }
 
 # Mac alert msg code by Matias Halles (http://halles.cl)
-function alert_user {
+alert_user() {
 	alert_voice='Zarvox'
 	# can be Agnes, Kathy, Princess, Vicki, Victoria, Bruce, Fred, Junior, Ralph, Albert, Bad News, Bahh, Bells, Boing, Bubbles, Cellos , Deranged, Good News, Hysterical, Pipe Organ, Trinoids, Whisper, Zarvox
 
