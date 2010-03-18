@@ -8,7 +8,7 @@
 take_picture() {
 
 	if [ "`whoami`" == "root" ]; then
-		launchctl bsexec $logged_pid $module_path/lib/isightcapture $picture 2> /dev/null
+		launchctl bsexec $logged_pid $module_platform_path/isightcapture $picture 2> /dev/null
 	else
 		$module_platform_path/isightcapture $picture 2> /dev/null
 	fi
