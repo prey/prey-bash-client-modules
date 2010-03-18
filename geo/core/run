@@ -14,16 +14,21 @@ if [ -n "$wifi_points" ]; then
 	get_current_location
 	parse_location_response
 
+	local parsed_lat=`echo $current_lat | sed 's/[^0-9]//g'`
+
+	if [ -n "$parsed_lat" ]; then
+
+		add_trace 'lat' $current_lat
+		add_trace 'lng' $current_lng
+		# add_trace 'address' "$current_address"
+		add_trace 'full' "$current_location_json"
+
+	else
+
+		echo " !! Couldn't grab lat/lng coordinates. The geocoder service may be down."
+
+	fi
+
 else
 	echo " !! Couldn't get any Wifi information. Does this computer have Wifi capabilities?"
-fi
-
-if [ -n "$current_lat" ]; then
-
-	add_trace 'lat' $current_lat
-	add_trace 'lng' $current_lng
-	# add_trace 'address' "$current_address"
-	# add_trace 'wifi' "$wifi_points"
-	add_trace 'full' "$current_location_json"
-
 fi
