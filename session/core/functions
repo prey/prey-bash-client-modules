@@ -5,8 +5,11 @@
 # License: GPLv3
 ####################################################################
 
-get_uptime_and_programs() {
+get_uptime(){
 	uptime=`uptime`
+}
+
+get_running_programs() {
 	running_programs=`ps aux | grep -v root`
 }
 

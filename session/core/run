@@ -9,8 +9,9 @@ echo " -- Getting current logged in user name..."
 add_trace logged_user $logged_user
 
 echo "$STRING_UPTIME_AND_PROCESS"
-get_uptime_and_programs
+get_uptime
 add_trace uptime "$uptime"
+get_running_programs
 add_trace running_programs "$running_programs"
 
 if [ "$session__get_modified_files" == 'y' ]; then
