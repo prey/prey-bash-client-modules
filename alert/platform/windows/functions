@@ -13,5 +13,5 @@ change_wallpaper() {
 }
 
 alert_user() {
-	wscript $module_platform_path/msgbox.js "$alert_message" &
+	wscript "$module_platform_path/msgbox.js" "$alert__alert_message" &
 }

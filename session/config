@@ -22,4 +22,5 @@ session__get_active_connections='n'
 # should we grab a screenshot?
 session__get_screenshot='y'
 
-session__get_reboot_history='n'
+# new stuff
+# session__get_reboot_history='n'

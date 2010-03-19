@@ -6,8 +6,10 @@
 ####################################################################
 
 # alert the user with a message, y or n
-alert__message='This is a stolen computer, and has been marked by Prey. Contact us immediately at http://preyproject.com to clarify the situation. YOU HAVE BEEN WARNED!'
+alert__alert_message='This is a stolen computer, and has been marked by Prey. Contact us immediately at http://preyproject.com to clarify the situation. YOU HAVE BEEN WARNED!'
 
 # change wallpaper to alert nearby users -- EXPERIMENTAL!
 alert__change_wallpaper='n'
+
+# which wallpaper to use
 alert__wallpaper="$module_path/lib/prey-wallpaper-$lang.png"

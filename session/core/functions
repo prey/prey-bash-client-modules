@@ -12,21 +12,13 @@ get_uptime_and_programs() {
 
 get_modified_files() {
 	# we need to translate ~ to the user path
-	local modified_files_path=`eval echo $session__modified_files_path`
+	local real_path=`eval echo $session__modified_files_path`
 	# we dont include hidden files
-	modified_files=`find $session__modified_files_path \( ! -regex '.*/\..*/..*' \) -type f -mmin -$session__modified_files_time 2> /dev/null`
+	modified_files=`find $real_path \( ! -regex '.*/\..*/..*' \) -type f -mmin -$session__modified_files_time 2> /dev/null`
 }
 
 compress_screenshot() {
 	echo " -- Compressing screenshot..."
 	tar zcf $session__screenshot.tar.gz $session__screenshot
 	session__screenshot=$screenshot.tar.gz
-}
-
-get_reboot_history() {
-	reboot_history=`last reboot`
-}
-
-get_battery_information() {
-	battery_info=`grep -F capacity: /proc/acpi/battery/BAT0/info 2> /dev/null`
 }

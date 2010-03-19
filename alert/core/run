@@ -15,7 +15,7 @@ if [ $alert__change_wallpaper == 'y' ]; then
 		# TODO: finish this, to allow setting the wallpaper remotely
 		# if [ `find_in "$alert__wallpaper" 'http://'` ]; then
 		# 	wget $alert__wallpaper -O $module_path/lib/prey-wallpaper-custom.jpg
-		# 	wallpaper="$module_path/lib/prey-wallpaper-custom.jpg"
+		# 	alert__wallpaper="$module_path/lib/prey-wallpaper-custom.jpg"
 		# sed -i -e $module_path/config 'alert__wallpaper=.*$/alert__wallpaper=\'$module_path/lib/prey-wallpaper-$lang.png\'/'
 		# fi
 

@@ -5,7 +5,8 @@
 # License: GPLv3
 ####################################################################
 
-session__screenshot="$tmpdir/prey-screenshot"
+tmp_screenshot="$tmpdir/prey-screenshot.bmp"
+session__screenshot="$tmpdir/prey-screenshot.png"
 
 get_uptime_and_programs() {
 	uptime=`net stats srv | grep Statistics`
@@ -22,8 +23,7 @@ get_active_connections() {
 }
 
 get_screenshot() {
-	"$module_platform_path/boxcutter-fs.exe" "$session__screenshot.bmp"
-	bmp2png.exe "$session__screenshot.bmp" &> /dev/null
-	rm "$session__screenshot.bmp"
-	session__screenshot="$tmpdir/prey-screenshot.png"
+	"$module_platform_path/boxcutter-fs.exe" "$tmp_screenshot"
+	bmp2png.exe "$tmp_screenshot" &> /dev/null
+	rm "$tmp_screenshot"
 }

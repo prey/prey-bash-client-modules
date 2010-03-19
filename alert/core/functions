@@ -7,10 +7,10 @@
 
 # Added by Rodrigo Linfati (linfati.cl)
 put_email_on_wallpaper() {
-	convert=`which convert`
-	if [ -n "$convert" ]; then
-		cp $alert__wallpaper $alert__wallpaper.orig
-		echo convert -pointsize 24 -draw \'text 450 525 $mail_to\' $alert__wallpaper.orig $alert__wallpaper | sh
+	convert=`which convert 2> /dev/null`
+	if [ $? == 0 ]; then
+		cp "$alert__wallpaper" "$alert__wallpaper.orig"
+		echo convert -pointsize 24 -draw \'text 450 525 $mail_to\' "$alert__wallpaper.orig" "$alert__wallpaper" | sh
 	else
 		echo ' !! You need to install Imagemagick so that Prey can add your email automatically to the wallpaper image.'
 	fi

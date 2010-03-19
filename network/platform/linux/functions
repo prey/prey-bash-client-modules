@@ -9,7 +9,3 @@ get_mac_address() {
 	# mac_address=`ifconfig | grep 'HWaddr' | cut -d: -f2-7`
 	mac_address=`ifconfig | grep 'HWaddr' | cut -d ' ' -f11-15`
 }
-
-get_wifi_info() {
-	wifi_info=`iwconfig 2>&1 | grep -v "no wireless"`
-}
