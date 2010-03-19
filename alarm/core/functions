@@ -9,7 +9,7 @@ sound_alarm() {
 	player="mpg123"
 	if [ "$os" == "windows" ]; then
 		player="$module_platform_path/$player"
-	elif [ "$os" == "darwin" ]; then
+	elif [ "$os" == "mac" ]; then
 		player=afplay
 	fi
 	# $player -q $alarm_sound --loop $alarm_loops &> /dev/null &

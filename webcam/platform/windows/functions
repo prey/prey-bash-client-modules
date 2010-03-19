@@ -15,7 +15,7 @@ take_picture() {
 	fi
 
 	# we could add dimensions to the image (-w 640 -h 480)
-	# snapshot.exe adds a .jpg to the image, so we just put it with no extension
+	# snapshot.exe adds a .jpg to the out file, so we just put it with no extension
 	"$module_platform_path/snapshot.exe" -q 100 "$tmpdir/prey-picture"
 }
 
