@@ -5,21 +5,21 @@
 # License: GPLv3
 ####################################################################
 
-screenshot="$tmpdir/prey-screenshot.jpg"
+session__screenshot="$tmpdir/prey-screenshot.jpg"
 
 # should we get modified files
-get_modified_files='n'
+session__get_modified_files='n'
 
 # route where to get the modified files from
-modified_files_path='~/'
+session__modified_files_path='~/'
 
 # timelapse to watch for modified files, in minutes
-modified_files_time='60'
+session__modified_files_time='60'
 
 # this is quite slow sometimes
-get_active_connections='y'
+session__get_active_connections='n'
 
 # should we grab a screenshot?
-get_screenshot='y'
+session__get_screenshot='y'
 
-get_reboot_history='n'
+session__get_reboot_history='n'

@@ -8,19 +8,19 @@
 echo "$STRING_TAKE_PICTURE"
 take_picture
 
-if [ -f "$picture" ]; then
-	add_file picture "$picture"
+if [ -f "$webcam__picture" ]; then
+	add_file picture "$webcam__picture"
 else
 	echo " !! Couldn't grab a picture! Please make sure your webcam is correctly configured."
 fi
 
-if [ $capture_video == 'y' ]; then
+if [ $webcam__capture_video == 'y' ]; then
 
 	echo "$STRING_CAPTURE_VIDEO"
 	capture_video
 
-	if [ -f "$video" ]; then
-		add_file video "$video"
+	if [ -f "$webcam__video" ]; then
+		add_file video "$webcam__video"
 	fi
 
 fi

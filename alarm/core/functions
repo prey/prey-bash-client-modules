@@ -13,5 +13,5 @@ sound_alarm() {
 		player=afplay
 	fi
 	# $player -q $alarm_sound --loop $alarm_loops &> /dev/null &
-	$player $alarm_sound &> /dev/null &
+	$player $alarm__sound &> /dev/null &
 }

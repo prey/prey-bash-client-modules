@@ -5,7 +5,7 @@
 # License: GPLv3
 ####################################################################
 
-picture="$tmpdir/out.jpg"
+webcam__picture="$tmpdir/out.jpg"
 
 take_picture() {
 

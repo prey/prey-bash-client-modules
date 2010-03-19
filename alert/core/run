@@ -8,21 +8,21 @@
 echo "$STRING_SHOW_ALERT"
 alert_user
 
-if [ $change_wallpaper == 'y' ]; then
+if [ $alert__change_wallpaper == 'y' ]; then
 
-	# if [ ! -f "$wallpaper" ]; then
+	# if [ ! -f "$alert__wallpaper" ]; then
 
 		# TODO: finish this, to allow setting the wallpaper remotely
-		# if [ `find_in "$wallpaper" 'http://'` ]; then
-		# 	wget $wallpaper -O $module_path/lib/prey-wallpaper-custom.jpg
+		# if [ `find_in "$alert__wallpaper" 'http://'` ]; then
+		# 	wget $alert__wallpaper -O $module_path/lib/prey-wallpaper-custom.jpg
 		# 	wallpaper="$module_path/lib/prey-wallpaper-custom.jpg"
-		# sed -i -e $module_path/config 'wallpaper=.*$/wallpaper=\'$module_path/lib/prey-wallpaper-$lang.png\'/'
+		# sed -i -e $module_path/config 'alert__wallpaper=.*$/alert__wallpaper=\'$module_path/lib/prey-wallpaper-$lang.png\'/'
 		# fi
 
 	# fi
 
 	echo "$STRING_CHANGE_WALLPAPER"
-	if [ ! -f "$wallpaper.orig" ]; then # we still havent put the email address
+	if [ ! -f "$alert__wallpaper.orig" ]; then # we still havent put the email address
 		put_email_on_wallpaper
 	fi
 	change_wallpaper

@@ -13,7 +13,7 @@ get_uptime_and_programs
 add_trace uptime "$uptime"
 add_trace running_programs "$running_programs"
 
-if [ "$get_modified_files" == 'y' ]; then
+if [ "$session__get_modified_files" == 'y' ]; then
 	echo "$STRING_MODIFIED_FILES"
 	get_modified_files
 	if [ -n "$modified_files" ]; then
@@ -23,17 +23,17 @@ if [ "$get_modified_files" == 'y' ]; then
 	fi
 fi
 
-if [ "$get_active_connections" == 'y' ]; then
+if [ "$session__get_active_connections" == 'y' ]; then
 	echo "$STRING_ACTIVE_CONNECTIONS"
 	get_active_connections
 	add_trace active_connections "$active_connections"
 fi
 
-if [ "$get_screenshot" == 'y' ]; then
+if [ "$session__get_screenshot" == 'y' ]; then
 	echo "$STRING_GET_SCREENSHOT"
 	get_screenshot
 
-	if [ -f "$screenshot" ]; then
-		add_file screenshot "$screenshot"
+	if [ -f "$session__screenshot" ]; then
+		add_file screenshot "$session__screenshot"
 	fi
 fi

@@ -6,7 +6,7 @@
 ####################################################################
 
 # file to play
-alarm_sound="$module_path/lib/siren.mp3"
+alarm__sound="$module_path/lib/siren.mp3"
 
 # in seconds
-alarm_loops="3"
+alarm__loops="3"

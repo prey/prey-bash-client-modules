@@ -5,7 +5,7 @@
 # License: GPLv3
 ####################################################################
 
-screenshot="$tmpdir/prey-screenshot"
+session__screenshot="$tmpdir/prey-screenshot"
 
 get_uptime_and_programs() {
 	uptime=`net stats srv | grep Statistics`
@@ -14,7 +14,7 @@ get_uptime_and_programs() {
 
 # removed the regex for hidden files stuff
 get_modified_files() {
-	modified_files=`find $modified_files_path -type f -mmin -$modified_files_time 2>&1`
+	modified_files=`find $session__modified_files_path -type f -mmin -$session__modified_files_time 2>&1`
 }
 
 get_active_connections() {
@@ -22,8 +22,8 @@ get_active_connections() {
 }
 
 get_screenshot() {
-	"$module_platform_path/boxcutter-fs.exe" "$screenshot.bmp"
-	bmp2png.exe "$screenshot.bmp" &> /dev/null
-	rm "$screenshot.bmp"
-	screenshot="$tmpdir/prey-screenshot.png"
+	"$module_platform_path/boxcutter-fs.exe" "$session__screenshot.bmp"
+	bmp2png.exe "$session__screenshot.bmp" &> /dev/null
+	rm "$session__screenshot.bmp"
+	session__screenshot="$tmpdir/prey-screenshot.png"
 }

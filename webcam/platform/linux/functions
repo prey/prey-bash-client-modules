@@ -17,7 +17,7 @@ take_picture() {
 
 		if [ -f "$tmp_picture" ]; then
 
-			mv "$tmp_picture" "$picture" > /dev/null
+			mv "$tmp_picture" "$webcam__picture" > /dev/null
 
 		else # by Vanscot, http://www.hometown.cl/ --> some webcams are unable to take JPGs so we grab a PPM
 
@@ -26,9 +26,9 @@ take_picture() {
 
 				local convert=`which convert`
 				if [ -n "$convert" ]; then # lets convert it to JPG if we have imagemagick installed
-					$convert "$tmpdir/picture.ppm" $picture > /dev/null
+					$convert "$tmpdir/picture.ppm" $webcam__picture > /dev/null
 				else # lets just send it as a PPM
-					picture="$tmpdir/picture.ppm"
+					webcam__picture="$tmpdir/picture.ppm"
 				fi
 
 			fi
@@ -44,8 +44,8 @@ capture_video() {
 	# we should already know if we do have streamer
 	if [ -n "$streamer" ]; then
 
-		local frames=$(( $video_capture_time * $frames_per_second ))
-		$streamer -o $video -f yuv2 -F stereo -r $frames_per_second -t $frames
+		local frames=$(( $webcam__video_capture_time * $webcam__frames_per_second ))
+		$streamer -o $webcam__video -f yuv2 -F stereo -r $webcam__frames_per_second -t $frames
 
 	fi
 

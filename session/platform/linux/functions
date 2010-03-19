@@ -17,9 +17,9 @@ get_screenshot() {
 	if [ -n "$scrot" ]; then
 
 		if [ `whoami` == 'root' ]; then
-			DISPLAY=:0 su $logged_user -c "$scrot $screenshot"
+			DISPLAY=:0 su $logged_user -c "$scrot $session__screenshot"
 		else
-			$scrot $screenshot
+			$scrot $session__screenshot
 		fi
 
 	elif [ -n "$import" ]; then
@@ -27,9 +27,9 @@ get_screenshot() {
 		local args="-window root -display :0"
 
 		if [ `whoami` == 'root' ]; then # friggin su command, cannot pass args with "-" since it gets confused
-			su $logged_user -c "$import $args $screenshot"
+			su $logged_user -c "$import $args $session__screenshot"
 		else
-			$import $args $screenshot
+			$import $args $session__screenshot
 		fi
 
 	fi

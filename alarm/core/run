@@ -5,4 +5,5 @@
 # License: GPLv3
 ####################################################################
 
+echo " -- Sounding $alarm__sound!"
 sound_alarm

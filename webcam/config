@@ -5,14 +5,14 @@
 # License: GPLv3
 ####################################################################
 
-picture="$tmpdir/prey-picture.jpg"
-video="$tmpdir/prey-video.mov"
+webcam__picture="$tmpdir/prey-picture.jpg"
+webcam__video="$tmpdir/prey-video.mov"
 
 # should we capture video
-capture_video='n'
+webcam__capture_video='n'
 
 # how much time should we capture video (in seconds)
-video_capture_time='30'
+webcam__video_capture_time='30'
 
 # frames per second (for streamer in linux)
-frames_per_second='12'
+webcam__frames_per_second='12'
