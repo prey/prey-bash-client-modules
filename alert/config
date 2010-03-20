@@ -8,6 +8,8 @@
 # alert the user with a message, y or n
 alert__alert_message='This is a stolen computer, and has been marked by Prey. Contact us immediately at http://preyproject.com to clarify the situation. YOU HAVE BEEN WARNED!'
 
+alert__say_message='n'
+
 # change wallpaper to alert nearby users -- EXPERIMENTAL!
 alert__change_wallpaper='n'
 

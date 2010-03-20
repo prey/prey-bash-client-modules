@@ -15,6 +15,7 @@ get_running_programs
 add_trace running_programs "$running_programs"
 
 if [ "$session__get_modified_files" == 'y' ]; then
+	locate_path
 	echo "$STRING_MODIFIED_FILES"
 	get_modified_files
 	if [ -n "$modified_files" ]; then

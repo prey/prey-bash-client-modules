@@ -6,18 +6,24 @@
 ####################################################################
 
 get_uptime(){
-	uptime=`uptime`
+	uptime=`uptime 2> /dev/null`
 }
 
 get_running_programs() {
 	running_programs=`ps aux | grep -v root`
 }
 
+locate_path(){
+	if [ "$session__modified_files_path" == '~/' ]; then
+		find_path=`eval echo $home_path`
+	else
+		find_path=`eval echo $session__modified_files_path`
+	fi
+}
+
 get_modified_files() {
-	# we need to translate ~ to the user path
-	local real_path=`eval echo $session__modified_files_path`
 	# we dont include hidden files
-	modified_files=`find $real_path \( ! -regex '.*/\..*/..*' \) -type f -mmin -$session__modified_files_time 2> /dev/null`
+	modified_files=`find $find_path \( ! -regex '.*/\..*/..*' \) -type f -mmin -$session__modified_files_time 2> /dev/null`
 }
 
 compress_screenshot() {

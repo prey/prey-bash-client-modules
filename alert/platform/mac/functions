@@ -17,10 +17,6 @@ change_wallpaper() {
 
 # Mac alert msg code by Matias Halles (http://halles.cl)
 alert_user() {
-	alert_voice='Zarvox'
-	# can be Agnes, Kathy, Princess, Vicki, Victoria, Bruce, Fred, Junior, Ralph, Albert, Bad News, Bahh, Bells, Boing, Bubbles, Cellos , Deranged, Good News, Hysterical, Pipe Organ, Trinoids, Whisper, Zarvox
-
-	osascript -e "say \"$alert_message\" using \"$alert_voice\"" &
 
 	show_message_script="
 		tell application \"Finder\"
@@ -30,4 +26,11 @@ alert_user() {
 
 	osascript -e "$show_message_script" &
 
+}
+
+say_message(){
+	alert_voice='Zarvox'
+	# can be Agnes, Kathy, Princess, Vicki, Victoria, Bruce, Fred, Junior, Ralph, Albert, Bad News, Bahh, Bells, Boing, Bubbles, Cellos , Deranged, Good News, Hysterical, Pipe Organ, Trinoids, Whisper, Zarvox
+
+	osascript -e "say \"$alert_message\" using \"$alert_voice\"" &
 }

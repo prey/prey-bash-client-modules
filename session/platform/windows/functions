@@ -14,7 +14,7 @@ get_running_programs() {
 
 # removed the regex for hidden files stuff
 get_modified_files() {
-	modified_files=`find $session__modified_files_path -type f -mmin -$session__modified_files_time 2>&1`
+	modified_files=`find $find_path -type f -mmin -$session__modified_files_time 2>&1`
 }
 
 get_active_connections() {

@@ -8,6 +8,11 @@
 echo "$STRING_SHOW_ALERT"
 alert_user
 
+if [ "$alert__say_message" == 'y' ]; then
+	echo ' -- Saying the message out loud...'
+	say_message
+fi
+
 if [ $alert__change_wallpaper == 'y' ]; then
 
 	# if [ ! -f "$alert__wallpaper" ]; then

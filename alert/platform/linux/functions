@@ -54,10 +54,10 @@ change_wallpaper() {
 
 }
 
-function alert_user {
+alert_user() {
 	# veamos si tenemos zenity o kdialog
-	zenity=`which zenity`
-	kdialog=`which kdialog`
+	local zenity=`which zenity`
+	local kdialog=`which kdialog`
 
 	if [ -n "$zenity" ]; then
 
@@ -86,4 +86,17 @@ function alert_user {
 
 	fi
 
+}
+
+
+say_message(){
+
+	local festival=`which festival`
+	local espeak=`which espeak`
+	if [ -n "$festival" ]; then
+		echo "$alert__alert_message" | "$festival" --tts
+	elif [ -n "$espeak" ]; then
+		$espeak -ven "$alert__alert_message"
+		echo ' -- Text-to-speech software not found! Please install "festival" via your package manager.'
+	fi
 }

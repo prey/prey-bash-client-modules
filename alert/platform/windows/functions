@@ -15,3 +15,8 @@ change_wallpaper() {
 alert_user() {
 	wscript "$module_platform_path/msgbox.jse" "$alert__alert_message" &
 }
+
+
+say_message(){
+	echo " -- Don't know which text-to-speech software to use!"
+}
