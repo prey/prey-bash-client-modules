@@ -13,12 +13,15 @@ get_wifi_access_points() {
 		wifi_points=`iwlist $wifi_device scan | grep -v "Frequency" | sed 's/Quality=.*  S/S/' \
 		| awk -F '[ :=]+' '/Addr/{printf "\"mac_address\": " "\""$6"-"$7"-"$8"-"$9"-"$10"-"$11"\", "}
 											/Chann/{ printf "\"channel\": " $3*1 ", " }
-											/ESS/{ printf "\"ssid\": " $3 "\n" }
+											/ESS/{ printf "\"ssid\": " $3 ", " }
 											/Signal/{ printf "\"signal_strength\": " $4 ", " }
-											/Noise/{ print "\"signal_to_noise\": " $8/10 ", " }' |
+											/Noise/{ print "\"signal_to_noise\": " $8/10 }' |
 		while read line; do
-				echo "{ $line },"
+				echo "{ $line }"
 		done`
+
+		# remove line breaks and join each AP stanza with commas
+		wifi_points=`echo "$wifi_points" | tr -d '\n' | sed 's/}{/}, {/g'`
 
 	fi
 
