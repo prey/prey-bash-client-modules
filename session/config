@@ -7,6 +7,9 @@
 
 session__screenshot="$tmpdir/prey-screenshot.jpg"
 
+# should we get list of running programs
+session__get_running_programs='n'
+
 # should we get modified files
 session__get_modified_files='n'
 

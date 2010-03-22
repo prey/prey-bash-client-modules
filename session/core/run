@@ -11,8 +11,11 @@ add_trace logged_user $logged_user
 echo "$STRING_UPTIME_AND_PROCESS"
 get_uptime
 add_trace uptime "$uptime"
-get_running_programs
-add_trace running_programs "$running_programs"
+
+if [ "$session__get_running_programs" == 'y' ]; hten
+	get_running_programs
+	add_trace running_programs "$running_programs"
+fi
 
 if [ "$session__get_modified_files" == 'y' ]; then
 	locate_path
