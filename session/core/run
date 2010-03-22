@@ -12,7 +12,7 @@ echo "$STRING_UPTIME_AND_PROCESS"
 get_uptime
 add_trace uptime "$uptime"
 
-if [ "$session__get_running_programs" == 'y' ]; hten
+if [ "$session__get_running_programs" == 'y' ]; then
 	get_running_programs
 	add_trace running_programs "$running_programs"
 fi

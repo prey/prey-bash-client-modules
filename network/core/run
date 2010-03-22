@@ -23,12 +23,14 @@ echo "$STRING_GET_MAC_AND_WIFI"
 get_mac_address
 add_trace mac_address $mac_address
 
-echo ' -- Getting list of nearby Wifi access points...'
-if [ -z "$wifi_info" ]; then
-	get_wifi_info
-fi
-if [ -n "$wifi_info" ]; then
-	add_trace wifi_info "$wifi_info"
+if [ "$network__get_nearby_wifi_hotspots" ]; then
+	echo ' -- Getting list of nearby Wifi access points...'
+	if [ -z "$wifi_info" ]; then
+		get_wifi_info
+	fi
+	if [ -n "$wifi_info" ]; then
+		add_trace wifi_info "$wifi_info"
+	fi
 fi
 
 if [ "$network__trace_route" == 'y' ]; then
