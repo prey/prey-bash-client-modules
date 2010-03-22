@@ -6,7 +6,8 @@
 ####################################################################
 
 get_active_connections() {
-	active_connections=`netstat -p tcp -a`
+	netstat=`which netstat`
+	active_connections=`$netstat -p tcp -a`
 }
 
 get_screenshot() {

@@ -20,8 +20,9 @@ if [ -n "$wifi_points" ]; then
 
 		add_trace 'lat' $current_lat
 		add_trace 'lng' $current_lng
+		add_trace 'accuracy' $spot_accuracy
 		# add_trace 'address' "$current_address"
-		add_trace 'full' "$current_location_json"
+		# add_trace 'full' "$current_location_json"
 
 	else
 

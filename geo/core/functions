@@ -15,6 +15,7 @@ parse_location_response() {
 
 	current_lat=`echo $current_location_json | LANG=en_EN.UTF-8 sed 's/.*latitude":\(-*[0-9.]*\),.*/\1/'`
 	current_lng=`echo $current_location_json | LANG=en_EN.UTF-8 sed 's/.*longitude":\(-*[0-9.]*\),.*/\1/'`
-	current_address=`echo $current_location_json | LANG=en_EN.UTF-8 sed 's/.*address":\(.*\)/\1/'`
+	# current_address=`echo $current_location_json | LANG=en_EN.UTF-8 sed 's/.*address":\(.*\)/\1/'`
+	spot_accuracy=`echo $current_location_json | LANG=en_EN.UTF-8 sed 's/.*accuracy":\([0-9.]*\)}.*/\1/'`
 
 }
