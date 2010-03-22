@@ -6,22 +6,22 @@
 ####################################################################
 
 change_wallpaper() {
-	gconftool=`which gconftool-2`
-	kdesktop=`which kdesktop`
-	xfce=`which xfconf-query`
+	local gconftool=`which gconftool-2`
+	local kdesktop=`which kdesktop`
+	local xfce=`which xfconf-query`
 
 	if [ -n "$gconftool" ]; then
 
-		wallpaper_command="$gconftool --type string --set /desktop/gnome/background/picture_filename $wallpaper"
+		wallpaper_command="$gconftool --type string --set /desktop/gnome/background/picture_filename $alert__wallpaper"
 		wallpaper_command_two="$gconftool --type string --set /desktop/gnome/background/picture_options 'scaled'"
 
 	elif [ -n "$kdesktop" ]; then # untested
 
-		wallpaper_command="$kdesktop KBackgroundIface setWallpaper $wallpaper 8" # 8 = scale
+		wallpaper_command="$kdesktop KBackgroundIface setWallpaper $alert__wallpaper 8" # 8 = scale
 
 	elif [ -n "$xfce" ]; then # requires xfce 4.6
 
-		wallpaper_command="$xfce -c xfce4-desktop -p /backdrop/screen0/monitor0/image-path -s $wallpaper"
+		wallpaper_command="$xfce -c xfce4-desktop -p /backdrop/screen0/monitor0/image-path -s $alert__wallpaper"
 
 	fi
 
@@ -79,9 +79,9 @@ alert_user() {
 	if [ -n "$alert_command" ]; then
 
 		if [ `whoami` == 'root' ]; then
-			DISPLAY=:0 su $logged_user -c "$alert_command \"$alert_message\"" &
+			DISPLAY=:0 su $logged_user -c "$alert_command \"$alert__alert_message\"" &
 		else
-			$alert_command "$alert_message" &
+			$alert_command "$alert__alert_message" &
 		fi
 
 	fi
