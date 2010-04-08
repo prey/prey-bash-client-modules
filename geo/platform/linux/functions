@@ -18,7 +18,7 @@ get_wifi_access_points() {
 			-e 's/Address: \([A-F0-9-]*\)/{"mac_address": "\1", /g' \
 			-e 's/level=\([0-9\/-]*\) dBm/"signal_strength": \1, /g' \
 			-e 's/ESSID:\([a-zA-Z0-9_.&#@%;" -]*\)/"ssid": \1}/g' \
-			-e 's/}{/}, {/g'
+			-e 's/}{/}, {/g'`
 
 	fi
 
