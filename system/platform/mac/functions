@@ -1,0 +1,44 @@
+#!/bin/bash
+####################################################################
+# Prey System Module Mac Functions - by Carlos Yaconi H.
+# URL: http://preyproject.com
+# License: GPLv3
+####################################################################
+          
+get_cpu_info(){
+	#cpu_name - cpu_speed - cpu_number - cpu_cores  
+	cpu_info=`system_profiler SPHardwareDataType`
+	cpu_name=`echo "$cpu_info" | grep "Processor Name" | sed 's/.*: \(.*\)/\1/'`
+	cpu_speed=`echo "$cpu_info"  | grep "Processor Speed" | sed 's/.*: \(.*\)/\1/'`
+	cpu_number=`echo "$cpu_info" | grep "Number Of Processors" | sed 's/.*: \(.*\)/\1/'`
+	cpu_cores=`echo "$cpu_info" | grep "Total Number Of Cores" | sed 's/.*: \(.*\)/\1/'` 
+	
+	echo -e "CPU info:\n- Name: $cpu_name\n- Speed: $cpu_speed\n- Number of CPUs: $cpu_number\n- Number of cores: $cpu_cores"
+}
+
+get_memory_info(){
+	mem_full_info=`system_profiler SPMemoryDataType` 
+	mem_info=`echo "$mem_full_info"	| awk 'BEGIN { 
+		BANK_NUM = 0
+		ORS = "#"}
+
+		/BANK/ { BANK_NUM+=1  }
+		/Size: /{	print BANK_NUM"_Size="$2$3 }
+		/Type: /{	print BANK_NUM"_Type="$2 }
+		/Speed: /{	print BANK_NUM"_Speed="$2$3 }'`
+	
+	echo -e "Memory info:\n $mem_info"
+	
+}
+
+get_sata_info(){
+	sata_info=`system_profiler SPSerialATADataType | awk 'BEGIN { 
+	UNIT = 0
+	ORS = "#"}
+
+	/Vendor/ { UNIT+=1 ; print UNIT"_Vendor="$2 ; cap=0}
+	/Model: /{ print UNIT"_Model="$2" "$3 }
+	/Capacity: / && cap==0 { print UNIT"_Capacity="$2$3 ; cap=1}'`
+	
+	echo -e "SATA info:\n $sata_info"
+}

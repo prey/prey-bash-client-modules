@@ -1,0 +1,18 @@
+#!/bin/bash
+####################################################################
+# Prey Network Module Windows Functions - by Tomas Pollak (bootlog.org)
+# URL: http://preyproject.com
+# License: GPLv3
+####################################################################
+
+get_internal_ip() {
+	internal_ip=`ipconfig | grep "IP Address" | sed 's/^.*: //g' | grep -v '^$' | head -1`
+}
+
+get_mac_address() {
+	mac_address=`ipconfig -all | grep Physical | sed 's/^.*: //g' | grep -v '^$' | head -1`
+}
+
+trace_route() {
+	complete_trace=`tracert.exe www.google.com 2> /dev/null`
+}
