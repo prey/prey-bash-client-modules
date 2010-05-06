@@ -1,11 +1,70 @@
 #!/bin/bash
 ####################################################################
-# Prey Network Module Linux Functions - by Tomas Pollak (bootlog.org)
+# Prey System Module Linux Functions - by Carlos Yaconi H.
 # URL: http://preyproject.com
 # License: GPLv3
 ####################################################################
-
-get_mac_address() {
-	# mac_address=`ifconfig | grep 'HWaddr' | cut -d: -f2-7`
-	mac_address=`ifconfig | grep 'HWaddr' | cut -d ' ' -f11-15`
+get_os_info(){
+	os_version=`lsb_release -d | sed 's/^.*:[[:space:]]*\(.*\)/\1/'`
+	kernel_version=`uname -r`
 }
+
+get_cpu_info(){
+        cpu_full_info=`cat /proc/cpuinfo`
+#	cpu_name=`echo "$cpu_info" | grep "Processor Name" | sed 's/.*: \(.*\)/\1/'`
+#	cpu_speed=`echo "$cpu_info"  | grep "Processor Speed" | sed 's/.*: \(.*\)/\1/'`
+#	cpu_number=`echo "$cpu_info" | grep "Number Of Processors" | sed 's/.*: \(.*\)/\1/'`
+#	cpu_cores=`echo "$cpu_info" | grep "Total Number Of Cores" | sed 's/.*: \(.*\)/\1/'` 
+	
+	cpu_info=`echo "$cpu_full_info"	| awk 'BEGIN { 
+		CPU_NUM = 0
+		ORS = "#"
+		FS = ":"}
+
+		/processor/ { CPU_NUM+=1  }
+		/model name/ { gsub(/^ */,"",$2); print CPU_NUM"_Name="$2 }
+		/cpu MHz/{ gsub(/^ */,"",$2); print CPU_NUM"_Speed="$2 }
+		/cpu cores/{ gsub(/^ */,"",$2); print CPU_NUM"_Cores="$2"__" }'`
+	
+}
+
+get_memory_info(){
+	mem_full_info=`sudo dmidecode --type 17` 
+	mem_info=`echo "$mem_full_info"	| awk 'BEGIN { 
+		BANK_NUM = 0
+		ORS = "#"}
+
+		/Memory Device/ { BANK_NUM+=1  }
+		/Size: /{	print BANK_NUM"_Size="$2$3 }
+		/Type: /{	print BANK_NUM"_Type="$2 }
+		/Speed: /{	print BANK_NUM"_Speed="$2$3"__" }'`
+	
+		
+}
+
+get_system_ids(){
+	serial_number=`sudo dmidecode --type 2 | grep "Serial Number" | sed 's/.*: \(.*\)/\1/'`
+	hw_UUID=`sudo dmidecode --type 1 | grep "UUID" | sed 's/.*: \(.*\)/\1/'`
+}
+
+get_hdd_info(){
+	devices=`cat /proc/partitions | awk 'BEGIN { 
+	
+	ORS = "#"}
+	{if (length($4) ==3) print $4}'`
+
+	arr=$(echo $devices | tr "#" "\n")
+        it=0
+        hdd_info=""
+        for x in $arr
+        do
+            it=$(($it+1))
+            size=`fdisk -l | grep "Disk /dev/$x" | sed 's/.*:[[:space:]]*\(.*\),.*/\1/'`
+            model=`hdparm -I "/dev/$x" | grep "Model Number" | sed 's/.*:[[:space:]]*\(.*\)/\1/'`
+            serial=`hdparm -I "/dev/$x" | grep "Serial Number" | sed 's/.*:[[:space:]]*\(.*\)/\1/'`
+            firmware=`hdparm -I "/dev/$x" | grep "Firmware Revision" | sed 's/.*:[[:space:]]*\(.*\)/\1/'`
+            hdd_info="$hdd_info${it}_Size=${size}#${it}_model=${model}#${it}_serial=${serial}#${it}_firmware=${firmware}__"
+        done
+        echo -e $hdd_info
+
+} 
