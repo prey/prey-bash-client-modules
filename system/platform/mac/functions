@@ -30,13 +30,13 @@ get_memory_info(){
 		/BANK/ { BANK_NUM+=1  }
 		/Size: /{	print BANK_NUM"_Size="$2$3 }
 		/Type: /{	print BANK_NUM"_Type="$2 }
-		/Speed: /{	print BANK_NUM"_Speed="$2$3 }'`
+		/Speed: /{	print BANK_NUM"_Speed="$2$3"__" }'`
 	
 	echo -e "Memory info:\n $mem_info"
 	
 }
 
-get_sata_info(){
+get_hdd_info(){
 	sata_info=`system_profiler SPSerialATADataType | awk 'BEGIN { 
 	UNIT = 0
 	ORS = "#"}
@@ -45,7 +45,7 @@ get_sata_info(){
 	/Model: /{ print UNIT"_Model="$2" "$3 }
 	/Capacity: / && cap==0 { print UNIT"_Capacity="$2$3 ; cap=1}'`
 	
-	echo -e "SATA info:\n $sata_info"
+	echo -e "HDD info:\n $sata_info"
 } 
 
 get_system_ids(){
