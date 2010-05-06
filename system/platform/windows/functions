@@ -8,13 +8,15 @@
 ##This function MUST be called first, since it grabs windows information to be used by the other functions
 get_os_info(){
 	win_info=`systeminfo`
-	os_version=`echo "$win_info" | grep "OS Name" | sed 's/.*: \(.*\)/\1/'`
-	kernel_version=`echo "$win_info" | grep "OS Version" | sed 's/.*: \(.*\)/\1/'`
+	os_version=`echo "$win_info" | grep "OS Name" | sed 's/.*: *\(.*\)/\1/'`
+	kernel_version=`echo "$win_info" | grep "^OS Version" | sed 's/.*: *\(.*\)/\1/'`
+	
+	echo -e "OS: $os_version \nVersion: $kernel_version"
+	
 	
 }       
 get_cpu_info(){
 	#cpu_name - cpu_speed - cpu_number - cpu_cores  
-	cpu_info=`systeminfo`
 	cpu_name=`echo "$win_info" | grep "Processor(s)" -A1 | tail -1 | sed 's/.*\[.*\]: \(.*\)/\1/'`
 	cpu_speed=`echo "$win_info"  | grep "Processor(s)" -A1 | tail -1 | sed 's/.*\[.*\]:.*~\(.*\)/\1/'`
 	cpu_number=`echo "$win_info" | grep "Processor(s)" | sed 's/.*: *\([0-9]\) .*/\1/'`

@@ -4,7 +4,10 @@
 # URL: http://preyproject.com
 # License: GPLv3
 ####################################################################
-. ../platform/mac/functions
+. ../platform/windows/functions
+
+get_os_info
+
 echo "$STRING_GET_CPU_INFO"
 get_cpu_info
 
@@ -15,7 +18,7 @@ get_cpu_info
 
 get_memory_info 
                
-get_sata_info
+#get_sata_info
 
 #echo "$STRING_GET_LAN_IP"
 #get_internal_ip
