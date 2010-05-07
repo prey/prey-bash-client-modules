@@ -4,14 +4,14 @@
 # URL: http://preyproject.com
 # License: GPLv3
 ####################################################################
-. ../platform/linux/functions
-echo "$STRING_GET_CPU_INFO"
-get_cpu_info
-echo -e "CPU info: $cpu_info"
-
+. ../platform/windows/functions
+module_platform_path=../platform/windows/
 get_os_info
 echo -e "OS Version: $os_version"
 echo -e "Kernel Version: $kernel_version"
+
+get_cpu_info
+echo -e "CPU info: $cpu_info"
 	
 get_memory_info
 echo -e "Memory info: $mem_info"
@@ -21,6 +21,8 @@ echo -e "Serial number: $serial_number"
 echo -e "UUID: $hw_UUID"
 
 get_hdd_info
+echo -e "HDD info: $hdd_info"
+
 
 #add_trace cpu_name $cpu_name
 #add_trace cpu_speed $cpu_speed

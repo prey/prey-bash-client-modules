@@ -10,41 +10,39 @@ get_os_info(){
 	win_info=`systeminfo`
 	os_version=`echo "$win_info" | grep "OS Name" | sed 's/.*: *\(.*\)/\1/'`
 	kernel_version=`echo "$win_info" | grep "^OS Version" | sed 's/.*: *\(.*\)/\1/'`
-	
-	echo -e "OS: $os_version \nVersion: $kernel_version"
-	
-	
 }       
+
 get_cpu_info(){
-	#cpu_name - cpu_speed - cpu_number - cpu_cores  
+	#cpu_name - cpu_speed - cpu_cores  
 	cpu_name=`echo "$win_info" | grep "Processor(s)" -A1 | tail -1 | sed 's/.*\[.*\]: \(.*\)/\1/'`
 	cpu_speed=`echo "$win_info"  | grep "Processor(s)" -A1 | tail -1 | sed 's/.*\[.*\]:.*~\(.*\)/\1/'`
 	cpu_number=`echo "$win_info" | grep "Processor(s)" | sed 's/.*: *\([0-9]\) .*/\1/'`
-	#cpu_cores=""
 	
-	echo -e "CPU info:\n- Name: $cpu_name\n- Speed: $cpu_speed\n- Number of CPUs: $cpu_number\n- Number of cores: $cpu_cores"
+	cpu_info="1_name=${cpu_name}#1_speed=${cpu_speed}#1_cores=${cpu_number}__#"
 }
 
 get_memory_info(){
+	#Need to use wmi to grab more ram info.	
+	total_mem=`echo "$win_info"	| grep "Total Physical Memory" | sed 's/.*: \(.*\)/\1/'`
 	
-	mem_info=`echo "$win_info"	| grep "Total Physical Memory" | sed 's/.*: \(.*\)/\1/'`
-	echo -e "Memory info:\n $mem_info"
+	mem_info="1_size=${total_mem}#1_type=0#1_speed=0__#"
 	
 }
 
-#get_sata_info(){
-#	sata_info=`system_profiler SPSerialATADataType | awk 'BEGIN { 
-#	UNIT = 0
-#	ORS = "#"}
-#
-#	/Vendor/ { UNIT+=1 ; print UNIT"_Vendor="$2 ; cap=0}
-#	/Model: /{ print UNIT"_Model="$2" "$3 }
-#	/Capacity: / && cap==0 { print UNIT"_Capacity="$2$3 ; cap=1}'`
-#	
-#	echo -e "SATA info:\n $sata_info"
-#} 
-#
-#get_system_ids(){
-#	serial_number=`echo "$hw_info" | grep "System Model" | sed 's/.*: \(.*\)/\1/'`
-#}
-#
+get_hdd_info(){
+  hdd_full_info=`"$module_platform_path/hddinfo.exe"`
+  hdd_info=`echo "$hdd_full_info"  | awk 'BEGIN { 
+	ORS = "#"}
+	/Disk/ { UNIT=$2}
+	/Capacity/ { print UNIT"_size="$2" "$3}
+	/Model: / { print UNIT"_model="substr ($0, 9)}
+	/Serial: / { print UNIT"_serial="substr ($0, 10)}
+	/Firmware: / { print UNIT"_fimware="substr ($0, 12)"__"}'`
+
+} 
+
+
+get_system_ids(){
+	serial_number=`wmic baseboard get serialnumber | awk 'NR==2 {print $1}'`
+	hw_UUID=`wmic path win32_computersystemproduct get uuid | awk 'NR==2 {print $1}'`
+}

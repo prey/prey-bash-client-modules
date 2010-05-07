@@ -22,9 +22,9 @@ get_cpu_info(){
 		FS = ":"}
 
 		/processor/ { CPU_NUM+=1  }
-		/model name/ { gsub(/^ */,"",$2); print CPU_NUM"_Name="$2 }
-		/cpu MHz/{ gsub(/^ */,"",$2); print CPU_NUM"_Speed="$2 }
-		/cpu cores/{ gsub(/^ */,"",$2); print CPU_NUM"_Cores="$2"__" }'`
+		/model name/ { gsub(/^ */,"",$2); print CPU_NUM"_name="$2 }
+		/cpu MHz/{ gsub(/^ */,"",$2); print CPU_NUM"_speed="$2 }
+		/cpu cores/{ gsub(/^ */,"",$2); print CPU_NUM"_cores="$2"__" }'`
 	
 }
 
@@ -35,9 +35,9 @@ get_memory_info(){
 		ORS = "#"}
 
 		/Memory Device/ { BANK_NUM+=1  }
-		/Size: /{	print BANK_NUM"_Size="$2$3 }
-		/Type: /{	print BANK_NUM"_Type="$2 }
-		/Speed: /{	print BANK_NUM"_Speed="$2$3"__" }'`
+		/Size: /{	print BANK_NUM"_size="$2$3 }
+		/Type: /{	print BANK_NUM"_type="$2 }
+		/Speed: /{	print BANK_NUM"_speed="$2$3"__" }'`
 	
 		
 }

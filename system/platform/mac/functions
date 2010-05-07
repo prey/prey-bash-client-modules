@@ -15,10 +15,10 @@ get_cpu_info(){
 	cpu_info=`system_profiler SPHardwareDataType`
 	cpu_name=`echo "$cpu_info" | grep "Processor Name" | sed 's/.*: \(.*\)/\1/'`
 	cpu_speed=`echo "$cpu_info"  | grep "Processor Speed" | sed 's/.*: \(.*\)/\1/'`
-	cpu_number=`echo "$cpu_info" | grep "Number Of Processors" | sed 's/.*: \(.*\)/\1/'`
+	#cpu_number=`echo "$cpu_info" | grep "Number Of Processors" | sed 's/.*: \(.*\)/\1/'`
 	cpu_cores=`echo "$cpu_info" | grep "Total Number Of Cores" | sed 's/.*: \(.*\)/\1/'` 
 	
-	echo -e "CPU info:\n- Name: $cpu_name\n- Speed: $cpu_speed\n- Number of CPUs: $cpu_number\n- Number of cores: $cpu_cores"
+	cpu_info="1_name=${cpu_name}#1_speed=${cpu_speed}#1_cores=${cpu_number}__#"
 }
 
 get_memory_info(){
@@ -28,24 +28,22 @@ get_memory_info(){
 		ORS = "#"}
 
 		/BANK/ { BANK_NUM+=1  }
-		/Size: /{	print BANK_NUM"_Size="$2$3 }
-		/Type: /{	print BANK_NUM"_Type="$2 }
-		/Speed: /{	print BANK_NUM"_Speed="$2$3"__" }'`
-	
-	echo -e "Memory info:\n $mem_info"
-	
+		/Size: /{	print BANK_NUM"_size="$2$3 }
+		/Type: /{	print BANK_NUM"_type="$2 }
+		/Speed: /{	print BANK_NUM"_speed="$2$3"__" }'`
 }
 
 get_hdd_info(){
-	sata_info=`system_profiler SPSerialATADataType | awk 'BEGIN { 
+	hdd_info=`system_profiler SPSerialATADataType | awk 'BEGIN { 
 	UNIT = 0
 	ORS = "#"}
 
-	/Vendor/ { UNIT+=1 ; print UNIT"_Vendor="$2 ; cap=0}
-	/Model: /{ print UNIT"_Model="$2" "$3 }
-	/Capacity: / && cap==0 { print UNIT"_Capacity="$2$3 ; cap=1}'`
-	
-	echo -e "HDD info:\n $sata_info"
+	/Vendor/ { UNIT+=1 ; cap=0}
+	/Model: /{ print UNIT"_model="$2" "$3 }
+	/Serial Number: /{ print UNIT"_serial=$3 }
+	/Revision: /{ print UNIT"_firmware=$3 }
+	/Capacity: / && cap==0 { print UNIT"_size="$2$3 ; cap=1}'`
+
 } 
 
 get_system_ids(){
