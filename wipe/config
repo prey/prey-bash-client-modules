@@ -1,0 +1,25 @@
+#!/bin/bash
+####################################################################
+# PREY Wiper Module Configuration File - by Tomas Pollak (bootlog.org)
+# URL: http://preyproject.com
+# License: GPLv3
+####################################################################
+
+# whether to destroy the keychains/keyrings that holds all the different
+# passwords in your system. recommended if you do use them.
+wipe_credentials='n'
+
+# delete all user profiles for firefox
+wipe_firefox_data='n'
+
+# delete all user profiles for chrome
+wipe_chrome_data='n'
+
+# delete all user profiles for safari (mac & windows only)
+wipe_safari_data='n'
+
+# delete everything for running user in IE (windows only)
+wipe_ie_data='n'
+
+# should we make sure the browser were wiping the user data isn't running?
+terminate_running_browser='y'

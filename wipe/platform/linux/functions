@@ -1,0 +1,36 @@
+#!/bin/bash
+####################################################################
+# PREY Wiper Module Linux Functions - by Tomas Pollak (bootlog.org)
+# URL: http://preyproject.com
+# License: GPLv3
+####################################################################
+
+function wipe_credentials {
+	for user in `find /home -maxdepth 1 -mindepth 1 -type d`; do
+		rm -Rf "$user/.gnome2/keyrings" 2> /dev/null
+	done
+}
+
+function wipe_firefox_data {
+	for user in `find /home -maxdepth 1 -mindepth 1 -type d`; do
+		rm -Rf "$user/.mozilla" 2> /dev/null
+	done
+	if [ "$terminate_running_browser" == "y" ]; then
+		firefox_pid=`ps x | grep firefox | grep -v grep | cut -d" " -f 1`
+		if [ -n "$firefox_pid" ]; then
+			kill -9 $firefox_pid 2> /dev/null
+		fi
+	fi
+}
+
+function wipe_chrome_data {
+	for user in `find /home -maxdepth 1 -mindepth 1 -type d`; do
+		rm -Rf "$user/.config/google-chrome" 2> /dev/null
+	done
+	if [ "$terminate_running_browser" == "y" ]; then
+		chrome_pid=`ps x | grep chrome | grep -v grep | cut -d" " -f 1`
+		if [ -n "$chrome_pid" ]; then
+			kill -9 $chrome_pid 2> /dev/null
+		fi
+	fi
+}

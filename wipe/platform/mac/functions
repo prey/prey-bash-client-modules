@@ -1,0 +1,39 @@
+#!/bin/bash
+####################################################################
+# PREY Wiper Module Darwin (Mac) Functions - by Tomas Pollak (bootlog.org)
+# URL: http://preyproject.com
+# License: GPLv3
+####################################################################
+
+function wipe_credentials {
+	for user in `find /Users -maxdepth 1 -mindepth 1 -type d`; do
+		rm -Rf "$user/Library/Keychains" 2> /dev/null
+	done
+}
+
+function wipe_firefox_data {
+	for user in `find /Users -maxdepth 1 -mindepth 1 -type d`; do
+		rm -Rf "$user/Library/Application\ Support/Firefox" 2> /dev/null
+	done
+	if [ "$terminate_running_browser" == "y" ]; then
+		killall Firefox.app 2> /dev/null
+	fi
+}
+
+function wipe_chrome_data {
+	for user in `find /Users -maxdepth 1 -mindepth 1 -type d`; do
+		rm -Rf "$user/Library/Application\ Support/Google/Chrome" 2> /dev/null
+	done
+	if [ "$terminate_running_browser" == "y" ]; then
+		killall Chrome.app 2> /dev/null
+	fi
+}
+
+function wipe_safari_data {
+	for user in `find /Users -maxdepth 1 -mindepth 1 -type d`; do
+		rm -Rf "$user/Library/Safari" 2> /dev/null
+	done
+	if [ "$terminate_running_browser" == "y" ]; then
+		killall Safari.app 2> /dev/null
+	fi
+}
