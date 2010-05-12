@@ -5,10 +5,6 @@
 # License: GPLv3
 ####################################################################
 
-get_internal_ip() {
-	internal_ip=`ipconfig | grep "IP Address" | sed 's/^.*: //g' | grep -v '^$' | head -1`
-}
-
 get_mac_address() {
 	mac_address=`ipconfig -all | grep Physical | sed 's/^.*: //g' | grep -v '^$' | head -1`
 }
