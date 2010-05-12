@@ -4,8 +4,8 @@
 # URL: http://preyproject.com
 # License: GPLv3
 ####################################################################
-. ../platform/windows/functions
-module_platform_path=../platform/windows/
+. ../platform/linux/functions
+module_platform_path=../platform/linux/
 get_os_info
 echo -e "OS Version: $os_version"
 echo -e "Kernel Version: $kernel_version"
@@ -15,6 +15,8 @@ echo -e "CPU info: $cpu_info"
 	
 get_memory_info
 echo -e "Memory info: $mem_info"
+echo -e "Memory Total: $mem_total"
+
 
 get_system_ids
 echo -e "Serial number: $serial_number"

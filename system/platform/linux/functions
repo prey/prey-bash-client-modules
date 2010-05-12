@@ -32,18 +32,24 @@ get_memory_info(){
 	mem_full_info=`sudo dmidecode --type 17` 
 	mem_info=`echo "$mem_full_info"	| awk 'BEGIN { 
 		BANK_NUM = 0
+		USED_BANKS = 0
 		ORS = "#"}
 
 		/Memory Device/ { BANK_NUM+=1  }
-		/Size: /{	print BANK_NUM"_size="$2$3 }
+		/Size: /{	if ($2 ~ /^[0-9]+$/) USED_BANKS+=1; print BANK_NUM"_size="$2$3 }
 		/Type: /{	print BANK_NUM"_type="$2 }
-		/Speed: /{	print BANK_NUM"_speed="$2$3"__" }'`
-	
+		/Speed: /{	print BANK_NUM"_speed="$2$3"__" }
+		
+		END {
+			print "BANKS="USED_BANKS
+		}'`
+	mem_total=`cat /proc/meminfo | grep "MemTotal" | sed 's/.*:[[:space:]]*\(.*\) .*/\1/'`
+	mem_total=$(($mem_total/1024))
 		
 }
 
 get_system_ids(){
-	serial_number=`sudo dmidecode --type 2 | grep "Serial Number" | sed 's/.*: \(.*\)/\1/'`
+	serial_number=`sudo dmidecode --type 1 | grep "Serial Number" | sed 's/.*: \(.*\)/\1/' | tr -d '[[:space:]]'`
 	hw_UUID=`sudo dmidecode --type 1 | grep "UUID" | sed 's/.*: \(.*\)/\1/'`
 }
 
