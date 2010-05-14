@@ -14,23 +14,37 @@ get_cpu_info(){
 	#cpu_name - cpu_speed - cpu_number - cpu_cores  
 	cpu_info=`system_profiler SPHardwareDataType`
 	cpu_name=`echo "$cpu_info" | grep "Processor Name" | sed 's/.*: \(.*\)/\1/'`
-	cpu_speed=`echo "$cpu_info"  | grep "Processor Speed" | sed 's/.*: \(.*\)/\1/'`
+	cpu_speed_in_ghz=`echo "$cpu_info"  | grep "Processor Speed" | sed 's/.*: \(.*\) .*/\1/' | tr ',' '.'`
+	cpu_speed=`echo "$cpu_speed_in_ghz * 1000" | bc`
 	#cpu_number=`echo "$cpu_info" | grep "Number Of Processors" | sed 's/.*: \(.*\)/\1/'`
 	cpu_cores=`echo "$cpu_info" | grep "Total Number Of Cores" | sed 's/.*: \(.*\)/\1/'` 
 	
-	cpu_info="1_name=${cpu_name}#1_speed=${cpu_speed}#1_cores=${cpu_number}__#"
+	cpu_info="1_name=${cpu_name}#1_speed=${cpu_speed}#1_cores=${cpu_cores}__#"
 }
 
 get_memory_info(){
 	mem_full_info=`system_profiler SPMemoryDataType` 
 	mem_info=`echo "$mem_full_info"	| awk 'BEGIN { 
 		BANK_NUM = 0
+		TOTAL_MEM = 0
 		ORS = "#"}
 
 		/BANK/ { BANK_NUM+=1  }
 		/Size: /{	print BANK_NUM"_size="$2$3 }
 		/Type: /{	print BANK_NUM"_type="$2 }
-		/Speed: /{	print BANK_NUM"_speed="$2$3"__" }'`
+		/Speed: /{	print BANK_NUM"_speed="$2$3"__" }
+		
+		END {
+			print "BANKS="BANK_NUM
+		}'`
+	mem_total=`echo "$mem_full_info"	| awk 'BEGIN { 
+		TOTAL_MEM = 0
+		}
+		/Size: /{	TOTAL_MEM=TOTAL_MEM+$2 }
+
+		END {
+			print TOTAL_MEM*1024
+		}'`
 }
 
 get_hdd_info(){
@@ -49,5 +63,5 @@ get_hdd_info(){
 get_system_ids(){
 	hw_info=`system_profiler SPHardwareDataType`
 	serial_number=`echo "$hw_info" | grep "Serial Number" | sed 's/.*: \(.*\)/\1/'`
-	hw_UUID=`echo "$uuid_info"  | grep "UUID" | sed 's/.*: \(.*\)/\1/'`
+	hw_UUID=`echo "$hw_info"  | grep "UUID" | sed 's/.*: \(.*\)/\1/'`
 }
