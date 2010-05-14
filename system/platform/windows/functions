@@ -7,26 +7,21 @@
 
 ##This function MUST be called first, since it grabs windows information to be used by the other functions
 get_os_info(){
-	win_info=`systeminfo`
-	os_version=`echo "$win_info" | grep "OS Name" | sed 's/.*: *\(.*\)/\1/'`
-	kernel_version=`echo "$win_info" | grep "^OS Version" | sed 's/.*: *\(.*\)/\1/'`
+	os_version=`wmic os get version | awk 'NR==2 {print;exit}'`
 }       
 
 get_cpu_info(){
-	#cpu_name - cpu_speed - cpu_cores  
-	cpu_name=`echo "$win_info" | grep "Processor(s)" -A1 | tail -1 | sed 's/.*\[.*\]: \(.*\)/\1/'`
-	cpu_speed=`echo "$win_info"  | grep "Processor(s)" -A1 | tail -1 | sed 's/.*\[.*\]:.*~\(.*\)/\1/'`
-	cpu_number=`echo "$win_info" | grep "Processor(s)" | sed 's/.*: *\([0-9]\) .*/\1/'`
+	cpu_name=`wmic cpu get name | awk 'NR==2 {print;exit}'`
+	cpu_speed=`wmic cpu get MaxClockSpeed | awk 'NR==2 {print;exit}'`
+	cpu_cores=`wmic cpu get NumberOfCores | awk 'NR==2 {print;exit}'`
 	
-	cpu_info="1_name=${cpu_name}#1_speed=${cpu_speed}#1_cores=${cpu_number}__#"
+	cpu_info="1_name=${cpu_name}#1_speed=${cpu_speed}#1_cores=${cpu_cores}__#"
 }
 
 get_memory_info(){
-	#Need to use wmi to grab more ram info.	
-	total_mem=`echo "$win_info"	| grep "Total Physical Memory" | sed 's/.*: \(.*\)/\1/'`
-	
-	mem_info="1_size=${total_mem}#1_type=0#1_speed=0__#"
-	
+	mem_total=`wmic os get TotalVisibleMemorySize | awk 'NR==2 {print $1/1024 ;exit}'`
+	mem_modules=`wmic memorychip | awk 'END { print NR-2 }'`
+	mem_info="1_size=${mem_total}#1_type=0#1_speed=0__#BANKS=${mem_modules}#"
 }
 
 get_hdd_info(){
