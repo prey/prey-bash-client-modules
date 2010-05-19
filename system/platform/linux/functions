@@ -72,5 +72,10 @@ get_hdd_info(){
             hdd_info="$hdd_info${it}_Size=${size}#${it}_model=${model}#${it}_serial=${serial}#${it}_firmware=${firmware}__"
         done
         echo -e $hdd_info
-
 } 
+
+get_bios_info(){
+	bios_vendor=`sudo dmidecode --type 0 | grep "Vendor" | sed 's/.*: \(.*\)/\1/'`
+	bios_version=`sudo dmidecode --type 0 | grep "Version" | sed 's/.*: \(.*\)/\1/'`
+	
+}

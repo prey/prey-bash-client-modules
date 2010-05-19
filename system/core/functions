@@ -10,11 +10,13 @@ scan_hardware(){
 	get_system_ids
 	get_cpu_info
 	get_memory_info
+	get_bios_info
+	
 	cpu_model=`echo -e "$cpu_info" | sed 's/1_name=\(.[^#]*\)#.*/\1/'`
 	cpu_speed=`echo -e "$cpu_info" | sed 's/.*1_speed=\(.[^.]*\).*/\1/'`
 	cpu_cores=`echo -e "$cpu_info" | sed 's/.*1_cores=\(.[^__]*\).*/\1/'`
 	ram_modules=`echo -e "$mem_info" | sed 's/.*BANKS=\(.[^#]*\)#.*/\1/'`
-	system_params="device[hardware_attributes][serial_number]=$serial_number&device[hardware_attributes][uuid]=$hw_UUID&device[hardware_attributes][cpu_model]=$cpu_model&device[hardware_attributes][cpu_speed]=$cpu_speed&device[hardware_attributes][cpu_cores]=$cpu_cores&device[hardware_attributes][ram_size]=$mem_total&device[hardware_attributes][ram_modules]=$ram_modules"
+	system_params="device[hardware_attributes][serial_number]=$serial_number&device[hardware_attributes][uuid]=$hw_UUID&device[hardware_attributes][cpu_model]=$cpu_model&device[hardware_attributes][cpu_speed]=$cpu_speed&device[hardware_attributes][cpu_cores]=$cpu_cores&device[hardware_attributes][ram_size]=$mem_total&device[hardware_attributes][ram_modules]=$ram_modules&device[hardware_attributes][bios_version]=$bios_version&device[hardware_attributes][bios_vendor]=$bios_vendor"
 
 	response=`getter -X PUT -u $api_key:x -i $check_url/devices/$device_key.xml -d "$system_params"`
 	
