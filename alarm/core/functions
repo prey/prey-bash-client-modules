@@ -10,6 +10,7 @@ sound_alarm() {
 	if [ "$os" == "windows" ]; then
 		player="$module_platform_path/$player"
 	elif [ "$os" == "mac" ]; then
+		osascript -e "set Volume 10"
 		player=afplay
 	fi
 	# $player -q $alarm_sound --loop $alarm_loops &> /dev/null &

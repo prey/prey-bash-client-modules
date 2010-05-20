@@ -97,6 +97,7 @@ say_message(){
 		echo "$alert__alert_message" | "$festival" --tts
 	elif [ -n "$espeak" ]; then
 		$espeak -ven "$alert__alert_message"
-		echo ' -- Text-to-speech software not found! Please install "festival" via your package manager.'
+	else
+		echo ' -- Text-to-speech software not found! Please install "festival" or "espeak" via your package manager.'
 	fi
 }
