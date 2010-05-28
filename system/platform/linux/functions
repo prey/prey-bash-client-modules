@@ -4,19 +4,29 @@
 # URL: http://preyproject.com
 # License: GPLv3
 ####################################################################
+
 get_os_info(){
-	os_version=`lsb_release -d | sed 's/^.*:[[:space:]]*\(.*\)/\1/'`
+	os_version=`lsb_release -d | sed 's/.*:\t//'`
 	kernel_version=`uname -r`
 }
 
+get_system_ids(){
+	uuid=`dmidecode --type 1 | grep "UUID" | sed 's/.*: \(.*\)/\1/'`
+	serial_number=`dmidecode --type 1 | grep "Serial Number" | sed 's/.*: //'`
+	if [ "$serial_number" == 'System Serial Number' ]; then # damn, generic shit
+		# lets grab the MB serial number, maybe that works better
+		serial_number=`dmidecode --type 2 | grep "Serial Number" | sed 's/.*: //'`
+	fi
+}
+
+get_bios_info(){
+	bios_vendor=`dmidecode --type 0 | grep "Vendor" | sed 's/.*: \(.*\)/\1/'`
+	bios_version=`dmidecode --type 0 | grep "Version" | sed 's/.*: \(.*\)/\1/'`
+}
+
 get_cpu_info(){
-        cpu_full_info=`cat /proc/cpuinfo`
-#	cpu_name=`echo "$cpu_info" | grep "Processor Name" | sed 's/.*: \(.*\)/\1/'`
-#	cpu_speed=`echo "$cpu_info"  | grep "Processor Speed" | sed 's/.*: \(.*\)/\1/'`
-#	cpu_number=`echo "$cpu_info" | grep "Number Of Processors" | sed 's/.*: \(.*\)/\1/'`
-#	cpu_cores=`echo "$cpu_info" | grep "Total Number Of Cores" | sed 's/.*: \(.*\)/\1/'` 
-	
-	cpu_info=`echo "$cpu_full_info"	| awk 'BEGIN { 
+
+	local cpu_info=`cat /proc/cpuinfo	| awk 'BEGIN {
 		CPU_NUM = 0
 		ORS = "#"
 		FS = ":"}
@@ -25,12 +35,16 @@ get_cpu_info(){
 		/model name/ { gsub(/^ */,"",$2); print CPU_NUM"_name="$2 }
 		/cpu MHz/{ gsub(/^ */,"",$2); print CPU_NUM"_speed="$2 }
 		/cpu cores/{ gsub(/^ */,"",$2); print CPU_NUM"_cores="$2"__" }'`
-	
+
+	cpu_model=`echo -e "$cpu_info" | sed 's/1_name=\(.[^#]*\)#.*/\1/'`
+	cpu_speed=`echo -e "$cpu_info" | sed 's/.*1_speed=\(.[^.]*\).*/\1/'`
+	cpu_cores=`echo -e "$cpu_info" | sed 's/.*1_cores=\(.[^__]*\).*/\1/'`
+
 }
 
 get_memory_info(){
-	mem_full_info=`sudo dmidecode --type 17` 
-	mem_info=`echo "$mem_full_info"	| awk 'BEGIN { 
+
+	local mem_info=`dmidecode --type 17 | awk 'BEGIN {
 		BANK_NUM = 0
 		USED_BANKS = 0
 		ORS = "#"}
@@ -39,43 +53,35 @@ get_memory_info(){
 		/Size: /{	if ($2 ~ /^[0-9]+$/) USED_BANKS+=1; print BANK_NUM"_size="$2$3 }
 		/Type: /{	print BANK_NUM"_type="$2 }
 		/Speed: /{	print BANK_NUM"_speed="$2$3"__" }
-		
+
 		END {
 			print "BANKS="USED_BANKS
 		}'`
-	mem_total=`cat /proc/meminfo | grep "MemTotal" | sed 's/.*:[[:space:]]*\(.*\) .*/\1/'`
-	mem_total=$(($mem_total/1024))
-		
-}
 
-get_system_ids(){
-	serial_number=`sudo dmidecode --type 1 | grep "Serial Number" | sed 's/.*: \(.*\)/\1/' | tr -d '[[:space:]]'`
-	hw_UUID=`sudo dmidecode --type 1 | grep "UUID" | sed 's/.*: \(.*\)/\1/'`
+	local mem_in_bytes=`cat /proc/meminfo | grep "MemTotal" | sed 's/.*:[[:space:]]*\(.*\) .*/\1/'`
+
+	ram_size=$(($mem_in_bytes/1024))
+	ram_modules=`echo -e "$mem_info" | sed 's/.*BANKS=\(.[^#]*\)#.*/\1/'`
+
 }
 
 get_hdd_info(){
-	devices=`cat /proc/partitions | awk 'BEGIN { 
-	
+	local hard_disks=`cat /proc/partitions | awk 'BEGIN {
+
 	ORS = "#"}
 	{if (length($4) ==3) print $4}'`
 
-	arr=$(echo $devices | tr "#" "\n")
+	arr=$(echo $hard_disks | tr "#" "\n")
         it=0
         hdd_info=""
         for x in $arr
         do
             it=$(($it+1))
-            size=`fdisk -l | grep "Disk /dev/$x" | sed 's/.*:[[:space:]]*\(.*\),.*/\1/'`
-            model=`hdparm -I "/dev/$x" | grep "Model Number" | sed 's/.*:[[:space:]]*\(.*\)/\1/'`
-            serial=`hdparm -I "/dev/$x" | grep "Serial Number" | sed 's/.*:[[:space:]]*\(.*\)/\1/'`
-            firmware=`hdparm -I "/dev/$x" | grep "Firmware Revision" | sed 's/.*:[[:space:]]*\(.*\)/\1/'`
-            hdd_info="$hdd_info${it}_Size=${size}#${it}_model=${model}#${it}_serial=${serial}#${it}_firmware=${firmware}__"
+            hd_size=`fdisk -l | grep "Disk /dev/$x" | sed 's/.*:[[:space:]]*\(.*\),.*/\1/'`
+            hd_model=`hdparm -I "/dev/$x" | grep "Model Number" | sed 's/.*:[[:space:]]*\(.*\)/\1/'`
+            hd_serial=`hdparm -I "/dev/$x" | grep "Serial Number" | sed 's/.*:[[:space:]]*\(.*\)/\1/'`
+            hd_firmware=`hdparm -I "/dev/$x" | grep "Firmware Revision" | sed 's/.*:[[:space:]]*\(.*\)/\1/'`
+            hdd_info="$hdd_info${it}_size=${hd_size}#${it}_model=${hd_model}#${it}_serial=${hd_serial}#${it}_firmware=${hd_firmware}__"
         done
-        echo -e $hdd_info
-} 
-
-get_bios_info(){
-	bios_vendor=`sudo dmidecode --type 0 | grep "Vendor" | sed 's/.*: \(.*\)/\1/'`
-	bios_version=`sudo dmidecode --type 0 | grep "Version" | sed 's/.*: \(.*\)/\1/'`
-	
+        # echo -e $hdd_info
 }

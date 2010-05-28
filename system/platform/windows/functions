@@ -8,36 +8,37 @@
 ##This function MUST be called first, since it grabs windows information to be used by the other functions
 get_os_info(){
 	os_version=`wmic os get version | awk 'NR==2 {print;exit}'`
-}       
+}
+
+get_system_ids(){
+	serial_number=`wmic baseboard get serialnumber | awk 'NR==2 {print $1}'`
+	uuid=`wmic path win32_computersystemproduct get uuid | awk 'NR==2 {print $1}'`
+}
+
+get_bios_info(){
+	echo ' -- Todo yet!'
+}
 
 get_cpu_info(){
 	cpu_name=`wmic cpu get name | awk 'NR==2 {print;exit}'`
 	cpu_speed=`wmic cpu get MaxClockSpeed | awk 'NR==2 {print;exit}'`
 	cpu_cores=`wmic cpu get NumberOfCores | awk 'NR==2 {print;exit}'`
-	
-	cpu_info="1_name=${cpu_name}#1_speed=${cpu_speed}#1_cores=${cpu_cores}__#"
+	# cpu_info="1_name=${cpu_name}#1_speed=${cpu_speed}#1_cores=${cpu_cores}__#"
 }
 
 get_memory_info(){
-	mem_total=`wmic os get TotalVisibleMemorySize | awk 'NR==2 {print $1/1024 ;exit}'`
-	mem_modules=`wmic memorychip | awk 'END { print NR-2 }'`
-	mem_info="1_size=${mem_total}#1_type=0#1_speed=0__#BANKS=${mem_modules}#"
+	ram_size=`wmic os get TotalVisibleMemorySize | awk 'NR==2 {print $1/1024 ;exit}'`
+	ram_modules=`wmic memorychip | awk 'END { print NR-2 }'`
+	# mem_info="1_size=${mem_total}#1_type=0#1_speed=0__#BANKS=${mem_modules}#"
 }
 
 get_hdd_info(){
-  hdd_full_info=`"$module_platform_path/hddinfo.exe"`
-  hdd_info=`echo "$hdd_full_info"  | awk 'BEGIN { 
+  local hdd_full_info=`"$module_platform_path/hddinfo.exe"`
+  hdd_info=`echo "$hdd_full_info"  | awk 'BEGIN {
 	ORS = "#"}
 	/Disk/ { UNIT=$2}
 	/Capacity/ { print UNIT"_size="$2" "$3}
 	/Model: / { print UNIT"_model="substr ($0, 9)}
 	/Serial: / { print UNIT"_serial="substr ($0, 10)}
 	/Firmware: / { print UNIT"_fimware="substr ($0, 12)"__"}'`
-
-} 
-
-
-get_system_ids(){
-	serial_number=`wmic baseboard get serialnumber | awk 'NR==2 {print $1}'`
-	hw_UUID=`wmic path win32_computersystemproduct get uuid | awk 'NR==2 {print $1}'`
 }

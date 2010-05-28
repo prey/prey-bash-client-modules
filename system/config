@@ -5,4 +5,4 @@
 # License: GPLv3
 ####################################################################
 
-
+system__vars='serial_number uuid bios_vendor bios_version cpu_model cpu_speed cpu_cores ram_size ram_modules'

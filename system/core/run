@@ -4,63 +4,32 @@
 # URL: http://preyproject.com
 # License: GPLv3
 ####################################################################
-. ../platform/linux/functions
-module_platform_path=../platform/linux/
-get_os_info
-echo -e "OS Version: $os_version"
-echo -e "Kernel Version: $kernel_version"
 
-get_cpu_info
-echo -e "CPU info: $cpu_info"
-	
-get_memory_info
-echo -e "Memory info: $mem_info"
-echo -e "Memory Total: $mem_total"
+echo " -- Scanning current system's hardware..."
+scan_system_hardware
 
+echo ' -- Sending updated data...'
+send_updated_hardware_data
 
-get_system_ids
-echo -e "Serial number: $serial_number"
-echo -e "UUID: $hw_UUID"
+#get_os_info
+#echo -e "OS Version: $os_version"
+#echo -e "Kernel Version: $kernel_version"
 
-get_hdd_info
-echo -e "HDD info: $hdd_info"
+#get_cpu_info
+#echo -e "CPU info: $cpu_info"
 
+#get_memory_info
+#echo -e "Memory info: $mem_info"
+#echo -e "Memory Total: $mem_total"
+
+#get_system_ids
+#echo -e "Serial number: $serial_number"
+#echo -e "UUID: $hw_UUID"
+
+#get_hdd_info
+#echo -e "HDD info: $hdd_info"
 
 #add_trace cpu_name $cpu_name
 #add_trace cpu_speed $cpu_speed
 #add_trace cpu_number $cpu_number
 #add_trace cpu_cores $cpu_cores
-
-#get_memory_info 
-               
-#get_sata_info
-
-#echo "$STRING_GET_LAN_IP"
-#get_internal_ip
-#add_trace internal_ip $internal_ip
-#
-#echo " -- Getting gateway IP address..."
-#if [ -z "$gateway_ip" ]; then
-#	get_gateway_ip
-#fi
-#add_trace gateway_ip $gateway_ip
-#
-#echo "$STRING_GET_MAC_AND_WIFI"
-#get_mac_address
-#add_trace mac_address $mac_address
-#
-#if [ "$network__get_nearby_wifi_hotspots" == 'y' ]; then
-#	echo ' -- Getting list of nearby Wifi access points...'
-#	if [ -z "$wifi_info" ]; then
-#		get_wifi_info
-#	fi
-#	if [ -n "$wifi_info" ]; then
-#		add_trace wifi_info "$wifi_info"
-#	fi
-#fi
-#
-#if [ "$network__trace_route" == 'y' ]; then
-#	echo "$STRING_TRACE"
-#	trace_route
-#	add_trace complete_trace "$complete_trace"
-#fi
