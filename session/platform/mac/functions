@@ -13,10 +13,6 @@ get_active_connections() {
 get_screenshot() {
 	local screencapture='/usr/sbin/screencapture -mx'
 
-	if [ "`whoami`" == "root" ]; then # we need to get the PID of the loginwindow and take the screenshot through launchctl
-		launchctl bsexec $logged_pid $screencapture $session__screenshot
-	else
-		$screencapture $session__screenshot
-	fi
+	run_as_current_user "$screencapture $session__screenshot"
 
 }

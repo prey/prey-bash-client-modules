@@ -23,6 +23,7 @@ parse_hardware_params(){
 
 send_updated_hardware_data(){
 
+	system_params=`parse_hardware_params`
 	update_device_info_with "$system_params"
 
 }
