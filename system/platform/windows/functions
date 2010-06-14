@@ -16,7 +16,8 @@ get_system_ids(){
 }
 
 get_bios_info(){
-	log ' -- Todo yet!'
+	bios_vendor=`wmic bios get Manufacturer | awk 'NR==2 {print;exit}'`
+	bios_version=`wmic bios get SMBIOSBIOSVersion | awk 'NR==2 {print;exit}'`
 }
 
 get_cpu_info(){
