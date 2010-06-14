@@ -5,11 +5,11 @@
 # License: GPLv3
 ####################################################################
 
-echo "$STRING_SHOW_ALERT"
+log "$STRING_SHOW_ALERT"
 alert_user
 
 if [ "$alert__say_message" == 'y' ]; then
-	echo ' -- Saying the message out loud...'
+	log ' -- Saying the message out loud...'
 	say_message
 fi
 
@@ -26,7 +26,7 @@ if [ $alert__change_wallpaper == 'y' ]; then
 
 	# fi
 
-	echo "$STRING_CHANGE_WALLPAPER"
+	log "$STRING_CHANGE_WALLPAPER"
 	if [ ! -f "$alert__wallpaper.orig" ]; then # we still havent put the email address
 		put_email_on_wallpaper
 	fi

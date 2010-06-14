@@ -5,10 +5,10 @@
 # License: GPLv3
 ####################################################################
 
-echo " -- Getting current logged in user name..."
+log " -- Getting current logged in user name..."
 add_trace logged_user $logged_user
 
-echo "$STRING_UPTIME_AND_PROCESS"
+log "$STRING_UPTIME_AND_PROCESS"
 get_uptime
 add_trace uptime "$uptime"
 
@@ -19,23 +19,23 @@ fi
 
 if [ "$session__get_modified_files" == 'y' ]; then
 	locate_path
-	echo "$STRING_MODIFIED_FILES"
+	log "$STRING_MODIFIED_FILES"
 	get_modified_files
 	if [ -n "$modified_files" ]; then
 		add_trace modified_files "$modified_files"
 	else
-		echo ' !! Nothing found. Make sure you type in a valid path.'
+		log ' !! Nothing found. Make sure you type in a valid path.'
 	fi
 fi
 
 if [ "$session__get_active_connections" == 'y' ]; then
-	echo "$STRING_ACTIVE_CONNECTIONS"
+	log "$STRING_ACTIVE_CONNECTIONS"
 	get_active_connections
 	add_trace active_connections "$active_connections"
 fi
 
 if [ "$session__get_screenshot" == 'y' ]; then
-	echo "$STRING_GET_SCREENSHOT"
+	log "$STRING_GET_SCREENSHOT"
 	get_screenshot
 
 	if [ -f "$session__screenshot" ]; then

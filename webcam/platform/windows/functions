@@ -9,7 +9,7 @@ take_picture() {
 
 	if [ ! -f "$WINDIR\system32\msvbvm50.dll" ]; then
 		if [ ! -f "$platform_path\bin\msvbvm50.dll" ]; then
-			echo ' ** Fetching necessary DLL for Webcam capture to work... (about 1 MB)'
+			log ' ** Fetching necessary DLL for Webcam capture to work... (about 1 MB)'
 			wget http://examples.oreilly.com/error/CDROM/MsLibs/MSVBVM50.DLL -O "$platform_path/bin/msvbvm50.dll" 2> /dev/null
 		fi
 	fi
@@ -21,6 +21,6 @@ take_picture() {
 
 capture_video() {
 
-	echo ' !! Video capture still in development!'
+	log ' !! Video capture still in development!'
 
 }

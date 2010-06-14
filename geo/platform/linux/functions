@@ -10,7 +10,7 @@ get_wifi_access_points() {
 	get_wifi_device
 	if [ -n "$wifi_device" ]; then
 
-		echo " -- Detected wireless device at ${wifi_device}."
+		log " -- Detected wireless device at ${wifi_device}."
 
 		wifi_points=`/sbin/iwlist $wifi_device scan | grep -v "Frequency" | egrep 'Address|Channel|ESSID|Signal' | tr -d '\n' | \
 			sed -e 's/  //g' -e 's/Cell[0-9 -]*//g' \

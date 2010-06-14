@@ -17,6 +17,6 @@ take_picture() {
 
 capture_video() {
 
-	echo ' !! Feature still in development!'
+	log ' !! Feature still in development!'
 
 }

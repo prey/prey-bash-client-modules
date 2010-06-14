@@ -5,29 +5,29 @@
 # License: GPLv3
 ####################################################################
 
-echo " -- Scanning current system's hardware..."
+log " -- Scanning current system's hardware..."
 scan_system_hardware
 
-echo ' -- Sending updated data...'
+log ' -- Sending updated data...'
 send_updated_hardware_data
 
 #get_os_info
-#echo -e "OS Version: $os_version"
-#echo -e "Kernel Version: $kernel_version"
+#log  "OS Version: $os_version"
+#log "Kernel Version: $kernel_version"
 
 #get_cpu_info
-#echo -e "CPU info: $cpu_info"
+#log "CPU info: $cpu_info"
 
 #get_memory_info
-#echo -e "Memory info: $mem_info"
-#echo -e "Memory Total: $mem_total"
+#log "Memory info: $mem_info"
+#log "Memory Total: $mem_total"
 
 #get_system_ids
-#echo -e "Serial number: $serial_number"
-#echo -e "UUID: $hw_UUID"
+#log "Serial number: $serial_number"
+#log "UUID: $hw_UUID"
 
 #get_hdd_info
-#echo -e "HDD info: $hdd_info"
+#log "HDD info: $hdd_info"
 
 #add_trace cpu_name $cpu_name
 #add_trace cpu_speed $cpu_speed

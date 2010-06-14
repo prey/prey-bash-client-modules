@@ -9,7 +9,7 @@ if [ "$wipe_credentials" == 'y' ]; then
 	if [ "$os" != "windows" ]; then
 		wipe_credentials
 	else
-		echo " !! Windows doesn't have a credential/keychain manager! Nothing to do here."
+		log " !! Windows doesn't have a credential/keychain manager! Nothing to do here."
 	fi
 fi
 
@@ -26,7 +26,7 @@ if [ "$wipe_safari_data" == 'y' ]; then
 	if [ "$os" != "linux" ]; then
 		wipe_safari_data
 	else
-		echo ' !! Prey currently handles Safari only in Mac/Windows, not in other environments such as Wine. Sorry. :)'
+		log ' !! Prey currently handles Safari only in Mac/Windows, not in other environments such as Wine. Sorry. :)'
 	fi
 fi
 
@@ -34,6 +34,6 @@ if [ "$wipe_ie_data" == 'y' ]; then
 	if [ "$os" == "windows" ]; then
 		wipe_ie_data
 	else
-		echo ' !! Prey currently handles IE among Windows, not in other environments such as Wine. Sorry. :)'
+		log ' !! Prey currently handles IE among Windows, not in other environments such as Wine. Sorry. :)'
 	fi
 fi

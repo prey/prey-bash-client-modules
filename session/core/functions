@@ -27,7 +27,7 @@ get_modified_files() {
 }
 
 compress_screenshot() {
-	echo " -- Compressing screenshot..."
+	log " -- Compressing screenshot..."
 	tar zcf $session__screenshot.tar.gz $session__screenshot
 	session__screenshot=$screenshot.tar.gz
 }
