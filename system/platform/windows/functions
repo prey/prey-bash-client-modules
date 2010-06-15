@@ -21,7 +21,7 @@ get_bios_info(){
 }
 
 get_cpu_info(){
-	cpu_name=`wmic cpu get name | awk 'NR==2 {print;exit}'`
+	cpu_model=`wmic cpu get name | awk 'NR==2 {print;exit}'`
 	cpu_speed=`wmic cpu get MaxClockSpeed | awk 'NR==2 {print;exit}'`
 	cpu_cores=`wmic cpu get NumberOfCores | awk 'NR==2 {print;exit}'`
 	# cpu_info="1_name=${cpu_name}#1_speed=${cpu_speed}#1_cores=${cpu_cores}__#"
@@ -29,7 +29,11 @@ get_cpu_info(){
 
 get_memory_info(){
 	ram_size=`wmic os get TotalVisibleMemorySize | awk 'NR==2 {print $1/1024 ;exit}'`
-	ram_modules=`wmic memorychip | awk 'END { print NR-2 }'`
+	if [ -n "$winxp" ]; then
+		ram_modules=`wmic memphysical get MemoryDevices | awk 'NR==2 {print;exit}'`
+	else
+		ram_modules=`wmic memorychip | awk 'END { print NR-2 }'`
+	fi
 	# mem_info="1_size=${mem_total}#1_type=0#1_speed=0__#BANKS=${mem_modules}#"
 }
 
