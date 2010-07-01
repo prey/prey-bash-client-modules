@@ -7,11 +7,7 @@
 
 take_picture() {
 
-	if [ "`whoami`" == "root" ]; then
-		launchctl bsexec $logged_pid "$module_platform_path/isightcapture" "$webcam__picture" 2> /dev/null
-	else
-		"$module_platform_path/isightcapture" "$webcam__picture" 2> /dev/null
-	fi
+	run_as_current_user "$module_platform_path/imagesnap" "$webcam__picture" 2> /dev/null
 
 }
 
