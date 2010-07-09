@@ -7,13 +7,9 @@
 
 get_wifi_access_points() {
 
-	if [ "`is_net_framework_installed`" == 1 ]; then
-		if [ -z "$wifi_info" ]; then
-			get_wifi_info
-		fi
-		wifi_points=`echo "$wifi_info" | tr -d '\n'`
-	else
-		log " !! .NET framework version $required_net_version or newer not installed! Cannot obtain geo information."
+	if [ -z "$wifi_info" ]; then
+		get_wifi_info
 	fi
+	wifi_points=`echo "$wifi_info" | tr -d '\n'`
 
 }
