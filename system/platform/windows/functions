@@ -10,32 +10,32 @@ wmic_call(){
 }
 
 get_os_info(){
-	os_version=`wmic_call os get version | awk 'NR==2 {print;exit}'`
+	os_version=`wmic_call "os get version" | awk 'NR==2 {print;exit}'`
 }
 
 get_system_ids(){
-	serial_number=`wmic_call baseboard get serialnumber | awk 'NR==2 {print $1}'`
-	uuid=`wmic_call path win32_computersystemproduct get uuid | awk 'NR==2 {print $1}'`
+	serial_number=`wmic_call "baseboard get serialnumber" | awk 'NR==2 {print $1}'`
+	uuid=`wmic_call "path win32_computersystemproduct get uuid" | awk 'NR==2 {print $1}'`
 }
 
 get_bios_info(){
-	bios_vendor=`wmic_call bios get Manufacturer | awk 'NR==2 {print;exit}'`
-	bios_version=`wmic_call bios get SMBIOSBIOSVersion | awk 'NR==2 {print;exit}'`
+	bios_vendor=`wmic_call "bios get Manufacturer" | awk 'NR==2 {print;exit}'`
+	bios_version=`wmic_call "bios get SMBIOSBIOSVersion" | awk 'NR==2 {print;exit}'`
 }
 
 get_cpu_info(){
-	cpu_model=`wmic_call cpu get name | awk 'NR==2 {print;exit}'`
-	cpu_speed=`wmic_call cpu get MaxClockSpeed | awk 'NR==2 {print;exit}'`
-	cpu_cores=`wmic_call cpu get NumberOfCores | awk 'NR==2 {print;exit}'`
+	cpu_model=`wmic_call "cpu get name" | awk 'NR==2 {print;exit}'`
+	cpu_speed=`wmic_call "cpu get MaxClockSpeed" | awk 'NR==2 {print;exit}'`
+	cpu_cores=`wmic_call "cpu get NumberOfCores" | awk 'NR==2 {print;exit}'`
 	# cpu_info="1_name=${cpu_name}#1_speed=${cpu_speed}#1_cores=${cpu_cores}__#"
 }
 
 get_memory_info(){
-	ram_size=`wmic_call os get TotalVisibleMemorySize | awk 'NR==2 {print $1/1024 ;exit}'`
+	ram_size=`wmic_call "os get TotalVisibleMemorySize" | awk 'NR==2 {print $1/1024 ;exit}'`
 	if [ -n "$winxp" ]; then
-		ram_modules=`wmic_call memphysical get MemoryDevices | awk 'NR==2 {print;exit}'`
+		ram_modules=`wmic_call "memphysical get MemoryDevices" | awk 'NR==2 {print;exit}'`
 	else
-		ram_modules=`wmic_call memorychip | awk 'END { print NR-2 }'`
+		ram_modules=`wmic_call "memorychip" | awk 'END { print NR-2 }'`
 	fi
 	# mem_info="1_size=${mem_total}#1_type=0#1_speed=0__#BANKS=${mem_modules}#"
 }
