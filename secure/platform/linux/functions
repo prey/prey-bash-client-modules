@@ -1,0 +1,11 @@
+#!/bin/bash
+####################################################################
+# PREY Wiper Module Linux Functions - by Tomas Pollak (bootlog.org)
+# URL: http://preyproject.com
+# License: GPLv3
+####################################################################
+
+credentials_path=".gnome2/keyrings"
+firefox_path=".mozilla"
+chrome_path=".config/google-chrome"
+thunderbird_path=".thunderbird"

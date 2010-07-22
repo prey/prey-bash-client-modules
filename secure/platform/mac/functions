@@ -1,0 +1,12 @@
+#!/bin/bash
+####################################################################
+# PREY Secure Module (Mac) Functions - by Tomas Pollak (bootlog.org)
+# URL: http://preyproject.com
+# License: GPLv3
+####################################################################
+
+credentials_path="Library/Keychains"
+firefox_path="Library/Mozilla/Firefox/Profiles" # note: there's also Application\ Support/Firefox
+chrome_path="Library/Application\ Support/Google/Chrome"
+safari_path="Library/Safari"
+thunderbird_path="Library/Thunderbird/Profiles"

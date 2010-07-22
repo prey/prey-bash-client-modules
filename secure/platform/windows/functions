@@ -1,0 +1,55 @@
+#!/bin/bash
+####################################################################
+# Prey Secure Module Windows Functions - by Tomas Pollak (bootlog.org)
+# URL: http://preyproject.com
+# License: GPLv3
+####################################################################
+
+# XP -> C:\Documents and Settings\<user>\Local Settings\Application Data\
+# Vista -> C:\Users\<username>\AppData\Local\
+
+if [ -n "$winxp" ]; then # vista and up
+	data_path="Application\ Data"
+else # xp and 2000
+	data_path="AppData\Local"
+fi
+
+# credentials_path=""
+firefox_path="${data_path}\Mozilla\Firefox\Profiles"
+chrome_path="${data_path}\Google\Chrome"
+safari_path="${data_path}\Apple\ Computer\Safari"
+thunderbird_path="${data_path}\Thunderbird\Profiles"
+outlook_path="${data_path}\Microsoft\Outlook"
+
+delete_ie_data(){
+	# RunDll32.exe InetCpl.cpl,ClearMyTracksByProcess 32
+	# this above deletes all, but well do it by parts so we have more control
+	delete_ie_passwords
+	delete_ie_form_data
+	delete_ie_temporary_internet_files
+	delete_ie_cookies
+	delete_ie_history
+	if [ "$terminate_if_running" == "y" ]; then
+		kill_process iexplore
+	fi
+}
+
+delete_ie_passwords() {
+	RunDll32.exe InetCpl.cpl,ClearMyTracksByProcess 32
+}
+
+delete_ie_form_data() {
+	Rundll32.exe inetcpl.cpl,ClearMyTracksByProcess 16
+}
+
+delete_ie_temporary_internet_files() {
+	RunDll32.exe InetCpl.cpl,ClearMyTracksByProcess 8
+}
+
+delete_ie_cookies() {
+	RunDll32.exe InetCpl.cpl,ClearMyTracksByProcess 2
+}
+
+delete_ie_history() {
+	RunDll32.exe InetCpl.cpl,ClearMyTracksByProcess 1
+}

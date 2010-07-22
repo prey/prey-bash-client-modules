@@ -1,0 +1,31 @@
+#!/bin/bash
+####################################################################
+# PREY Secure Module Configuration File - by Tomas Pollak (bootlog.org)
+# URL: http://preyproject.com
+# License: GPLv3
+####################################################################
+
+# whether to destroy the keychains/keyrings that holds all the different
+# passwords in your system. recommended if you do use them.
+secure__delete_credentials='n'
+
+# delete all user profiles for firefox
+secure__delete_firefox_data='n'
+
+# delete all user profiles for chrome
+secure__delete_chrome_data='n'
+
+# delete all user profiles for safari (mac & windows only)
+secure__delete_safari_data='n'
+
+# delete everything for running user in IE (windows only)
+secure__delete_ie_data='n'
+
+# Appends '.backup' to all Outlook profiles in your PC so that none email and contacts can be found.
+secure__hide_thunderbird_data='n'
+
+# Appends '.backup' to your Thunderbird profile path so that your email and contacts are not found.
+secure__hide_outlook_data='n'
+
+# should we make sure the program were wiping the user data for isn't running?
+secure__terminate_if_running='y'
