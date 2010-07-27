@@ -44,24 +44,10 @@ get_cpu_info(){
 
 get_memory_info(){
 
-	local mem_info=`dmidecode --type 17 | awk 'BEGIN {
-		BANK_NUM = 0
-		USED_BANKS = 0
-		ORS = "#"}
-
-		/Memory Device/ { BANK_NUM+=1  }
-		/Size: /{	if ($2 ~ /^[0-9]+$/) USED_BANKS+=1; print BANK_NUM"_size="$2$3 }
-		/Type: /{	print BANK_NUM"_type="$2 }
-		/Speed: /{	print BANK_NUM"_speed="$2$3"__" }
-
-		END {
-			print "BANKS="USED_BANKS
-		}'`
-
 	local mem_in_bytes=`cat /proc/meminfo | grep "MemTotal" | sed 's/.*:[[:space:]]*\(.*\) .*/\1/'`
 
 	ram_size=$(($mem_in_bytes/1024))
-	ram_modules=`echo -e "$mem_info" | sed 's/.*BANKS=\(.[^#]*\)#.*/\1/'`
+	ram_modules=`dmidecode --type 17 | grep Size | grep -v "No Module" | wc -l`
 
 }
 
