@@ -1,0 +1,26 @@
+#!/bin/bash
+####################################################################
+# Prey Lock Module Core Functions - by Tomas Pollak (bootlog.org)
+# URL: http://preyproject.com
+# License: GPLv3
+####################################################################
+
+# set -bm
+
+activate_lock(){
+
+	if [ -z `is_process_running 'prey-lock'` ]; then
+		local command="$lock__executable `md5_hash_for $lock__unlock_pass`"
+		run_as_current_user "$command" &
+		# trap 'reactivate_lock' SIGCHLD
+		pid=$!
+		wait $pid
+		rs=$?
+		# echo  "return status was: $rs"
+		if [ $rs != 0 ]; then
+			activate_lock
+		fi
+	else
+		echo ' -- Prey lock seems to be running already!'
+	fi
+}

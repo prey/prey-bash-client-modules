@@ -1,0 +1,10 @@
+#!/bin/bash
+####################################################################
+# Prey Lock Module Configuration File - by Tomas Pollak (bootlog.org)
+# URL: http://preyproject.com
+# License: GPLv3
+####################################################################
+
+lock__executable="$module_platform_path/prey-lock"
+
+lock__unlock_pass='preyrocks'

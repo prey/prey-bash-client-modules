@@ -1,0 +1,18 @@
+#!/bin/bash
+####################################################################
+# Prey Lock Module - by Tomas Pollak (bootlog.org)
+# URL: http://preyproject.com
+# License: GPLv3
+####################################################################
+
+# uncomment this when the action system only sends the HUP signal to the parent
+# trap 'kill 0' HUP
+
+if [[ -n "$lock__unlock_pass" && "$logged_user" != 'root' && "$logged_user" != 'SYSTEM' ]]; then
+
+	log ' -- Setting up lock!'
+	activate_lock
+
+else
+	log ' -- Lock password not set! Skipping...'
+fi
