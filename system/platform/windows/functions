@@ -7,6 +7,7 @@
 
 wmic_call(){
 	echo "$1" | wmic 2> /dev/null | grep -v 'wmic:'
+	rm -f "$base_path/TempWmicBatchFile.bat" &> /dev/null
 }
 
 get_os_info(){
