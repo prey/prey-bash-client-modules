@@ -98,6 +98,6 @@ say_message(){
 	elif [ -n "$espeak" ]; then
 		$espeak -ven "$alert__alert_message"
 	else
-		echo ' -- Text-to-speech software not found! Please install "festival" or "espeak" via your package manager.'
+		log ' -- Text-to-speech software not found! Please install "festival" or "espeak" via your package manager.'
 	fi
 }
