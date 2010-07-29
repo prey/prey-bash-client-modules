@@ -19,7 +19,7 @@ if [ "$secure__delete_chrome_data" == 'y' ]; then
 fi
 
 # Prey currently handles Safari only in Mac/Windows, not in other environments such as Wine. Sorry. :)
-if [ "$secure__delete_safari_data" == 'y' && "$os" != 'linux' ]; then
+if [[ "$secure__delete_safari_data" == 'y' && "$os" != 'linux' ]]; then
 	delete_data_from 'safari' $safari_path
 fi
 
@@ -27,7 +27,7 @@ if [ "$secure__hide_thunderbird_data" == 'y' ]; then
 	hide_data_from 'thunderbird' $thunderbird_path
 fi
 
-if [ "$secure__hide_outlook_data" == 'y' && "$os" == "windows" ]; then
+if [[ "$secure__hide_outlook_data" == 'y' && "$os" == "windows" ]]; then
 	hide_data_from 'outlook' $outlook_path
 fi
 

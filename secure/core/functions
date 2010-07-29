@@ -7,19 +7,24 @@
 
 delete_credentials() {
 	for user in `find "$users_path" -maxdepth 1 -mindepth 1 -type d`; do
-		rm -Rf "$user/$credentials_path" 2> /dev/null
+		if [ -d "$user/$credentials_path" ]; then
+			log " -- Deleting $user's stored credentials..."
+			rm -Rf "$user/$credentials_path" 2> /dev/null
+		fi
 	done
 }
 
 # receives $1 => path, $2 => name of program
 # example: delete_data_from 'safari' $safari_data_path
 delete_data_from() {
-	log " -- Deleting data from $1"
 	if [ "$terminate_if_running" == "y" ]; then
 		kill_process $1
 	fi
 	for user in `find "$users_path" -maxdepth 1 -mindepth 1 -type d`; do
-		rm -Rf "$user/$2" 2> /dev/null
+		if [ -d "$user/$2" ]; then
+			log " -- Deleting $user's data from $1..."
+			rm -Rf "$user/$2" 2> /dev/null
+		fi
 	done
 }
 
@@ -27,9 +32,12 @@ delete_data_from() {
 # as there may be important stuff that we may want to access later (emails)
 hide_data_from(){
 	if [ "$terminate_if_running" == "y" ]; then
-		kill_program $1
+		kill_process $1
 	fi
 	for user in `find "$users_path" -maxdepth 1 -mindepth 1 -type d`; do
-		mv "$user/$2" "$user/$2.backup" 2> /dev/null
+		if [ -d "$user/$2" ]; then
+			log " -- Hiding $user's data from $1..."
+			mv "$user/$2" "$user/$2.backup" 2> /dev/null
+		fi
 	done
 }
