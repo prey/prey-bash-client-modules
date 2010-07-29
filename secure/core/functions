@@ -1,0 +1,35 @@
+#!/bin/bash
+####################################################################
+# Prey Secure Module Core Functions - by Tomas Pollak (bootlog.org)
+# URL: http://preyproject.com
+# License: GPLv3
+####################################################################
+
+delete_credentials() {
+	for user in `find "$users_path" -maxdepth 1 -mindepth 1 -type d`; do
+		rm -Rf "$user/$credentials_path" 2> /dev/null
+	done
+}
+
+# receives $1 => path, $2 => name of program
+# example: delete_data_from 'safari' $safari_data_path
+delete_data_from() {
+	log " -- Deleting data from $1"
+	if [ "$terminate_if_running" == "y" ]; then
+		kill_process $1
+	fi
+	for user in `find "$users_path" -maxdepth 1 -mindepth 1 -type d`; do
+		rm -Rf "$user/$2" 2> /dev/null
+	done
+}
+
+# in this case we dont want to delete the whole profile folder,
+# as there may be important stuff that we may want to access later (emails)
+hide_data_from(){
+	if [ "$terminate_if_running" == "y" ]; then
+		kill_program $1
+	fi
+	for user in `find "$users_path" -maxdepth 1 -mindepth 1 -type d`; do
+		mv "$user/$2" "$user/$2.backup" 2> /dev/null
+	done
+}
