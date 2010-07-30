@@ -7,5 +7,10 @@
 
 credentials_path=".gnome2/keyrings"
 firefox_path=".mozilla"
-chrome_path=".config/google-chrome"
 thunderbird_path=".thunderbird"
+
+if [ -d "/home/$logged_user/.config/google-chrome" ]; then
+	chrome_path=".config/google-chrome"
+elif [ -d "/home/$logged_user/.config/chromium" ]; then
+	chrome_path=".config/chromium"
+fi

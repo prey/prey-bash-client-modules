@@ -12,15 +12,14 @@ import gobject
 import gtk
 import pango
 
+# import wnck
+
 from threading import Timer
+import time
 from time import sleep
 
-class Lock:
-	def keep_focus(self):
-		while True:
-			sleep(1)
-			# self.entry.grab_focus()
 
+class Lock:
 	def get_md5(self, string):
 		return hashlib.md5(string).hexdigest()
 
@@ -48,8 +47,14 @@ class Lock:
 		return True
 
 	def on_key_press(self, widget, event):
-		# print " -- Key pressed."
-		return False
+		keyname = gtk.gdk.keyval_name(event.keyval)
+		# print "Key %s (%d) was pressed" % (keyname, event.keyval)
+		if event.state & gtk.gdk.CONTROL_MASK:
+			print "Control was being held down"
+		if event.state & gtk.gdk.MOD1_MASK:
+			print "Alt was being held down"
+		if event.state & gtk.gdk.SHIFT_MASK:
+			print "Shift was being held down"
 
 	def on_window_state_change(self, widget, event):
 		self.window.activate_focus()
@@ -187,10 +192,18 @@ class Lock:
 #		label.show()
 
 		self.window.show_all()
+		gtk.gdk.keyboard_grab(fixed.window, True)
+		# gtk.gdk.event_handler_set(self.handle_event)
 
-def get_focus():
+def keep_focus():
+	screen = wnck.screen_get_default()
 	while True:
-		print "getting focus"
+		sleep(1)
+		for window in screen.get_windows():
+			if window.get_name().startswith('Prey Lock'):
+				window.activate(gtk.get_current_event_time())
+
+		# lock.window.grab_focus()
 
 if __name__ == "__main__":
 
@@ -208,7 +221,7 @@ if __name__ == "__main__":
 	gtk.gdk.threads_init()
 	gtk.gdk.threads_enter()
 
-	# lock.keep_focus()
+	# Timer(1, keep_focus).start()
 	gtk.main()
 
 	gtk.gdk.threads_leave()
