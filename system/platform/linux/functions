@@ -5,23 +5,35 @@
 # License: GPLv3
 ####################################################################
 
+system_udi=$(hal-find-by-property --key info.product --string Computer)
+
+get_from_hal(){
+	/usr/bin/hal-get-property --udi $system_udi --key $1
+}
+
 get_os_info(){
 	os_version=`lsb_release -d | sed 's/.*:\t//'`
 	kernel_version=`uname -r`
 }
 
 get_system_ids(){
-	uuid=`dmidecode --type 1 | grep "UUID" | sed 's/.*: \(.*\)/\1/'`
+	uuid=`get_from_hal system.hardware.uuid`
 	serial_number=`dmidecode --type 1 | grep "Serial Number" | sed 's/.*: //'`
 	if [ "$serial_number" == 'System Serial Number' ]; then # damn, generic shit
 		# lets grab the MB serial number, maybe that works better
-		serial_number=`dmidecode --type 2 | grep "Serial Number" | sed 's/.*: //'`
+		serial_number=`get_from_hal system.board.serial`
 	fi
 }
 
+get_mb_info(){
+	mb_vendor=`get_from_hal system.board.vendor`
+	mb_model=`get_from_hal system.board.product`
+	mb_version=`get_from_hal system.board.version`
+}
+
 get_bios_info(){
-	bios_vendor=`dmidecode --type 0 | grep "Vendor" | sed 's/.*: \(.*\)/\1/'`
-	bios_version=`dmidecode --type 0 | grep "Version" | sed 's/.*: \(.*\)/\1/'`
+	bios_vendor=`get_from_hal system.firmware.vendor`
+	bios_version=`get_from_hal system.firmware.version`
 }
 
 get_cpu_info(){
