@@ -37,7 +37,7 @@ fi
 if [ "$session__get_screenshot" == 'y' ]; then
 	log "$STRING_GET_SCREENSHOT"
 	get_screenshot
-
+	sleep 1
 	if [ -f "$session__screenshot" ]; then
 		add_file screenshot "$session__screenshot"
 	fi
