@@ -55,7 +55,9 @@ change_wallpaper() {
 }
 
 alert_user() {
-	# veamos si tenemos zenity o kdialog
+
+	local dialog_title="Important"
+
 	local zenity=`which zenity`
 	local kdialog=`which kdialog`
 
@@ -68,7 +70,7 @@ alert_user() {
 		# fi
 
 		# alert_command="$zenity --info --text"
-		alert_command="$zenity --error --text"
+		alert_command="$zenity --error --title $dialog_title --text"
 
 	elif [ -n "$kdialog" ]; then #untested!
 
