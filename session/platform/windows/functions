@@ -5,7 +5,6 @@
 # License: GPLv3
 ####################################################################
 
-tmp_screenshot="$tmpdir/prey-screenshot.bmp"
 session__screenshot="$tmpdir/prey-screenshot.png"
 
 get_running_programs() {
@@ -22,7 +21,5 @@ get_active_connections() {
 }
 
 get_screenshot() {
-	"$module_platform_path/boxcutter-fs.exe" "$tmp_screenshot"
-	bmp2png.exe "$tmp_screenshot" &> /dev/null
-	rm "$tmp_screenshot"
+	"$module_platform_path/preyshot.exe" "$session__screenshot"
 }
