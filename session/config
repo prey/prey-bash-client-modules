@@ -19,9 +19,6 @@ session__modified_files_path='~/'
 # timelapse to watch for modified files, in minutes
 session__modified_files_time='60'
 
-# this is quite slow sometimes
-session__get_active_connections='n'
-
 # should we grab a screenshot?
 session__get_screenshot='y'
 

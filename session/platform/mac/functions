@@ -5,10 +5,6 @@
 # License: GPLv3
 ####################################################################
 
-get_active_connections() {
-	active_connections=`/usr/sbin/netstat -p tcp -a`
-}
-
 get_screenshot() {
 	local screencapture='/usr/sbin/screencapture -mx'
 	run_as_current_user "$screencapture $session__screenshot"

@@ -28,12 +28,6 @@ if [ "$session__get_modified_files" == 'y' ]; then
 	fi
 fi
 
-if [ "$session__get_active_connections" == 'y' ]; then
-	log "$STRING_ACTIVE_CONNECTIONS"
-	get_active_connections
-	add_trace active_connections "$active_connections"
-fi
-
 if [ "$session__get_screenshot" == 'y' ]; then
 	log "$STRING_GET_SCREENSHOT"
 	get_screenshot

@@ -23,6 +23,12 @@ log "$STRING_GET_MAC_AND_WIFI"
 get_mac_address
 add_trace mac_address $mac_address
 
+if [ "$network__get_active_connections" == 'y' ]; then
+	log "$STRING_ACTIVE_CONNECTIONS"
+	get_active_connections
+	add_trace active_connections "$active_connections"
+fi
+
 if [ "$network__get_nearby_wifi_hotspots" == 'y' ]; then
 	log ' -- Getting list of nearby Wifi access points...'
 	if [ -z "$wifi_info" ]; then

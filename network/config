@@ -8,5 +8,8 @@
 # should we trace the complete route? (it's a bit slow)
 network__trace_route='n'
 
+# this is quite slow sometimes
+network__get_active_connections='n'
+
 # should we get the list of nearby wifi access points available?
 network__get_nearby_wifi_hotspots='n'
