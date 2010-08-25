@@ -37,7 +37,6 @@ get_bios_info(){
 }
 
 get_cpu_info(){
-
 	local cpu_info=`cat /proc/cpuinfo	| awk 'BEGIN {
 		CPU_NUM = 0
 		ORS = "#"
@@ -51,16 +50,13 @@ get_cpu_info(){
 	cpu_model=`echo -e "$cpu_info" | sed 's/1_name=\(.[^#]*\)#.*/\1/'`
 	cpu_speed=`echo -e "$cpu_info" | sed 's/.*1_speed=\(.[^.]*\).*/\1/'`
 	cpu_cores=`echo -e "$cpu_info" | sed 's/.*1_cores=\(.[^__]*\).*/\1/'`
-
 }
 
 get_memory_info(){
-
 	local mem_in_bytes=`cat /proc/meminfo | grep "MemTotal" | sed 's/.*:[[:space:]]*\(.*\) .*/\1/'`
 
 	ram_size=$(($mem_in_bytes/1024))
 	ram_modules=`dmidecode --type 17 | grep Size | grep -v "No Module" | wc -l`
-
 }
 
 get_hdd_info(){
@@ -70,16 +66,15 @@ get_hdd_info(){
 	{if (length($4) ==3) print $4}'`
 
 	arr=$(echo $hard_disks | tr "#" "\n")
-        it=0
-        hdd_info=""
-        for x in $arr
-        do
-            it=$(($it+1))
-            hd_size=`fdisk -l | grep "Disk /dev/$x" | sed 's/.*:[[:space:]]*\(.*\),.*/\1/'`
-            hd_model=`hdparm -I "/dev/$x" | grep "Model Number" | sed 's/.*:[[:space:]]*\(.*\)/\1/'`
-            hd_serial=`hdparm -I "/dev/$x" | grep "Serial Number" | sed 's/.*:[[:space:]]*\(.*\)/\1/'`
-            hd_firmware=`hdparm -I "/dev/$x" | grep "Firmware Revision" | sed 's/.*:[[:space:]]*\(.*\)/\1/'`
-            hdd_info="$hdd_info${it}_size=${hd_size}#${it}_model=${hd_model}#${it}_serial=${hd_serial}#${it}_firmware=${hd_firmware}__"
-        done
-        # echo -e $hdd_info
+	it=0
+	hdd_info=""
+	for x in $arr; do
+		it=$(($it+1))
+		hd_size=`fdisk -l | grep "Disk /dev/$x" | sed 's/.*:[[:space:]]*\(.*\),.*/\1/'`
+		hd_model=`hdparm -I "/dev/$x" | grep "Model Number" | sed 's/.*:[[:space:]]*\(.*\)/\1/'`
+		hd_serial=`hdparm -I "/dev/$x" | grep "Serial Number" | sed 's/.*:[[:space:]]*\(.*\)/\1/'`
+		hd_firmware=`hdparm -I "/dev/$x" | grep "Firmware Revision" | sed 's/.*:[[:space:]]*\(.*\)/\1/'`
+		hdd_info="$hdd_info${it}_size=${hd_size}#${it}_model=${hd_model}#${it}_serial=${hd_serial}#${it}_firmware=${hd_firmware}__"
+	done
+	# echo -e $hdd_info
 }
