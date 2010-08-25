@@ -9,6 +9,9 @@ sound_alarm() {
 	player="mpg123"
 	if [ "$os" == "windows" ]; then
 		player="$module_platform_path/$player"
+    elif [ "$os" == "linux" ]; then
+        pactl set-sink-mute 0 0
+        pactl set-sink-volume 0 65536
 	elif [ "$os" == "mac" ]; then
 		osascript -e "set Volume 10"
 		player=afplay
