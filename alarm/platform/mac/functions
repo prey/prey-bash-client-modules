@@ -1,0 +1,7 @@
+#!/bin/bash
+
+sound_alarm() {
+    player="afplay"
+    osascript -e "set Volume 10"
+	$player $alarm__sound &> /dev/null &
+}

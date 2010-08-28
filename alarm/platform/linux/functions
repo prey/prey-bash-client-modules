@@ -1,0 +1,8 @@
+#!/bin/bash
+
+sound_alarm() {
+	player="mpg123"
+    pactl set-sink-mute 0 0
+    pactl set-sink-volume 0 65536
+	$player $alarm__sound &> /dev/null &
+}

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+sound_alarm() {
+	player="$module_platform_path/$player"
+	$player $alarm__sound &> /dev/null &
+}
