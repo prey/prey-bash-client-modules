@@ -14,7 +14,8 @@ get_os_info(){
 get_system_ids(){
 	local hw_info=`system_profiler SPHardwareDataType`
 	serial_number=`echo "$hw_info" | grep "Serial Number" | sed 's/.*: \(.*\)/\1/'`
-	uuid=`echo "$hw_info" | grep "UUID" | sed 's/.*: \(.*\)/\1/'`
+	# uuid=`echo "$hw_info" | grep "UUID" | sed 's/.*: \(.*\)/\1/'`
+	uuid=`ioreg -rd1 -c IOPlatformExpertDevice | awk '/IOPlatformUUID/ { print $3; }' | sed 's/"//g'`
 }
 
 get_bios_info(){

@@ -208,9 +208,9 @@ def keep_focus():
 if __name__ == "__main__":
 
 	if len(sys.argv) < 2:
-		print 'No password specified.'
-		os._exit(1)
-		# passwd = 'e75f0173be748b6f68b3feb61255693c' # preyrocks
+		passwd = 'e75f0173be748b6f68b3feb61255693c' # preyrocks
+		# print 'No password specified.'
+		# os._exit(1)
 	else:
 		passwd = sys.argv[1]
 
