@@ -1,7 +1,12 @@
 #!/bin/bash
+####################################################################
+# Prey Alarm Module Mac Functions
+# URL : http://preyproject.com
+# License: GPLv3
+####################################################################
 
 sound_alarm() {
-    player="afplay"
-    osascript -e "set Volume 10"
+	local player="afplay"
+	osascript -e "set Volume 10"
 	$player $alarm__sound &> /dev/null &
 }

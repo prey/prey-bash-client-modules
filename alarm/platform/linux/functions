@@ -1,8 +1,13 @@
 #!/bin/bash
+####################################################################
+# Prey Alarm Module Linux Functions
+# URL: http://preyproject.com
+# License: GPLv3
+####################################################################
 
 sound_alarm() {
-	player="mpg123"
-    pactl set-sink-mute 0 0
-    pactl set-sink-volume 0 65536
+	local player="mpg123"
+	pactl set-sink-mute 0 0
+	pactl set-sink-volume 0 65536 # pump it up!
 	$player $alarm__sound &> /dev/null &
 }

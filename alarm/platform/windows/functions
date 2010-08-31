@@ -1,6 +1,11 @@
 #!/bin/bash
+####################################################################
+# Prey Alarm Module Windows Functions
+# URL : http://preyproject.com
+# License: GPLv3
+####################################################################
 
 sound_alarm() {
-	player="$module_platform_path/$player"
-	$player $alarm__sound &> /dev/null &
+	local player="$module_platform_path/$player"
+	$player "$alarm__sound" &> /dev/null &
 }
