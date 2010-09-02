@@ -17,6 +17,6 @@ get_modified_files() {
 }
 
 get_screenshot() {
-	run_as_current_user "$module_platform_path/preyshot.exe $session__screenshot"
+	run_as_current_user "\"$module_platform_path/preyshot.exe\" \"$session__screenshot\""
 	sleep 1 # as the previous command sends the daemon the request and then returns
 }
