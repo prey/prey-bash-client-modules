@@ -1,0 +1,15 @@
+#!/bin/bash
+####################################################################
+# Prey Session Module Lang File - by Juan C. Mardones (http://juanmardones.com)
+# URL: http://preyproject.com
+# License: GPLv3
+####################################################################
+
+STRING_GET_IP=" -- Recherche de l'adresse IP publique..."
+STRING_GET_LAN_IP=" -- Recherche de l'adresse IP privée sur le réseau local..."
+STRING_GET_MAC_AND_WIFI=" -- Recherche de l'adresse MAC, du routage et du Wifi..."
+STRING_TRACE=" -- Examin de notre route vers Internet..."
+STRING_UPTIME_AND_PROCESS=" -- Recherche de la durée de fonctionnement de l'ordinateur et de la liste des programmes en cours..."
+STRING_MODIFIED_FILES=" -- Recherce des fichiers modifiés récemment..."
+STRING_ACTIVE_CONNECTIONS=" -- Recherche des connections actives..."
+STRING_GET_SCREENSHOT=" -- Capture d'écran du bureau en cours..."
