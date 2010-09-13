@@ -11,12 +11,11 @@ get_running_programs() {
 	running_programs=`tasklist 2> /dev/null`
 }
 
-# removed the regex for hidden files stuff
 get_modified_files() {
 	modified_files=`find $find_path -type f -mmin -$session__modified_files_time 2>&1`
 }
 
 get_screenshot() {
 	run_as_current_user "\"$module_platform_path/preyshot.exe\" \"$session__screenshot\""
-	sleep 1 # as the previous command sends the daemon the request and then returns
+	sleep 2 # as the previous command sends the daemon the request and then returns
 }

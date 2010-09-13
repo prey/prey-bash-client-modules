@@ -24,6 +24,10 @@ get_wifi_access_points() {
 		-e 's/ "\([,|}]\)/"\1/g' \
 		-e 's/"/\\"/g'`
 
+	else
+
+		log " -- Couldn't grab any information from Airport."
+
 	fi
 
 }
