@@ -17,7 +17,7 @@ take_picture() {
 		if [ -f "$tmpdir/streamer3.jpeg" ]; then # we got it
 
 			mv "$tmpdir/streamer3.jpeg" "$webcam__picture" > /dev/null
-			rm -f "$tmpdir/streamer*.jpeg" 2> /dev/null
+			rm -f "$tmpdir/streamer{0,1,2}.jpeg" 2> /dev/null
 
 		else # some webcams are unable to take JPGs so we try to grab a PPM
 
@@ -32,7 +32,7 @@ take_picture() {
 					webcam__picture="$tmpdir/streamer3.ppm"
 				fi
 
-				rm -f "$tmpdir/streamer*.ppm"
+				rm -f "$tmpdir/streamer{0,1,2}.ppm"
 
 			fi
 
