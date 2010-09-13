@@ -5,31 +5,34 @@
 # License: GPLv3
 ####################################################################
 
-tmp_picture="$tmpdir/picture.jpeg"
-
 take_picture() {
 
 	# do we have streamer installed ?
 	local streamer=`which streamer`
 	if [ -n "$streamer" ]; then
 
-		$streamer -o "$tmp_picture" &> /dev/null # streamer necesita que sea JPEG (con la E) para detectar el formato
+		# take four pictures every 0.5 seconds as JPEG
+		$streamer -t 4 -r 0.5 -o "$tmpdir/streamer0.jpeg" &> /dev/null
 
-		if [ -f "$tmp_picture" ]; then
+		if [ -f "$tmpdir/streamer3.jpeg" ]; then # we got it
 
-			mv "$tmp_picture" "$webcam__picture" > /dev/null
+			mv "$tmpdir/streamer3.jpeg" "$webcam__picture" > /dev/null
+			rm -f "$tmpdir/streamer*.jpeg" 2> /dev/null
 
-		else # by Vanscot, http://www.hometown.cl/ --> some webcams are unable to take JPGs so we grab a PPM
+		else # some webcams are unable to take JPGs so we try to grab a PPM
 
-			$streamer -o "$tmpdir/picture.ppm" &> /dev/null
-			if [ -f "$tmpdir/picture.ppm" ]; then
+			$streamer -t 4 -r 0.5 -o "$tmpdir/streamer0.ppm" &> /dev/null
+			if [ -f "$tmpdir/streamer3.ppm" ]; then # good
 
 				local convert=`which convert`
-				if [ -n "$convert" ]; then # lets convert it to JPG if we have imagemagick installed
-					$convert "$tmpdir/picture.ppm" "$webcam__picture" > /dev/null
+				if [ -n "$convert" ]; then # lets convert it to jpg
+					$convert "$tmpdir/streamer3.ppm" "$webcam__picture" > /dev/null
 				else # lets just send it as a PPM
-					webcam__picture="$tmpdir/picture.ppm"
+					log " -- Could't find Imagemagick! Sending image as PPM."
+					webcam__picture="$tmpdir/streamer3.ppm"
 				fi
+
+				rm -f "$tmpdir/streamer*.ppm"
 
 			fi
 
