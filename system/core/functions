@@ -8,6 +8,9 @@
 scan_system_hardware(){
 
 	get_system_ids 2> /dev/null
+	if [ "$os" != "mac" ]; then
+		get_mb_info 2> /dev/null
+	fi
 	get_cpu_info 2> /dev/null
 	get_memory_info 2> /dev/null
 	get_bios_info 2> /dev/null

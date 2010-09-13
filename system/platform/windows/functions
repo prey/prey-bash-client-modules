@@ -6,38 +6,43 @@
 ####################################################################
 
 wmic_call(){
-	echo "$1" | wmic 2> /dev/null | grep -v 'wmic:'
+	echo "$1" | wmic 2> /dev/null | grep -v 'wmic:' | grep -v "^$" | tail -1
 	rm -f "$base_path/TempWmicBatchFile.bat" &> /dev/null
 }
 
 get_os_info(){
-	os_version=`wmic_call "os get version" | awk 'NR==2 {print;exit}'`
+	os_version=`wmic_call "os get version"`
 }
 
 get_system_ids(){
-	serial_number=`wmic_call "baseboard get serialnumber" | awk 'NR==2 {print $1}'`
-	uuid=`wmic_call "path win32_computersystemproduct get uuid" | awk 'NR==2 {print $1}'`
+	serial_number=`wmic_call "bios get serialnumber"`
+	# serial_number=`wmic_call "path win32_computersystemproduct get identifyingnumber" | awk 'NR==2 {print $1}'`
+	uuid=`wmic_call "path win32_computersystemproduct get uuid"`
+}
+
+get_mb_info(){
+	mb_vendor=`wmic_call "baseboard get manufacturer"`
+	mb_serial=`wmic_call "baseboard get serialnumber"`
+	mb_model=`wmic_call "baseboard get product"`
+	mb_version=`wmic_call "baseboard get version"`
 }
 
 get_bios_info(){
-	bios_vendor=`wmic_call "bios get Manufacturer" | awk 'NR==2 {print;exit}'`
-	bios_version=`wmic_call "bios get SMBIOSBIOSVersion" | awk 'NR==2 {print;exit}'`
+	bios_vendor=`wmic_call "bios get Manufacturer"`
+	bios_version=`wmic_call "bios get SMBIOSBIOSVersion"`
 }
 
 get_cpu_info(){
-	cpu_model=`wmic_call "cpu get name" | awk 'NR==2 {print;exit}'`
-	cpu_speed=`wmic_call "cpu get MaxClockSpeed" | awk 'NR==2 {print;exit}'`
-	cpu_cores=`wmic_call "cpu get NumberOfCores" | awk 'NR==2 {print;exit}'`
+	cpu_model=`wmic_call "cpu get name"`
+	cpu_speed=`wmic_call "cpu get MaxClockSpeed"`
+	cpu_cores=`wmic_call "cpu get NumberOfCores"`
 	# cpu_info="1_name=${cpu_name}#1_speed=${cpu_speed}#1_cores=${cpu_cores}__#"
 }
 
 get_memory_info(){
-	ram_size=`wmic_call "os get TotalVisibleMemorySize" | awk 'NR==2 {print $1/1024 ;exit}'`
-	if [ -n "$winxp" ]; then
-		ram_modules=`wmic_call "memphysical get MemoryDevices" | awk 'NR==2 {print;exit}'`
-	else
-		ram_modules=`wmic_call "memorychip" | awk 'END { print NR-2 }'`
-	fi
+	ram_in_bytes=`wmic_call "os get TotalVisibleMemorySize"`
+	ram_size=$(($ram_in_bytes/1024))
+	ram_modules=`cscript $platform_path\\ramcheck.vbs | grep "BankLabel" | wc -l`
 	# mem_info="1_size=${mem_total}#1_type=0#1_speed=0__#BANKS=${mem_modules}#"
 }
 
