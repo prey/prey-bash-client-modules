@@ -42,7 +42,7 @@ get_cpu_info(){
 get_memory_info(){
 	ram_in_bytes=`wmic_call "os get TotalVisibleMemorySize"`
 	ram_size=$(($ram_in_bytes/1024))
-	ram_modules=`cscript $platform_path\\ramcheck.vbs | grep "BankLabel" | wc -l`
+	ram_modules=`cscript $platform_path\\ramcheck.vbs | grep "Bank Label" | wc -l`
 	# mem_info="1_size=${mem_total}#1_type=0#1_speed=0__#BANKS=${mem_modules}#"
 }
 
