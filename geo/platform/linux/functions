@@ -17,9 +17,9 @@ get_wifi_access_points() {
 			-e "s/Quality[0-9=:\/ ]*Signal//g" \
 			-e 's/\([A-F0-9]\):\([A-F0-9]\)/\1-\2/g' \
 			-e 's/Channel:\([0-9]*\)/"channel": \1,/g' \
-			-e 's/Address: \([A-F0-9-]\{17\}\)/{"mac_address": "\1", /g' \
+			-e 's/Address: \?\([A-F0-9-]\{17\}\)/{"mac_address": "\1", /g' \
 			-e 's/ESSID:"\([^"]*\)"/"ssid": "\1", /g' \
-			-e 's/level.\([0-9\/-]*\) dBm\([^"{]*\)/"signal_strength": \1, /g' \
+			-e 's/level.\([0-9\/-]*\) \?dBm\([^"{]*\)/"signal_strength": \1, /g' \
 			-e 's/, {/}, {/g' \
 			-e "s/\\\x..//g" \
 			-e "s/, $/}/"`
