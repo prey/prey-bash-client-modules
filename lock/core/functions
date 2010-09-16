@@ -17,7 +17,9 @@ activate_lock(){
 		wait $pid
 		rs=$?
 		# echo  "return status was: $rs"
-		if [ $rs != 0 ]; then
+		if [ $rs == 0 ]; then
+			deactivate_modules_on_panel "lock"
+		else
 			activate_lock
 		fi
 	else

@@ -6,18 +6,16 @@
 #############################################
 
 import os, sys
-# import getopt
 import hashlib
-import gobject
 import gtk
 import pango
 
 # import wnck
 
-from threading import Timer
-import time
-from time import sleep
-
+# import gobject
+# from threading import Timer
+# import time
+# from time import sleep
 
 class Lock:
 	def get_md5(self, string):
@@ -29,119 +27,108 @@ class Lock:
 
 		if hashed_text != passwd:
 			print " -- Bad password attempt."
+			self.label.show()
 			return True
 		else:
 			print ' -- Correctomondo. PC Unlocked.'
+			# self.label.set_markup('<span foreground="green">Very good. Access granted.</span>');
+			# self.label.show()
 			os._exit(0)
-		# print "Entry contents: %s\n" % entry_text
 
 	def on_delete_event(self, widget, event):
 		return True
 		# self.window.set_keep_above(True)
 
-	def callback(self, widget, data=None):
-		print "Hello again - %s was pressed" % data
-
 	def on_focus_change(self, widget, event):
 		print " -- Focus changed."
 		return True
-
-	def on_key_press(self, widget, event):
-		keyname = gtk.gdk.keyval_name(event.keyval)
-		# print "Key %s (%d) was pressed" % (keyname, event.keyval)
-		if event.state & gtk.gdk.CONTROL_MASK:
-			print "Control was being held down"
-		if event.state & gtk.gdk.MOD1_MASK:
-			print "Alt was being held down"
-		if event.state & gtk.gdk.SHIFT_MASK:
-			print "Shift was being held down"
 
 	def on_window_state_change(self, widget, event):
 		self.window.activate_focus()
 		print "Something happened"
 		return False
 
+	def on_key_press(self, widget, event):
+		keyname = gtk.gdk.keyval_name(event.keyval)
+		# print "Key %s (%d) was pressed" % (keyname, event.keyval)
+		if event.keyval > 65470 and event.keyval < 65481: # F1 through F12
+			print "Key %s (%d) was pressed" % (keyname, event.keyval)
+			# return True
+		if event.state & gtk.gdk.CONTROL_MASK:
+			print "Control was being held down"
+			# return True
+		if event.state & gtk.gdk.MOD1_MASK:
+			print "Alt was being held down"
+			# return True
+		if event.state & gtk.gdk.SHIFT_MASK:
+			print "Shift was being held down"
+
 	def __init__(self):
+
+		# calculate number of screens
+		width = gtk.gdk.screen_width()
+		height = gtk.gdk.screen_height()
+
+		black = gtk.gdk.color_parse("black")
+
+		###################################
+		# black bg
+		###################################
+
+		self.bg_window = gtk.Window(gtk.WINDOW_POPUP)
+		self.bg_window.modify_bg(gtk.STATE_NORMAL, black)
+		self.bg_window.resize(width, height)
+		self.bg_window.set_deletable(False)
+		self.bg_window.show()
+
+		monitors = self.bg_window.get_screen().get_n_monitors()
+
 		###################################
 		# window
 		###################################
 
-		self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+		self.window = gtk.Window(gtk.WINDOW_POPUP)
 		self.window.set_title("Prey Lock")
-
-		# dont know what the hell this is for
-		# self.window.set_mnemonic_modifier(gtk.gdk.CONTROL_MASK)
+		self.window.modify_bg(gtk.STATE_NORMAL, black)
 
 		# prevents window from being closed
 		self.window.connect("delete_event", self.on_delete_event)
 		# capture keypresses
 		self.window.connect("key_press_event", self.on_key_press)
 
-		# self.window.connect("window_state_event", self.on_window_state_change)
-
-		# window and management settings
 		self.window.stick()
-		# self.window.set_role("toolbox")
-
-		# self.window.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DOCK)
-
-		# print self.window.flags()
-		# self.window.set_flags(gtk.CAN_FOCUS | gtk.HAS_FOCUS | gtk.HAS_GRAB | gtk.RECEIVES_DEFAULT | gtk.TOPLEVEL)
-		# print self.window.flags()
-
 		self.window.set_deletable(False)
 		# self.window.set_focus_on_map(True)
-		# self.window.set_decorated(False)
+		self.window.set_decorated(False)
 		self.window.set_border_width(0)
 		self.window.set_keep_above(True)
+		self.window.set_resizable(False)
 
-		# calculate number of screens
-		width = gtk.gdk.screen_width()
-		height = gtk.gdk.screen_height()
+		# self.window.fullscreen()
 
-		monitors = self.window.get_screen().get_n_monitors()
-
-		if monitors == 2:
-			middle = width/4
-		else:
-			middle = width/2
-		# 	self.window.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_TOOLBAR)
-		# 	self.window.resize(width, height)
-
-		# middle = width/2
-		self.window.fullscreen()
-
-		# self.window.set_resizable(False)
+		main_screen_width = self.window.get_screen().get_monitor_geometry(0).width
+		main_screen_height = self.window.get_screen().get_monitor_geometry(0).height
+		main_screen_middle = main_screen_width/2
 
 		vbox = gtk.VBox(False, 0)
 		self.window.add(vbox)
-		vbox.show()
+		# vbox.show()
 
 		###################################
 		# background color and image
 		###################################
-
-		bgcolor = gtk.gdk.color_parse("black")
-		self.window.modify_bg(gtk.STATE_NORMAL, bgcolor)
 
 		image = gtk.Image()
 		script_path = sys.path[0]
 		bg_path = script_path + "/../../lib/bg-lock-with-input.png"
 		image.set_from_file(bg_path)
 		image.show()
+		vbox.set_size_request(main_screen_width, main_screen_height)
 		vbox.add(image)
 
 		###################################
 		# label
 		###################################
-
-		# text = 'This device has been locked.'
-		# label = gtk.Label()
-		# label.set_markup('<span foreground="#fff">'+text+'</span>');
-		# label.modify_font(pango.FontDescription("sans 70"))
-
-		# vbox.pack_start(label, True, True, 0)
-		# label.show()
 
 		hbox = gtk.HBox(False, 0)
 		vbox.add(hbox)
@@ -150,16 +137,13 @@ class Lock:
 		self.entry = gtk.Entry(max=0)
 		self.entry.set_max_length(40)
 
-		# self.entry.set_flags(gtk.CAN_FOCUS)
 		# self.entry.set_text("type password")
 		self.entry.set_inner_border(None)
 		self.entry.set_width_chars(32)
 		self.entry.set_visibility(False)
 		self.entry.set_has_frame(False)
 		self.entry.modify_font(pango.FontDescription("sans 20"))
-
 		self.entry.set_flags(gtk.CAN_FOCUS | gtk.HAS_FOCUS | gtk.HAS_GRAB | gtk.CAN_DEFAULT | gtk.SENSITIVE)
-
 		self.entry.connect("activate", self.enter_callback, self.entry)
 
 		# self.entry.grab_focus()
@@ -172,27 +156,26 @@ class Lock:
 		self.entry.show()
 
 		fixed = gtk.Fixed()
-		fixed.put(self.entry, middle-240, -(height/2)+18)
+		fixed.put(self.entry, main_screen_middle-240, -(main_screen_height/2)+18)
 		fixed.show()
 		hbox.pack_start(fixed, False, False, 30)
 
 		# self.window.set_focus(self.entry)
 
-		# vbox.add(fixed)
+		text = 'Invalid password. Access denied.'
+		self.label = gtk.Label()
+		self.label.set_markup('<span foreground="#aa0000">'+text+'</span>');
+		self.label.modify_font(pango.FontDescription("sans 20"))
+		self.label.set_size_request(main_screen_width, 30)
+		# self.label.show()
 
-#		vbox = gtk.VBox(False, 0)
-#		hbox.add(vbox)
-#		vbox.show()
-
-#		text = 'Invalid password. Access denied.'
-#		label = gtk.Label()
-#		label.set_markup('<span foreground="#aa0000">'+text+'</span>');
-#		label.modify_font(pango.FontDescription("sans 20"))
-#		vbox.pack_start(label, True, True, 0)
-#		label.show()
+		fixed2 = gtk.Fixed()
+		fixed2.put(self.label, -main_screen_width/2-240, -(main_screen_height/2)+60)
+		hbox.pack_start(fixed2, True, False, 30)
 
 		self.window.show_all()
 		gtk.gdk.keyboard_grab(fixed.window, True)
+		self.label.hide()
 		# gtk.gdk.event_handler_set(self.handle_event)
 
 def keep_focus():
@@ -202,7 +185,6 @@ def keep_focus():
 		for window in screen.get_windows():
 			if window.get_name().startswith('Prey Lock'):
 				window.activate(gtk.get_current_event_time())
-
 		# lock.window.grab_focus()
 
 if __name__ == "__main__":
@@ -216,12 +198,12 @@ if __name__ == "__main__":
 
 	lock = Lock()
 
-	gobject.threads_init()
+	# gobject.threads_init()
 
-	gtk.gdk.threads_init()
-	gtk.gdk.threads_enter()
+	# gtk.gdk.threads_init()
+	# gtk.gdk.threads_enter()
 
 	# Timer(1, keep_focus).start()
 	gtk.main()
 
-	gtk.gdk.threads_leave()
+	# gtk.gdk.threads_leave()
