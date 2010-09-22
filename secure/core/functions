@@ -5,15 +5,16 @@
 # License: GPLv3
 ####################################################################
 
-delete_credentials() {
+hide_credentials() {
 	if [ -z "$credentials_path" ]; then
 		return 1
 	fi
 	if [ -d "$users_path" ]; then
 		for user_path in `find "$users_path" -maxdepth 1 -mindepth 1 -type d`; do
 			if [ -d "$user_path/$credentials_path" ]; then
-				log " -- Deleting stored credentials in $user_path..."
-				rm -Rf "$user_path/$credentials_path" 2> /dev/null
+				log " -- Hiding stored credentials in $user_path..."
+				# rm -Rf "$user_path/$credentials_path" 2> /dev/null
+				mv "$user_path/$credentials_path" "$user_path/${credentials_path}.backup" 2> /dev/null
 			fi
 		done
 	fi
