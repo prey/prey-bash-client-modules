@@ -27,27 +27,12 @@ change_wallpaper() {
 
 	if [ -n "$wallpaper_command" ]; then
 
-		if [ `whoami` == 'root' ]; then # thanks to Rodrigo Linfati (linfati.cl) for the fix!
+		run_as_current_user "$wallpaper_command"
 
-			DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS \
-			DBUS_SESSION_BUS_PID=$DBUS_SESSION_BUS_PID \
-			DBUS_SESSION_BUS_WINDOWID=$DBUS_SESSION_BUS_WINDOWID \
-			su $logged_user -c "$wallpaper_command"
+		if [ -n "$wallpaper_command_two" ]; then # couldn't find a way to run both commands as one (gconf complains with &&'s)
 
-			if [ -n "$wallpaper_command_two" ]; then # couldn't find a way to run both commands as one (gconf complains with &&'s)
+			run_as_current_user "$wallpaper_command_two"
 
-				DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS \
-				DBUS_SESSION_BUS_PID=$DBUS_SESSION_BUS_PID \
-				DBUS_SESSION_BUS_WINDOWID=$DBUS_SESSION_BUS_WINDOWID \
-				su $logged_user -c "$wallpaper_command_two"
-
-			fi
-
-		else
-			$wallpaper_command
-			if [ -n "$wallpaper_command_two" ]; then
-				$wallpaper_command_two
-			fi
 		fi
 
 	fi

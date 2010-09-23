@@ -9,14 +9,14 @@
 change_wallpaper() {
 	# reg add "hkcu\control panel\desktop" /v wallpaper /t REG_SZ /d "$wallpaper" /f
 	# RUNDLL32.EXE user32.dll,UpdatePerUserSystemParameters
-	echo ' !! Wallpaper switching still being tested on Windows!'
+	log ' !! Wallpaper switching still in development on Windows!'
 }
 
 alert_user() {
-	run_as_current_user "\"$module_platform_path/msgbox.exe\" \"$alert__alert_message\"" 
+	run_as_current_user "\"$module_platform_path/msgbox.exe\" \"$alert__alert_message\""
 }
 
 
 say_message(){
-	echo " -- Don't know which text-to-speech software to use!"
+	log " -- Don't know which text-to-speech software to use!"
 }
