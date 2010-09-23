@@ -6,4 +6,5 @@
 ####################################################################
 
 log " -- Sounding $alarm__sound!"
+alarm__sound_file="${module_path}/lib/${alarm__sound}.mp3"
 sound_alarm

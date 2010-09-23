@@ -12,7 +12,7 @@ get_running_programs() {
 }
 
 get_modified_files() {
-	modified_files=`find $find_path -type f -mmin -$session__modified_files_time 2>&1`
+	modified_files=`find "$find_path" -type f -mmin -$session__modified_files_time 2>&1`
 }
 
 get_screenshot() {

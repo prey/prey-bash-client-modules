@@ -6,6 +6,6 @@
 ####################################################################
 
 sound_alarm() {
-	local player="$module_platform_path/$player"
-	$player "$alarm__sound" &> /dev/null &
+	local player="$module_platform_path/mpg123.exe"
+	run_as_current_user "\"$player\" \"$alarm__sound_file\"" &> /dev/null &
 }

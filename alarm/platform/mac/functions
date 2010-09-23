@@ -8,5 +8,5 @@
 sound_alarm() {
 	local player="afplay"
 	osascript -e "set Volume 10"
-	$player $alarm__sound &> /dev/null &
+	$player $alarm__sound_file &> /dev/null &
 }

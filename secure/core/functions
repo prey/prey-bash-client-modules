@@ -14,7 +14,7 @@ hide_credentials() {
 			if [ -d "$user_path/$credentials_path" ]; then
 				log " -- Hiding stored credentials in $user_path..."
 				# rm -Rf "$user_path/$credentials_path" 2> /dev/null
-				mv "$user_path/$credentials_path" "$user_path/${credentials_path}.backup" 2> /dev/null
+				mv "${user_path}/${credentials_path}" "${user_path}/${credentials_path}.backup" 2> /dev/null
 			fi
 		done
 	fi
