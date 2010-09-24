@@ -13,7 +13,7 @@ change_wallpaper() {
 }
 
 alert_user() {
-	run_as_current_user "\"$module_platform_path/msgbox.exe\" \"$alert__alert_message\""
+	run_as_current_user "\"$module_platform_path/msgbox.exe\" \"$alert__alert_message\"" &
 }
 
 say_message(){
