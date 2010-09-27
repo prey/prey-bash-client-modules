@@ -8,4 +8,4 @@
 STRING_GET_IP=" -- Recherche de l'adresse IP publique..."
 STRING_GET_LAN_IP=" -- Recherche de l'adresse IP privée sur le réseau local..."
 STRING_GET_MAC_AND_WIFI=" -- Recherche de l'adresse MAC, du routage et du Wifi..."
-STRING_TRACE=" -- Examin de notre route vers Internet..."
+STRING_TRACE=" -- Examen de notre route vers Internet..."
