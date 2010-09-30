@@ -33,7 +33,7 @@ class Lock:
 			print ' -- Correctomondo. PC Unlocked.'
 			# self.label.set_markup('<span foreground="green">Very good. Access granted.</span>');
 			# self.label.show()
-			os._exit(0)
+			os._exit(66)
 
 	def on_delete_event(self, widget, event):
 		return True

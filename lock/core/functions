@@ -17,9 +17,9 @@ activate_lock(){
 		wait $pid
 		rs=$?
 		# echo  "return status was: $rs"
-		if [ $rs == 0 ]; then
+		if [ $rs -eq 66 ]; then
 			deactivate_modules_on_panel "lock"
-		else
+		elif [ $rs != 0 ]; then
 			activate_lock
 		fi
 	else

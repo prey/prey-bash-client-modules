@@ -19,7 +19,7 @@ RegRead, PreyPath, HKEY_LOCAL_MACHINE, SOFTWARE\Prey, Path
 if (%0% == 0) {
 	InputBox, unlock_password_plain, Password, Please enter a password for Prey lock.,,300, 130
 	if ErrorLevel
-		exitapp
+		exitapp, 1
 	unlock_len := StrLen(unlock_password_plain)
 	unlock_password = % MD5( unlock_password_plain, unlock_len)
 	}
@@ -34,7 +34,7 @@ SysGet, VirtualWidth, 78
 SysGet, VirtualHeight, 79
 
 ;Create a black always on top overlay to cover applications
-Gui, 2:Color, Black 
+Gui, 2:Color, Black
 Gui, 2:Maximize
 Gui, 2:-Caption
 Gui 2:+AlwaysOnTop
@@ -107,7 +107,7 @@ enter::
 		DllCall("WinLockDll.dll\CtrlAltDel_Enable_Disable",UInt,1)
 		DllCall("WinLockDll.dll\TaskSwitching_Enable_Disable",UInt,1)
 		DllCall("WinLockDll.dll\TaskManager_Enable_Disable",UInt,1)
-		exitapp
+		exitapp, 66
 		}
 	else {
 		guicontrol, show, BadPasswordLabel
