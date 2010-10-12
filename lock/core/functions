@@ -5,19 +5,18 @@
 # License: GPLv3
 ####################################################################
 
-# set -bm
-
 activate_lock(){
 
 	if [ -z `is_process_running 'prey-lock'` ]; then
 		local command="\"$lock__executable\" `md5_hash_for $lock__unlock_pass`"
 		run_as_current_user "$command" &
-		# trap 'reactivate_lock' SIGCHLD
+
 		pid=$!
 		wait $pid
 		rs=$?
 		# echo  "return status was: $rs"
 		if [ $rs -eq 66 ]; then
+			log " -- Correct password entered."
 			deactivate_modules_on_panel "lock"
 		elif [ $rs != 0 ]; then
 			activate_lock

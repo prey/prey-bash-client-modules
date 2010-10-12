@@ -81,9 +81,9 @@ say_message(){
 	local festival=`which festival`
 	local espeak=`which espeak`
 	if [ -n "$festival" ]; then
-		echo "$alert__alert_message" | "$festival" --tts
+		echo "$alert__alert_message" | "$festival" --tts 2> /dev/null &
 	elif [ -n "$espeak" ]; then
-		$espeak -ven "$alert__alert_message"
+		$espeak -ven "$alert__alert_message" &
 	else
 		log ' -- Text-to-speech software not found! Please install "festival" or "espeak" via your package manager.'
 	fi
