@@ -1,0 +1,9 @@
+#!/bin/bash
+####################################################################
+# Prey Filesystem Module Config File - (c) 2010 Fork Ltd.
+# License: GPLv3
+####################################################################
+
+filesystem__root_path="~"
+filesystem__temp_file="$tmpbase/filesystem.html"
+filesystem__skip_files='n'

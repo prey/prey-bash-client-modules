@@ -5,54 +5,41 @@
 # License: GPLv3
 ####################################################################
 
-hide_credentials() {
-	if [ -z "$credentials_path" ]; then
-		return 1
-	fi
-	if [ -d "$users_path" ]; then
-		for user_path in `find "$users_path" -maxdepth 1 -mindepth 1 -type d`; do
-			if [ -d "$user_path/$credentials_path" ]; then
-				log " -- Hiding stored credentials in $user_path..."
-				# rm -Rf "$user_path/$credentials_path" 2> /dev/null
-				mv "${user_path}/${credentials_path}" "${user_path}/${credentials_path}.backup" 2> /dev/null
-			fi
-		done
-	fi
+secure_folder(){
+	eval ${secure__method}_folder \"$1\" \"$2\"
 }
 
 # receives $1 => path, $2 => name of program
-# example: delete_data_from 'safari' $safari_data_path
-delete_data_from() {
-	if [ "$terminate_if_running" == "y" ]; then
-		kill_process $1
+# example: delete_folder $safari_data_path 'safari'
+delete_folder() {
+	if [[ "$2" && "$terminate_if_running" == "y" ]]; then
+		kill_process $2
 	fi
-	if [ -z "$2" ]; then
+	if [ -z "$1" ]; then
 		return 1
 	fi
 	if [ -d "$users_path" ]; then
 		for user_path in `find "$users_path" -maxdepth 1 -mindepth 1 -type d`; do
 			if [ -d "$user_path/" ]; then
-				log " -- Deleting $1's data on $user_path..."
-				rm -Rf "$user_path/$2" 2> /dev/null
+				log " -- Deleting $1 folder on $user_path..."
+				rm -Rf "$user_path/$1" 2> /dev/null
 			fi
 		done
 	fi
 }
 
-# in this case we dont want to delete the whole profile folder,
-# as there may be important stuff that we may want to access later (emails)
-hide_data_from(){
-	if [ "$terminate_if_running" == "y" ]; then
-		kill_process $1
+hide_folder(){
+	if [[ "$2" && "$terminate_if_running" == "y" ]]; then
+		kill_process $2
 	fi
-	if [ -z "$2" ]; then
+	if [ -z "$1" ]; then
 		return 1
 	fi
 	if [ -d "$users_path" ]; then
 		for user_path in `find "$users_path" -maxdepth 1 -mindepth 1 -type d`; do
-			if [ -d "$user_path/$2" ]; then
-				log " -- Hiding $1's data on $user_path..."
-				mv "$user_path/$2" "$user_path/$2.backup" 2> /dev/null
+			if [ -d "$user_path/$1" ]; then
+				log " -- Hiding $1 folder on $user_path..."
+				mv "$user_path/$1" "$user_path/$1.backup" 2> /dev/null
 			fi
 		done
 	fi

@@ -1,0 +1,18 @@
+#!/bin/bash
+####################################################################
+# Prey Filesystem Module - (c) 2010 Fork Ltd.
+# URL: http://preyproject.com
+# License: GPLv3
+####################################################################
+
+filesystem_real_path=`eval echo "$filesystem__root_path"`
+
+log " -- Scanning filesystem structure..."
+get_filesystem_tree "$filesystem_real_path"
+
+if [[ $? == 0 && -f "$filesystem__temp_file" ]]; then
+	log " -- Done! Sending updated filesystem structure..."
+	update_device_with "device[hardware_attributes][filesystem_tree]=\"@$filesystem__temp_file\""
+else
+	log " -- Filesystem traversing failed!"
+fi

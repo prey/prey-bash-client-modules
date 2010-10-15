@@ -1,0 +1,97 @@
+#!/bin/bash
+####################################################################
+# Prey Filesystem Module Base Functions - (c) 2010 Fork Ltd.
+# URL: http://preyproject.com
+# License: GPLv3
+####################################################################
+
+# trap "echo 'Stopping...'; kill 0" TERM INT
+# i=0
+
+filesystem_log(){
+	echo "$1" > /dev/null
+	# echo "$1" >> filesystem_scan.log
+}
+
+filesytem_append(){
+	echo -e "$1" >> "$filesystem__temp_file"
+}
+
+get_filesystem_tree(){
+	local dir="$1"
+
+	if [ -f "$filesystem__temp_file" ]; then
+		echo "" > "$filesystem__temp_file"
+	fi
+
+	if [ "$filesystem__skip_files" == "y" ]; then
+		filesystem__search_args="-type d"
+	fi
+
+	if [ ${dir:(-1)} == "/" ]; then
+		local dir=${dir%%/}
+	fi
+
+	traverse_dir "$dir"
+}
+
+traverse_dir(){
+
+	local dir=`echo "$1" | sed "s/_SPACE_/\\\ /g"`
+	filesystem_log "-- Traversing ${dir}..."
+	# let i=$i+1
+
+	local nodes=`find "$dir" $filesystem__search_args -maxdepth 1 -not -empty -not -regex '.*/\..*/..*' -printf "%h/%f___%s\n" | sed -e 1d -e "s/ /_SPACE_/g"`
+
+	if [ -n "$nodes" ]; then
+
+	filesystem_log " -- Found files!"
+	filesytem_append "<ul>"
+
+	for node in $nodes; do
+
+		if [[ "$node" == "." || "$node" == "$dir" ]]; then
+			continue
+		fi
+
+		local trimmed=`echo "$node" | sed "s/___.*//"`
+		local escaped=`echo "$trimmed" | sed "s/_SPACE_/\\\ /g"`
+
+		if [ -L "$escaped" ]; then
+
+			filesystem_log " -- Found symlink! Skipping..."
+
+		elif [ -d "$escaped" ]; then
+
+			filesystem_log " -- Found dir: ${escaped}"
+			filesytem_append "<li class='dir'><a>`basename "${escaped}"`</a>"
+			filesytem_append `traverse_dir "$trimmed"`
+			filesytem_append "</li>"
+
+		elif [ -f "$escaped" ]; then
+
+			local node_size=$((`echo -e "$node" | sed "s/.*___//"`/1024))
+			if [ "$node_size" == 0 ]; then
+				local node_size=1
+			fi
+			local file_extension=`echo ${trimmed##*.} | tr '[A-Z]' '[a-z]'`
+			if [ ${#file_extension} -gt 5 ]; then
+				local file_extension="none"
+			fi
+
+			filesystem_log " -- Found file: ${escaped_node}"
+			filesytem_append "<li class='file ext-${file_extension}'>`basename "${escaped}"` <em>(${node_size} KB)</em></li>"
+
+		else
+
+			filesystem_log " -- ${escaped} is neither dir nor file. Pipe? Socket??"
+
+		fi
+
+	done
+
+		filesytem_append "</ul>"
+
+	fi
+
+}
