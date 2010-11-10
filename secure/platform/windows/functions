@@ -21,7 +21,7 @@ safari_path="${data_path}\Apple\ Computer\Safari"
 thunderbird_path="${data_path}\Thunderbird\Profiles"
 outlook_path="${data_path}\Microsoft\Outlook"
 
-delete_ie_data(){
+secure_ie_data(){
 	# RunDll32.exe InetCpl.cpl,ClearMyTracksByProcess 32
 	# this above deletes all, but well do it by parts so we have more control
 	delete_ie_passwords

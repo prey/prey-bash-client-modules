@@ -12,24 +12,7 @@ secure_folder(){
 # receives $1 => path, $2 => name of program
 # example: delete_folder $safari_data_path 'safari'
 delete_folder() {
-	if [[ "$2" && "$terminate_if_running" == "y" ]]; then
-		kill_process $2
-	fi
-	if [ -z "$1" ]; then
-		return 1
-	fi
-	if [ -d "$users_path" ]; then
-		for user_path in `find "$users_path" -maxdepth 1 -mindepth 1 -type d`; do
-			if [ -d "$user_path/" ]; then
-				log " -- Deleting $1 folder on $user_path..."
-				rm -Rf "$user_path/$1" 2> /dev/null
-			fi
-		done
-	fi
-}
-
-hide_folder(){
-	if [[ "$2" && "$terminate_if_running" == "y" ]]; then
+	if [[ -n "$2" && "$terminate_if_running" == "y" ]]; then
 		kill_process $2
 	fi
 	if [ -z "$1" ]; then
@@ -38,6 +21,25 @@ hide_folder(){
 	if [ -d "$users_path" ]; then
 		for user_path in `find "$users_path" -maxdepth 1 -mindepth 1 -type d`; do
 			if [ -d "$user_path/$1" ]; then
+				log " -- Deleting $1 folder on $user_path..."
+				rm -Rf "$user_path/$1" 2> /dev/null
+			fi
+		done
+	fi
+}
+
+hide_folder(){
+	if [[ -n "$2" && "$terminate_if_running" == "y" ]]; then
+		kill_process $2
+	fi
+	if [ -z "$1" ]; then
+		return 1
+	fi
+	if [ -d "$users_path" ]; then
+		for user_path in `find "$users_path" -maxdepth 1 -mindepth 1 -type d`; do
+			if [ ! -d "$user_path/$1.backup" ]; then
+				log " -- Backup folder already exists for $1. Skipping..."
+			elif [ -d "$user_path/$1" ]; then
 				log " -- Hiding $1 folder on $user_path..."
 				mv "$user_path/$1" "$user_path/$1.backup" 2> /dev/null
 			fi
