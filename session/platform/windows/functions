@@ -5,8 +5,6 @@
 # License: GPLv3
 ####################################################################
 
-session__screenshot="$tmpdir/prey-screenshot.png"
-
 get_running_programs() {
 	running_programs=`tasklist 2> /dev/null`
 }

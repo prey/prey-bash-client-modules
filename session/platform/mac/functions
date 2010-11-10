@@ -6,6 +6,6 @@
 ####################################################################
 
 get_screenshot() {
-	local screencapture='/usr/sbin/screencapture -mx'
+	local screencapture='/usr/sbin/screencapture -t jpg -mx'
 	run_as_current_user "$screencapture $session__screenshot"
 }
