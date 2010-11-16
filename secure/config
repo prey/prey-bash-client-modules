@@ -5,29 +5,29 @@
 # License: GPLv3
 ####################################################################
 
-# whether we should 'delete' or 'hide' the files (by moving)
+# whether we should 'delete' or 'hide' the files (by appending '.backup' to the folder)
 secure__method='hide'
 
-# whether to destroy the keychains/keyrings that holds all the different
+# whether to hide or delete the keychains/keyrings that holds all the different
 # passwords in your system. recommended if you do use them.
 secure__credentials='n'
 
-# delete all user profiles for firefox
+# hide/delete all user profiles for firefox
 secure__firefox_data='n'
 
-# delete all user profiles for chrome
+# hide/delete all user profiles for chrome
 secure__chrome_data='n'
 
-# delete all user profiles for safari (mac & windows only)
+# hide/delete all user profiles for safari (mac & windows only)
 secure__safari_data='n'
 
 # delete everything for running user in IE (windows only)
 secure__ie_data='n'
 
-# Appends '.backup' to all Outlook profiles in your PC so that none email and contacts can be found.
+# hide/delete data for all Thunderbird profiles in your PC so that none email and contacts can be found.
 secure__thunderbird_data='n'
 
-# Appends '.backup' to your Thunderbird profile path so that your email and contacts are not found.
+# hide/delete data for all Outlook profiles in your PC so that your email and contacts are not found.
 secure__outlook_data='n'
 
 # should we make sure the program were wiping the user data for isn't running?
