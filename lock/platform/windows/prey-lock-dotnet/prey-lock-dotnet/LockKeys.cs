@@ -15,11 +15,20 @@ namespace prey_lock_dotnet
         public KeyboardFilter(Keys[] keysToFilter)
         {
             // Install hook 
-            mFilter = keysToFilter;
-            ProcessModule mod = Process.GetCurrentProcess().MainModule;
-            mProc = new LowLevelKeyboardProc(KeyboardProc); // Avoid garbage collector problems 
-            mHook = SetWindowsHookEx(13, mProc, GetModuleHandle(mod.ModuleName), 0);
-            if (mHook == IntPtr.Zero) throw new Win32Exception(Marshal.GetLastWin32Error(), "Failed to set hook");
+            try
+            {
+                mFilter = keysToFilter;
+                ProcessModule mod = Process.GetCurrentProcess().MainModule;
+                mProc = new LowLevelKeyboardProc(KeyboardProc); // Avoid garbage collector problems 
+                mHook = SetWindowsHookEx(13, mProc, GetModuleHandle(mod.ModuleName), 0);
+            
+                if (mHook == IntPtr.Zero) throw new Win32Exception(Marshal.GetLastWin32Error(), "Failed to set hook");
+            }
+            catch (Exception)
+            {
+                
+                return;
+            }
         }
         public void Dispose()
         {
@@ -33,13 +42,21 @@ namespace prey_lock_dotnet
         private IntPtr KeyboardProc(int nCode, IntPtr wp, IntPtr lp)
         {
             // Callback, filter key 
-            if (nCode >= 0)
+            try
             {
-                KBDLLHOOKSTRUCT info = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lp, typeof(KBDLLHOOKSTRUCT));
-                foreach (Keys key in mFilter)
-                    if ((key & Keys.KeyCode) == info.key && CheckModifier(key)) return (IntPtr)1;
+                if (nCode >= 0)
+                {
+                    KBDLLHOOKSTRUCT info = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lp, typeof(KBDLLHOOKSTRUCT));
+//                    Logger.debug(info.key.ToString());
+                    foreach (Keys key in mFilter)
+                        if ((key & Keys.KeyCode) == info.key && CheckModifier(key)) return (IntPtr)1;
+                }
+                return CallNextHookEx(mHook, nCode, wp, lp);
             }
-            return CallNextHookEx(mHook, nCode, wp, lp);
+            catch (Exception)
+            {
+                return CallNextHookEx(mHook, nCode, wp, lp);
+            }
         }
         private bool CheckModifier(Keys key)
         {

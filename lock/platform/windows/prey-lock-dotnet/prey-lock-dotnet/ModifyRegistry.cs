@@ -88,7 +88,6 @@ namespace prey_lock_dotnet
 				RegistryKey sk1 = rk.CreateSubKey(subKey);
 				// Save the value
 				sk1.SetValue(KeyName.ToUpper(), Value);
-
 				return true;
 			}
 			catch (Exception e)
@@ -99,6 +98,8 @@ namespace prey_lock_dotnet
 				return false;
 			}
 		}
+
+        
 
 		/* **************************************************************************
 		 * **************************************************************************/

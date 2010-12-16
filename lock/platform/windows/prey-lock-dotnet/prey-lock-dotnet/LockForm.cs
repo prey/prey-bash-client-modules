@@ -8,15 +8,18 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Security.Cryptography;
+using Microsoft.Win32;
+using System.ServiceProcess;
+using System.Collections;
 
 namespace prey_lock_dotnet
 {
-    public partial class Form1 : Form
+    public partial class LockForm : Form
     {
 
         private String pass = "e75f0173be748b6f68b3feb61255693c";
 
-        public Form1()
+        public LockForm()
         {
             InitializeComponent();
         }
@@ -24,9 +27,10 @@ namespace prey_lock_dotnet
         private void Form1_Load(object sender, EventArgs e)
         {
            // _hookID = SetHook(_proc);
+            //Logger.debug("Starting lock");
             if (Environment.GetCommandLineArgs().Length >= 2)
                 pass = Environment.GetCommandLineArgs()[1];
-            KeyboardFilter filter = new KeyboardFilter(new Keys[] { Keys.LWin, Keys.RWin, Keys.Escape, Keys.Alt, Keys.Tab, Keys.F4, Keys.Control });
+            KeyboardFilter filter = new KeyboardFilter(new Keys[] { Keys.LWin, Keys.RWin, Keys.Escape, Keys.Alt, Keys.Tab, Keys.F4,Keys.F1,Keys.LaunchApplication1,Keys.LaunchApplication2,Keys.LaunchMail,Keys.BrowserHome,Keys.SelectMedia, Keys.Control });
             this.TopMost = true;
             this.Location = new Point(0, 0);
             this.FormBorderStyle = FormBorderStyle.None;
@@ -37,9 +41,10 @@ namespace prey_lock_dotnet
             this.showBG();
             this.renderPasswordBox();
             this.renderErrorLabel();
+            this.Activate();
             this.textPass.Focus();
+            //TaskMgrHidder.hide();
         }
-
 
 
         private void renderPasswordBox() {
@@ -97,8 +102,10 @@ namespace prey_lock_dotnet
             if (e.KeyChar == (char)13)
             {
                 if (EncodePassword(this.textPass.Text).Equals(pass))
+                {
                     //Application.Exit(66);
                     Environment.Exit(66);
+                }
                 else
                 {
                     this.textPass.SelectAll();
@@ -130,6 +137,43 @@ namespace prey_lock_dotnet
         }
 
 
+        private void timerAlwaysOnTop_Tick(object sender, EventArgs e)
+        {
+
+
+            //this.closeTaskManager();
+            if (!this.ContainsFocus || !this.textPass.Focused)
+            {
+                foreach (Form form in Application.OpenForms)
+                {
+                    form.BringToFront();
+                }
+                this.BringToFront();
+                this.textPass.Focus();
+                this.Activate();
+            }
+        }
+/*
+        private void closeTaskManager()
+        {
+            int taskManager = FindWindow("#32770", "Windows Task Manager");
+            if (taskManager == 0)
+            {
+                Process[] processes = Process.GetProcessesByName("taskmgr");
+                foreach (Process p in processes)
+                {
+                    IntPtr wHandle = p.MainWindowHandle;
+                    taskManager = (int)wHandle;
+                }
+            }
+            if (taskManager != 0)
+                {
+                    const int WM_CLOSE = 0x0010;
+                    SendMessage(taskManager, WM_CLOSE, 0, 0);
+                }
+        }
+*/
+       
     }
 
 

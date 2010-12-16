@@ -1,6 +1,6 @@
 ﻿namespace prey_lock_dotnet
 {
-    partial class Form1
+    partial class LockForm
     {
         /// <summary>
         /// Required designer variable.
@@ -33,6 +33,7 @@
             this.textPass = new System.Windows.Forms.TextBox();
             this.lblError = new System.Windows.Forms.Label();
             this.timerLabel = new System.Windows.Forms.Timer(this.components);
+            this.timerAlwaysOnTop = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.imgPrey)).BeginInit();
             this.SuspendLayout();
             // 
@@ -61,21 +62,28 @@
             // lblError
             // 
             this.lblError.AutoSize = true;
+            this.lblError.CausesValidation = false;
             this.lblError.Font = new System.Drawing.Font("Calibri", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblError.ForeColor = System.Drawing.Color.Red;
             this.lblError.Location = new System.Drawing.Point(48, 231);
             this.lblError.Name = "lblError";
-            this.lblError.Size = new System.Drawing.Size(328, 27);
+            this.lblError.Size = new System.Drawing.Size(334, 27);
             this.lblError.TabIndex = 4;
-            this.lblError.Text = "Incorrect password! Access denied";
+            this.lblError.Text = "Incorrect password! Access denied.";
             this.lblError.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblError.UseMnemonic = false;
             // 
             // timerLabel
             // 
             this.timerLabel.Interval = 2000;
             this.timerLabel.Tick += new System.EventHandler(this.timerLabel_Tick);
             // 
-            // Form1
+            // timerAlwaysOnTop
+            // 
+            this.timerAlwaysOnTop.Enabled = true;
+            this.timerAlwaysOnTop.Tick += new System.EventHandler(this.timerAlwaysOnTop_Tick);
+            // 
+            // LockForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -83,8 +91,8 @@
             this.Controls.Add(this.lblError);
             this.Controls.Add(this.textPass);
             this.Controls.Add(this.imgPrey);
-            this.Name = "Form1";
-            this.Text = "Form1";
+            this.Name = "LockForm";
+            this.Text = "Prey Lock";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.imgPrey)).EndInit();
             this.ResumeLayout(false);
@@ -98,6 +106,7 @@
         private System.Windows.Forms.TextBox textPass;
         private System.Windows.Forms.Label lblError;
         private System.Windows.Forms.Timer timerLabel;
+        private System.Windows.Forms.Timer timerAlwaysOnTop;
     }
 }
 
