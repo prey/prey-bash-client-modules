@@ -11,6 +11,7 @@ namespace prey_lock_dotnet
         private Keys[] mFilter;
         private IntPtr mHook;
         private LowLevelKeyboardProc mProc;
+        private IntPtr moduleNameHandle;
 
         public KeyboardFilter(Keys[] keysToFilter)
         {
@@ -20,15 +21,17 @@ namespace prey_lock_dotnet
                 mFilter = keysToFilter;
                 ProcessModule mod = Process.GetCurrentProcess().MainModule;
                 mProc = new LowLevelKeyboardProc(KeyboardProc); // Avoid garbage collector problems 
-                mHook = SetWindowsHookEx(13, mProc, GetModuleHandle(mod.ModuleName), 0);
-            
-                if (mHook == IntPtr.Zero) throw new Win32Exception(Marshal.GetLastWin32Error(), "Failed to set hook");
+                moduleNameHandle = GetModuleHandle(mod.ModuleName);
             }
             catch (Exception)
             {
                 
                 return;
             }
+        }
+        public void run() {
+            mHook = SetWindowsHookEx(13, mProc, moduleNameHandle, 0);
+            if (mHook == IntPtr.Zero) throw new Win32Exception(Marshal.GetLastWin32Error(), "Failed to set hook");            
         }
         public void Dispose()
         {
@@ -39,6 +42,7 @@ namespace prey_lock_dotnet
                 mHook = IntPtr.Zero;
             }
         }
+
         private IntPtr KeyboardProc(int nCode, IntPtr wp, IntPtr lp)
         {
             // Callback, filter key 

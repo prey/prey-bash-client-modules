@@ -30,7 +30,7 @@ namespace prey_lock_dotnet
             //Logger.debug("Starting lock");
             if (Environment.GetCommandLineArgs().Length >= 2)
                 pass = Environment.GetCommandLineArgs()[1];
-            KeyboardFilter filter = new KeyboardFilter(new Keys[] { Keys.LWin, Keys.RWin, Keys.Escape, Keys.Alt, Keys.Tab, Keys.F4,Keys.F1,Keys.LaunchApplication1,Keys.LaunchApplication2,Keys.LaunchMail,Keys.BrowserHome,Keys.SelectMedia, Keys.Control });
+            //KeyboardFilter filter = new KeyboardFilter(new Keys[] { Keys.LWin, Keys.RWin, Keys.Escape, Keys.Alt, Keys.Tab, Keys.F4, Keys.F1, Keys.LaunchApplication1, Keys.LaunchApplication2, Keys.LaunchMail, Keys.BrowserHome, Keys.SelectMedia, Keys.Control });
             this.TopMost = true;
             this.Location = new Point(0, 0);
             this.FormBorderStyle = FormBorderStyle.None;

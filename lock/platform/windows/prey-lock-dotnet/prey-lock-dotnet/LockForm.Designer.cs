@@ -80,7 +80,6 @@
             // 
             // timerAlwaysOnTop
             // 
-            this.timerAlwaysOnTop.Enabled = true;
             this.timerAlwaysOnTop.Tick += new System.EventHandler(this.timerAlwaysOnTop_Tick);
             // 
             // LockForm
