@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>prey-lock</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.usefork.prey-lock</string>
+	<string>com.forkltd.prey-lock</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -22,10 +22,6 @@
 	<string>1</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>10.5</string>
-	<key>LSUIElement</key>
-	<true/>
-	<key>LSUIPresentationMode</key>
-	<integer>4</integer>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
