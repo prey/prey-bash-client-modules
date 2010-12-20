@@ -1,0 +1,22 @@
+#!/bin/bash
+####################################################################
+# Prey Lock Windows Functions - by Tomas Pollak (bootlog.org)
+# URL: http://preyproject.com
+# License: GPLv3
+####################################################################
+
+system_policy_key="SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System"
+
+before_lock_callback(){
+	log " -- Locking escape methods..."
+	reg add "HKLM\\${system_policy_key}" //v HideFastUserSwitching //t REG_DWORD //d 1 //f > /dev/null
+	run_as_current_user "reg add HKCU\\${system_policy_key} //v DisableTaskMgr //t REG_DWORD //d 1 //f" > /dev/null
+	run_as_current_user "reg add HKCU\\${system_policy_key} //v DisableChangePassword //t REG_DWORD //d 1 //f" > /dev/null
+}
+
+after_lock_callback(){
+	log " -- Reenabling system policies..."
+	reg add "HKLM\\${system_policy_key}" //v HideFastUserSwitching //t REG_DWORD //d 0 //f > /dev/null
+	run_as_current_user "reg add HKCU\\${system_policy_key} //v DisableTaskMgr //t REG_DWORD //d 0 //f" > /dev/null
+	run_as_current_user "reg add HKCU\\${system_policy_key} //v DisableChangePassword //t REG_DWORD //d 0 //f" > /dev/null
+}
