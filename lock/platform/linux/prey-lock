@@ -1,7 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 #############################################
-# Locker for Linux
+# Prey Linux Lock
 # By Tomas Pollak - (c) 2010 Fork Ltd.
+# http://preyproject.com
 # GPLv3 Licence
 #############################################
 
@@ -9,13 +10,6 @@ import os, sys
 import hashlib
 import gtk
 import pango
-
-# import wnck
-
-# import gobject
-# from threading import Timer
-# import time
-# from time import sleep
 
 class Lock:
 	def get_md5(self, string):
@@ -45,7 +39,7 @@ class Lock:
 
 	def on_window_state_change(self, widget, event):
 		self.window.activate_focus()
-		print "Something happened"
+		print " -- Something happened."
 		return False
 
 	def on_key_press(self, widget, event):
@@ -103,7 +97,6 @@ class Lock:
 		self.window.set_border_width(0)
 		self.window.set_keep_above(True)
 		self.window.set_resizable(False)
-
 		# self.window.fullscreen()
 
 		main_screen_width = self.window.get_screen().get_monitor_geometry(0).width
@@ -137,7 +130,6 @@ class Lock:
 		self.entry = gtk.Entry(max=0)
 		self.entry.set_max_length(40)
 
-		# self.entry.set_text("type password")
 		self.entry.set_inner_border(None)
 		self.entry.set_width_chars(32)
 		self.entry.set_visibility(False)
@@ -145,47 +137,27 @@ class Lock:
 		self.entry.modify_font(pango.FontDescription("sans 20"))
 		self.entry.set_flags(gtk.CAN_FOCUS | gtk.HAS_FOCUS | gtk.HAS_GRAB | gtk.CAN_DEFAULT | gtk.SENSITIVE)
 		self.entry.connect("activate", self.enter_callback, self.entry)
-
-		# self.entry.grab_focus()
-		# self.entry.set_editable(True)
-		# self.entry.set_sensitive(True)
-		# self.entry.realize()
-
-		# hbox.pack_start(self.entry, True, True, 500)
-
-		self.entry.show()
+		# self.entry.show()
 
 		fixed = gtk.Fixed()
 		fixed.put(self.entry, main_screen_middle-240, -(main_screen_height/2)+18)
 		fixed.show()
 		hbox.pack_start(fixed, False, False, 30)
 
-		# self.window.set_focus(self.entry)
-
 		text = 'Invalid password. Access denied.'
 		self.label = gtk.Label()
 		self.label.set_markup('<span foreground="#aa0000">'+text+'</span>');
 		self.label.modify_font(pango.FontDescription("sans 20"))
 		self.label.set_size_request(main_screen_width, 30)
-		# self.label.show()
 
 		fixed2 = gtk.Fixed()
 		fixed2.put(self.label, -main_screen_width/2-240, -(main_screen_height/2)+60)
 		hbox.pack_start(fixed2, True, False, 30)
 
 		self.window.show_all()
+		# self.window.set_focus(self.entry)
 		gtk.gdk.keyboard_grab(fixed.window, True)
 		self.label.hide()
-		# gtk.gdk.event_handler_set(self.handle_event)
-
-def keep_focus():
-	screen = wnck.screen_get_default()
-	while True:
-		sleep(1)
-		for window in screen.get_windows():
-			if window.get_name().startswith('Prey Lock'):
-				window.activate(gtk.get_current_event_time())
-		# lock.window.grab_focus()
 
 if __name__ == "__main__":
 
@@ -197,13 +169,4 @@ if __name__ == "__main__":
 		passwd = sys.argv[1]
 
 	lock = Lock()
-
-	# gobject.threads_init()
-
-	# gtk.gdk.threads_init()
-	# gtk.gdk.threads_enter()
-
-	# Timer(1, keep_focus).start()
 	gtk.main()
-
-	# gtk.gdk.threads_leave()
