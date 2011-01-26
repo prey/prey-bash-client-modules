@@ -38,25 +38,18 @@ get_bios_info(){
 }
 
 get_cpu_info(){
-	local cpu_info=`cat /proc/cpuinfo	| awk 'BEGIN {
-		CPU_NUM = 0
-		ORS = "#"
-		FS = ":"}
+	local cpu_info=$(cat /proc/cpuinfo)
 
-		/processor/ { CPU_NUM+=1  }
-		/model name/ { gsub(/^ */,"",$2); print CPU_NUM"_name="$2 }
-		/cpu MHz/{ gsub(/^ */,"",$2); print CPU_NUM"_speed="$2 }
-		/cpu cores/{ gsub(/^ */,"",$2); print CPU_NUM"_cores="$2"__" }'`
-
-	cpu_model=`echo -e "$cpu_info" | sed 's/1_name=\(.[^#]*\)#.*/\1/'`
-	cpu_speed=`echo -e "$cpu_info" | sed 's/.*1_speed=\(.[^.]*\).*/\1/'`
-	cpu_cores=`echo -e "$cpu_info" | sed 's/.*1_cores=\(.[^__]*\).*/\1/'`
+	cpu_model=`echo -e "$cpu_info" | grep "model name" | tail -1 | sed 's/.*: //'`
+	cpu_speed=`echo -e "$cpu_info" | grep "cpu MHz" | tail -1 | sed 's/.*: //'`
+	cpu_cores=`echo -e "$cpu_info" | grep "processor" | wc -l`
 }
 
-get_memory_info(){
-	local mem_in_bytes=`cat /proc/meminfo | grep "MemTotal" | sed 's/.*:[[:space:]]*\(.*\) .*/\1/'`
 
-	ram_size=$(($mem_in_bytes/1024))
+get_memory_info(){
+	local mem_in_kb=`cat /proc/meminfo | grep "MemTotal" | sed 's/.*:[[:space:]]*\(.*\) .*/\1/'`
+
+	ram_size=$(($mem_in_kb/1024))
 	ram_modules=`dmidecode --type 17 | grep Size | grep -v "No Module" | wc -l`
 }
 

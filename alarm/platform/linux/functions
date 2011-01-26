@@ -11,7 +11,7 @@ sound_alarm() {
 		log "$player audio player not found! Please install through your package manager."
 		return 1
 	fi
-	pactl set-sink-mute 0 0
-	pactl set-sink-volume 0 65536 # pump it up!
-	$player $alarm__sound_file &> /dev/null &
+	run_as_current_user "pactl set-sink-mute 0 0"
+	run_as_current_user "pactl set-sink-volume 0 65536" # pump it up!
+	run_as_current_user "$player $alarm__sound_file &> /dev/null" &
 }
