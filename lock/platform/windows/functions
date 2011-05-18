@@ -9,6 +9,7 @@ system_policy_key="SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Syste
 
 before_lock_callback(){
 	log " -- Locking escape methods..."
+	"${module_platform_path}/lockpolicy.exe" allow
 	reg add "HKLM\\${system_policy_key}" //v HideFastUserSwitching //t REG_DWORD //d 1 //f > /dev/null
 	run_as_current_user "reg add HKCU\\${system_policy_key} //v DisableTaskMgr //t REG_DWORD //d 1 //f" > /dev/null
 	run_as_current_user "reg add HKCU\\${system_policy_key} //v DisableChangePassword //t REG_DWORD //d 1 //f" > /dev/null
@@ -19,4 +20,5 @@ after_lock_callback(){
 	reg add "HKLM\\${system_policy_key}" //v HideFastUserSwitching //t REG_DWORD //d 0 //f > /dev/null
 	run_as_current_user "reg add HKCU\\${system_policy_key} //v DisableTaskMgr //t REG_DWORD //d 0 //f" > /dev/null
 	run_as_current_user "reg add HKCU\\${system_policy_key} //v DisableChangePassword //t REG_DWORD //d 0 //f" > /dev/null
+	"${module_platform_path}/lockpolicy.exe" deny
 }
