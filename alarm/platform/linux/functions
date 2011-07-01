@@ -8,7 +8,7 @@
 sound_alarm() {
 	local player="mpg123"
 	if [ -z `which $player` ]; then
-		log "$player audio player not found! Please install through your package manager."
+		log " !! $player audio player not found! Please install through your package manager."
 		return 1
 	fi
 	run_as_current_user "pactl set-sink-mute 0 0"
