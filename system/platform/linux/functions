@@ -45,7 +45,6 @@ get_cpu_info(){
 	cpu_cores=`echo -e "$cpu_info" | grep "processor" | wc -l`
 }
 
-
 get_memory_info(){
 	local mem_in_kb=`cat /proc/meminfo | grep "MemTotal" | sed 's/.*:[[:space:]]*\(.*\) .*/\1/'`
 
@@ -71,4 +70,9 @@ get_hdd_info(){
 		hdd_info="$hdd_info${it}_size=${hd_size}#${it}_model=${hd_model}#${it}_serial=${hd_serial}#${it}_firmware=${hd_firmware}__"
 	done
 	# echo -e $hdd_info
+}
+
+get_mac_address() {
+	# mac_address=`ifconfig | grep 'HWaddr' | cut -d: -f2-7`
+	mac_address=$(ifconfig | grep 'HWaddr' | awk '{print $5}')
 }

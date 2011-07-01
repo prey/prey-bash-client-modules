@@ -5,11 +5,6 @@
 # License: GPLv3
 ####################################################################
 
-get_mac_address() {
-	# mac_address=`ifconfig | grep 'HWaddr' | cut -d: -f2-7`
-	mac_address=`ifconfig | grep 'HWaddr' | cut -d ' ' -f11-15`
-}
-
 get_active_connections() {
-	active_connections=`netstat -tupn | grep -v "127.0.0.1"`
+	active_connections=$(netstat -tupn | grep -v "127.0.0.1")
 }

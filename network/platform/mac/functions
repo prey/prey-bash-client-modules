@@ -5,12 +5,6 @@
 # License: GPLv3
 ####################################################################
 
-get_mac_address() {
-	# this one is actually the gateway's mac address!
-	# mac_address=`arp -n $gateway_ip | cut -f4 -d' '`
-	mac_address=`/sbin/ifconfig | grep ether | sed -e 's/ether //g' -e 's/^[^a-z0-9]//g' | head -1`
-}
-
 get_active_connections() {
-	active_connections=`/usr/sbin/netstat -p tcp -a`
+	active_connections=$(/usr/sbin/netstat -p tcp -a)
 }

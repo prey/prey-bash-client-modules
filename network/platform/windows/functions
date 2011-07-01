@@ -5,14 +5,10 @@
 # License: GPLv3
 ####################################################################
 
-get_mac_address() {
-	mac_address=`ipconfig -all | grep Physical | sed 's/^.*: //g' | grep -v '^$' | head -1`
-}
-
 get_active_connections() {
-	active_connections=`netstat -n`
+	active_connections=$(netstat -n)
 }
 
 trace_route() {
-	complete_trace=`tracert.exe www.google.com 2> /dev/null`
+	complete_trace=$(tracert.exe www.google.com 2> /dev/null | grep -v -e "^[a-z]" -e "^$")
 }

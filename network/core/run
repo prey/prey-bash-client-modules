@@ -14,14 +14,8 @@ get_internal_ip
 add_trace internal_ip $internal_ip
 
 log " -- Getting gateway IP address..."
-if [ -z "$gateway_ip" ]; then
-	get_gateway_ip
-fi
+[ -z "$gateway_ip" ] && get_gateway_ip
 add_trace gateway_ip $gateway_ip
-
-log "$STRING_GET_MAC_AND_WIFI"
-get_mac_address
-add_trace mac_address $mac_address
 
 if [ "$network__get_active_connections" == 'y' ]; then
 	log "$STRING_ACTIVE_CONNECTIONS"
@@ -30,13 +24,9 @@ if [ "$network__get_active_connections" == 'y' ]; then
 fi
 
 if [ "$network__get_nearby_wifi_hotspots" == 'y' ]; then
-	log ' -- Getting list of nearby Wifi access points...'
-	if [ -z "$wifi_info" ]; then
-		get_wifi_info
-	fi
-	if [ -n "$wifi_info" ]; then
-		add_trace wifi_info "$wifi_info"
-	fi
+	log "$STRING_GET_WIFI"
+	[ -z "$wifi_info" ] && get_wifi_info
+	[ -n "$wifi_info" ] && add_trace wifi_info "$wifi_info"
 fi
 
 if [ "$network__trace_route" == 'y' ]; then
