@@ -56,7 +56,3 @@ get_hdd_info(){
 	/Serial: / { print UNIT"_serial="substr ($0, 10)}
 	/Firmware: / { print UNIT"_fimware="substr ($0, 12)"__"}'`
 }
-
-get_mac_address() {
-	mac_address=$(ipconfig -all | grep Physical | sed 's/^.*: //g' | grep -v '^$' | head -1)
-}
