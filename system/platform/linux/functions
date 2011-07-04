@@ -5,27 +5,32 @@
 # License: GPLv3
 ####################################################################
 
-system_udi=$(hal-find-by-property --key info.product --string Computer)
+# system_udi=$(hal-find-by-property --key info.product --string Computer)
 
-get_from_hal(){
-	/usr/bin/hal-get-property --udi $system_udi --key $1
+#get_from_hal(){
+#	/usr/bin/hal-get-property --udi $system_udi --key $1
+#}
+
+get_system_full_info(){
+	system__full_info=$(lshw 2> /dev/null)
 }
 
 get_system_ids(){
-	system__uuid=$(get_from_hal system.hardware.uuid)
-	system__serial_number=$(get_from_hal system.hardware.serial)
+	[ -z "$system__full_info" ] && get_system_full_info
+	system__uuid=$(echo "$system__full_info" | head -10 | grep "uuid" | sed "s/.*uuid=\(.*\)/\1/")
+	system__serial_number=$(echo "$system__full_info" | head -10 | grep serial | head -1 | awk -F ': ' '{print $2}')
 }
 
 get_mb_info(){
-	system__mb_vendor=$(get_from_hal system.board.vendor)
-	system__mb_serial=$(get_from_hal system.board.serial)
-	system__mb_model=$(get_from_hal system.board.product)
-	system__mb_version=$(get_from_hal system.board.version)
+	system__mb_vendor=$(echo "$system__full_info" | grep Motherboard -A5 | grep vendor | awk -F ': ' '{print $2}')
+	system__mb_serial=$(echo "$system__full_info" | grep Motherboard -A5 | grep serial | awk -F ': ' '{print $2}')
+	system__mb_model=$(echo "$system__full_info" | grep Motherboard -A5 | grep product | awk -F ': ' '{print $2}')
+	system__mb_version=$(echo "$system__full_info" | grep Motherboard -A5 | grep version | awk -F ': ' '{print $2}')
 }
 
 get_bios_info(){
-	system__bios_vendor=$(get_from_hal system.firmware.vendor)
-	system__bios_version=$(get_from_hal system.firmware.version)
+	system__bios_vendor=$(echo "$system__full_info" | grep -i "\-firmware" -A4 | grep vendor | awk -F ': ' '{print $2}')
+	system__bios_version=$(echo "$system__full_info" | grep -i "\-firmware" -A4 | grep version | awk -F ': ' '{print $2}')
 }
 
 get_cpu_info(){
