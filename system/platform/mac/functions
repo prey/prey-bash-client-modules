@@ -48,19 +48,7 @@ get_memory_info(){
 			print TOTAL_MEM*1024
 		}')
 
-	system__ram_modules=$(echo "$mem_full_info" | awk 'BEGIN {
-		BANK_NUM = 0
-		TOTAL_MEM = 0
-		ORS = "#"}
-
-		/BANK/ { BANK_NUM+=1  }
-		/Size: /{	print BANK_NUM"_size="$2$3 }
-		/Type: /{	print BANK_NUM"_type="$2 }
-		/Speed: /{	print BANK_NUM"_speed="$2$3"__" }
-
-		END {
-			print "BANKS="BANK_NUM
-		}')
+	system__ram_modules=$(echo "$mem_full_info" | grep "BANK" | wc -l | awk '{print $1}')
 
 }
 
@@ -72,31 +60,39 @@ get_ioreg_vendor_and_model(){
 get_network_interfaces(){
 
 		local nic_list=$(networksetup -listnetworkserviceorder 2> /dev/null | grep -v Bluetooth | grep Hardware)
-		
+
 		while read line; do
 
 		local human_name=$(echo "$line" | cut -d',' -f1 | awk -F ': ' '{print $2}')
 		local name=$(echo "$line" | sed "s/.* \(.*\))$/\1/")
 
 		if [[ "$human_name" =~ "Ethernet" ]]; then
+
 			local interface_type="Wired"
-			model_and_vendor=$(get_ioreg_vendor_and_model "Ethernet|Gigabit" | tr "\n" ";") 
+			local model_and_vendor=$(get_ioreg_vendor_and_model "Ethernet|Gigabit" | tr "\n" ";")
+
 			while read output; do
 				local vendor=$(echo "$output" | cut -d";" -f1)
 				local model=$(echo "$output" | cut -d";" -f2)
 			done <<< "$model_and_vendor"
+
 		elif [[ "$human_name" =~ "AirPort" ]]; then
+
 			local interface_type="Wireless"
-			model_and_vendor=$(get_ioreg_vendor_and_model "802.11" | tr "\n" ";") 
+			local model_and_vendor=$(get_ioreg_vendor_and_model "802.11" | tr "\n" ";")
+
 			while read output; do
 				local vendor=$(echo "$output" | cut -d";" -f1)
 				local model=$(echo "$output" | cut -d";" -f2)
 			done <<< "$model_and_vendor"
+
 		elif [[ "$human_name" =~ "FireWire" ]]; then
+
 			continue
 			local interface_type="Firewire"
 			local vendor="Apple"
 			local model="fw+"
+
 		fi
 
 		store_network_interface_value $name 'name' "$human_name"
