@@ -56,3 +56,42 @@ get_hdd_info(){
 	/Serial: / { print UNIT"_serial="substr ($0, 10)}
 	/Firmware: / { print UNIT"_fimware="substr ($0, 12)"__"}')
 }
+
+get_network_interfaces(){
+
+	local nic_list=$(echo "nic list full" | wmic 2> /dev/null | grep "MACAddress=." -A4)
+
+	local id=0
+	echo "$nic_list" | while read line; do
+
+		local key=$(echo "$line" | cut -d '=' -f1)
+		local value=$(echo "$line" | cut -d '=' -f2)
+
+		if [ "$key" == "MACAddress" ]; then
+
+			id=$(($id+1))
+
+			local mac_address="$value"
+			store_network_interface_value "$id" "mac_address" "$mac_address"
+
+			local ip_address=$(get_ip_address "$mac_address")
+			local netmask=$(get_netmask "$mac_address")
+			local gateway_ip=$(get_gateway_ip "$mac_address")
+
+			store_network_interface_value "$id" "ip_address" "$ip_address"
+			store_network_interface_value "$id" "netmask" "$netmask"
+			store_network_interface_value "$id" "gateway_ip" "$gateway_ip"
+
+		fi
+
+		case "$key" in
+			"Manufacturer")
+				store_network_interface_value "$id" "vendor" "$value"
+			;;
+			"Name")
+				store_network_interface_value "$id" "model" "$value"
+			;;
+		esac
+
+	done
+}
