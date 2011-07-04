@@ -75,7 +75,7 @@ get_network_interfaces(){
 		elif [ "$key" == "Name" ]; then
 			store_network_interface_value "nic_${id}" "model" "$value"
 
-			if [ -n "$(echo "$value" | egrep -i 'wireless|wifi|802.11' 2> /dev/null" ]; then
+			if [ -n "$(echo "$value" | egrep -i 'wireless|wifi|802.11' 2> /dev/null)" ]; then
 				store_network_interface_value "nic_${id}" "interface_type" "Wireless"
 			fi
 
