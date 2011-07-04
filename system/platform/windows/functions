@@ -51,7 +51,7 @@ get_network_interfaces(){
 	local nic_list=$(echo "nic list full" | wmic 2> /dev/null | grep "MACAddress=." -A4)
 
 	local id=0
-	echo "$nic_list" | while read line; do
+	while read line; do
 
 		local key=$(echo "$line" | cut -d '=' -f1)
 		local value=$(echo "$line" | cut -d '=' -f2)
@@ -61,25 +61,25 @@ get_network_interfaces(){
 			id=$(($id+1))
 
 			local mac_address="$value"
-			store_network_interface_value "$id" "mac_address" "$mac_address"
+			store_network_interface_value "nic_${id}" "mac_address" "$mac_address"
 
 			local ip_address=$(get_ip_address "$mac_address")
 			local netmask=$(get_netmask "$mac_address")
 			local gateway_ip=$(get_gateway_ip "$mac_address")
 
-			store_network_interface_value "$id" "ip_address" "$ip_address"
-			store_network_interface_value "$id" "netmask" "$netmask"
-			store_network_interface_value "$id" "gateway_ip" "$gateway_ip"
+			store_network_interface_value "nic_${id}" "ip_address" "$ip_address"
+			store_network_interface_value "nic_${id}" "netmask" "$netmask"
+			store_network_interface_value "nic_${id}" "gateway_ip" "$gateway_ip"
 
 		elif [ "$key" == "Manufacturer" ]; then
-			store_network_interface_value "$id" "vendor" "$value"
+			store_network_interface_value "nic_${id}" "vendor" "$value"
 		elif [ "$key" == "Name" ]; then
-			store_network_interface_value "$id" "model" "$value"
+			store_network_interface_value "nic_${id}" "model" "$value"
 		fi
 
-	done
+	done <<< "$nic_list"
 }
 
 get_storage_devices(){
-	log "Storage devices still in the works!"
+	log " -- Storage devices getter still in the works!"
 }
