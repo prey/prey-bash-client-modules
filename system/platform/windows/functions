@@ -43,7 +43,6 @@ get_memory_info(){
 	local ram_in_bytes=$(wmic_call "os get TotalVisibleMemorySize")
 	system__ram_size=$(($ram_in_bytes/1024))
 	system__ram_modules=$(cscript "$module_platform_path\\ramcheck.vbs" | grep "Bank Label" | wc -l | sed "s/ //g")
-	# mem_info="1_size=${mem_total}#1_type=0#1_speed=0__#BANKS=${mem_modules}#"
 }
 
 get_network_interfaces(){
