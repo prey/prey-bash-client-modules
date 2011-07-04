@@ -46,17 +46,6 @@ get_memory_info(){
 	# mem_info="1_size=${mem_total}#1_type=0#1_speed=0__#BANKS=${mem_modules}#"
 }
 
-get_hdd_info(){
-  local hdd_full_info=$("$module_platform_path/hddinfo.exe")
-  hdd_info=$(echo "$hdd_full_info"  | awk 'BEGIN {
-	ORS = "#"}
-	/Disk/ { UNIT=$2}
-	/Capacity/ { print UNIT"_size="$2" "$3}
-	/Model: / { print UNIT"_model="substr ($0, 9)}
-	/Serial: / { print UNIT"_serial="substr ($0, 10)}
-	/Firmware: / { print UNIT"_fimware="substr ($0, 12)"__"}')
-}
-
 get_network_interfaces(){
 
 	local nic_list=$(echo "nic list full" | wmic 2> /dev/null | grep "MACAddress=." -A4)
@@ -82,16 +71,15 @@ get_network_interfaces(){
 			store_network_interface_value "$id" "netmask" "$netmask"
 			store_network_interface_value "$id" "gateway_ip" "$gateway_ip"
 
+		elif [ "$key" == "Manufacturer" ]; then
+			store_network_interface_value "$id" "vendor" "$value"
+		elif [ "$key" == "Name" ]; then
+			store_network_interface_value "$id" "model" "$value"
 		fi
 
-		case "$key" in
-			"Manufacturer")
-				store_network_interface_value "$id" "vendor" "$value"
-			;;
-			"Name")
-				store_network_interface_value "$id" "model" "$value"
-			;;
-		esac
-
 	done
+}
+
+get_storage_devices(){
+	log "Storage devices still in the works!"
 }
