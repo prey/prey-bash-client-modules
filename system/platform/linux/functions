@@ -11,68 +11,100 @@ get_from_hal(){
 	/usr/bin/hal-get-property --udi $system_udi --key $1
 }
 
-get_os_info(){
-	os_version=`lsb_release -d | sed 's/.*:\t//'`
-	kernel_version=`uname -r`
-}
-
 get_system_ids(){
-	uuid=`get_from_hal system.hardware.uuid`
-	serial_number=`get_from_hal system.hardware.serial`
-	# if [ "$serial_number" == 'System Serial Number' ]; then # damn, generic shit
-		# lets grab the MB serial number, maybe that works better
-		# serial_number=`get_from_hal system.board.serial`
-	# fi
+	system__uuid=$(get_from_hal system.hardware.uuid)
+	system__serial_number=$(get_from_hal system.hardware.serial)
 }
 
 get_mb_info(){
-	mb_vendor=`get_from_hal system.board.vendor`
-	mb_serial=`get_from_hal system.board.serial`
-	mb_model=`get_from_hal system.board.product`
-	mb_version=`get_from_hal system.board.version`
+	system__mb_vendor=$(get_from_hal system.board.vendor)
+	system__mb_serial=$(get_from_hal system.board.serial)
+	system__mb_model=$(get_from_hal system.board.product)
+	system__mb_version=$(get_from_hal system.board.version)
 }
 
 get_bios_info(){
-	bios_vendor=`get_from_hal system.firmware.vendor`
-	bios_version=`get_from_hal system.firmware.version`
+	system__bios_vendor=$(get_from_hal system.firmware.vendor)
+	system__bios_version=$(get_from_hal system.firmware.version)
 }
 
 get_cpu_info(){
 	local cpu_info=$(cat /proc/cpuinfo)
 
-	cpu_model=`echo -e "$cpu_info" | grep "model name" | tail -1 | sed 's/.*: //'`
-	cpu_speed=`echo -e "$cpu_info" | grep "cpu MHz" | tail -1 | sed 's/.*: //'`
-	cpu_cores=`echo -e "$cpu_info" | grep "processor" | wc -l`
+	system__cpu_model=$(echo -e "$cpu_info" | grep "model name" | tail -1 | sed 's/.*: //')
+	system__cpu_speed=$(echo -e "$cpu_info" | grep "cpu MHz" | tail -1 | sed 's/.*: //')
+	system__cpu_cores=$(echo -e "$cpu_info" | grep "processor" | wc -l)
 }
 
 get_memory_info(){
-	local mem_in_kb=`cat /proc/meminfo | grep "MemTotal" | sed 's/.*:[[:space:]]*\(.*\) .*/\1/'`
+	local mem_in_kb=$(cat /proc/meminfo | grep "MemTotal" | sed 's/.*:[[:space:]]*\(.*\) .*/\1/')
 
-	ram_size=$(($mem_in_kb/1024))
-	ram_modules=`dmidecode --type 17 | grep Size | grep -v "No Module" | wc -l`
+	system__ram_size=$(($mem_in_kb/1024))
+	system__ram_modules=$(dmidecode --type 17 | grep Size | grep -v "No Module" | wc -l)
 }
 
-get_hdd_info(){
-	local hard_disks=`cat /proc/partitions | awk 'BEGIN {
+get_storage_devices(){
 
-	ORS = "#"}
-	{if (length($4) ==3) print $4}'`
+#	hwinfo --disk --cdrom 2> /dev/null | grep Class -A8 | while read line; do
 
-	arr=$(echo $hard_disks | tr "#" "\n")
-	it=0
-	hdd_info=""
-	for x in $arr; do
-		it=$(($it+1))
-		hd_size=`fdisk -l | grep "Disk /dev/$x" | sed 's/.*:[[:space:]]*\(.*\),.*/\1/'`
-		hd_model=`hdparm -I "/dev/$x" | grep "Model Number" | sed 's/.*:[[:space:]]*\(.*\)/\1/'`
-		hd_serial=`hdparm -I "/dev/$x" | grep "Serial Number" | sed 's/.*:[[:space:]]*\(.*\)/\1/'`
-		hd_firmware=`hdparm -I "/dev/$x" | grep "Firmware Revision" | sed 's/.*:[[:space:]]*\(.*\)/\1/'`
-		hdd_info="$hdd_info${it}_size=${hd_size}#${it}_model=${hd_model}#${it}_serial=${hd_serial}#${it}_firmware=${hd_firmware}__"
+#		key=$(echo "$line" | cut -d":" -f1)
+#		val=$(echo "$line" | cut -d":" -f2)
+
+#		echo "key: $key"
+#		echo "val: $val"
+
+#	done
+
+	local disks_path="/dev/disk/by-id"
+
+	# awk removes entries that point to the same path, so we avoid duplicate HD's
+	for disk in $(ls -l "$disks_path" | awk 'a !~ $10; {a=$10}' | grep -v "\-part[1-9]" | awk '{print $8}'); do
+
+		local name=$(readlink -f "${disks_path}/${disk}" | sed "s/.*\/\(.*\)$/\1/")
+		store_storage_device_value "$name" 'name' "$name"
+
+		local interface=$(echo "$disk" | cut -d"-" -f1)
+		store_storage_device_value "$name" 'interface' "$interface"
+
+		local model=$(echo "$disk" | sed "s/.*-\(.*\)_.*/\1/")
+		store_storage_device_value "$name" 'model' "$model"
+
+		local serial_number=$(echo "$disk" | sed "s/.*_\(.*\)/\1/")
+		store_storage_device_value "$name" 'serial_number' "$serial_number"
+
 	done
-	# echo -e $hdd_info
+
 }
 
-get_mac_address() {
-	# mac_address=`ifconfig | grep 'HWaddr' | cut -d: -f2-7`
-	mac_address=$(ifconfig | grep 'HWaddr' | awk '{print $5}')
+
+get_network_interfaces(){
+	for device_name in /sys/class/net/* ; do
+		[ -e $device_name/device ] && {
+
+			local name=$(echo "$device_name" | sed "s/.*\/\(.*\)$/\1/")
+			store_network_interface_value $name 'name' "$name"
+
+			local interface_type="Wired"
+			[ -n "$(cat /proc/net/wireless | grep "$name" 2> /dev/null)" ] && interface_type="Wireless"
+			store_network_interface_value $name 'interface_type' "$interface_type"
+
+			local pci_slot=$(cat $device_name/device/uevent | grep PCI_SLOT | cut -f2- -d":")
+			local vendor=$(lspci -v | grep $pci_slot -A1 | grep 'Subsystem' | cut -f2- -d" ")
+
+			store_network_interface_value $name 'vendor' "$vendor"
+
+			local mac_address=$(cat $device_name/address)
+			store_network_interface_value $name 'mac_address' "$mac_address"
+
+			local ip_address=$(get_ip_address $name)
+			store_network_interface_value $name 'ip_address' "$ip_address"
+
+			local gateway_ip=$(get_gateway_ip $name)
+			store_network_interface_value $name 'gateway_ip' "$gateway_ip"
+
+			local netmask=$(get_netmask $name)
+			store_network_interface_value $name 'netmask' "$netmask"
+
+		}
+	done
 }

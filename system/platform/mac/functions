@@ -5,48 +5,50 @@
 # License: GPLv3
 ####################################################################
 
-get_os_info(){
-	os_info=`system_profiler SPSoftwareDataType`
-	os_version=`echo "$os_info" | grep "System Version" | sed 's/.*: \(.*\)/\1/'`
-	kernel_version=`echo "$os_info" | grep "Kernel Version" | sed 's/.*: \(.*\)/\1/'`
-}
+#get_os_info(){
+#	os_info=`system_profiler SPSoftwareDataType`
+#	os_version=`echo "$os_info" | grep "System Version" | sed 's/.*: \(.*\)/\1/'`
+#	kernel_version=`echo "$os_info" | grep "Kernel Version" | sed 's/.*: \(.*\)/\1/'`
+#}
 
 get_system_ids(){
-	local hw_info=`system_profiler SPHardwareDataType`
-	serial_number=`echo "$hw_info" | grep "Serial Number" | sed 's/.*: \(.*\)/\1/'`
+	local hw_info=$(system_profiler SPHardwareDataType)
+	system__serial_number=$(echo "$hw_info" | grep "Serial Number" | sed 's/.*: \(.*\)/\1/')
+
 	# uuid=`echo "$hw_info" | grep "UUID" | sed 's/.*: \(.*\)/\1/'`
-	uuid=`ioreg -rd1 -c IOPlatformExpertDevice | awk '/IOPlatformUUID/ { print $3; }' | sed 's/"//g'`
+	system__uuid=$(ioreg -rd1 -c IOPlatformExpertDevice | awk '/IOPlatformUUID/ { print $3; }' | sed 's/"//g')
 }
 
 get_bios_info(){
-	local bios_info=`system_profiler SPHardwareDataType`
-	bios_vendor="Apple"
-	bios_version=`echo "$bios_info" | grep "Boot" | sed 's/.*: \(.*\)/\1/'`
+	local bios_info=$(system_profiler SPHardwareDataType)
+
+	system__bios_vendor="Apple"
+	system__bios_version=$(echo "$bios_info" | grep "Boot" | sed 's/.*: \(.*\)/\1/')
 }
 
 get_cpu_info(){
-	local cpu_info=`system_profiler SPHardwareDataType`
-	local cpu_speed_in_ghz=`echo "$cpu_info"  | grep "Processor Speed" | sed 's/.*: \(.*\) .*/\1/' | tr ',' '.'`
-	cpu_name=`echo "$cpu_info" | grep "Processor Name" | sed 's/.*: \(.*\)/\1/'`
-	cpu_speed=`echo "$cpu_speed_in_ghz * 1000" | bc`
-	cpu_cores=`echo "$cpu_info" | grep "Total Number Of Cores" | sed 's/.*: \(.*\)/\1/'`
-	# cpu_info="1_name=${cpu_name}#1_speed=${cpu_speed}#1_cores=${cpu_cores}__#"
+	local cpu_info=$(system_profiler SPHardwareDataType)
+	local cpu_speed_in_ghz=$(echo "$cpu_info"  | grep "Processor Speed" | sed 's/.*: \(.*\) .*/\1/' | tr ',' '.')
+
+	system__cpu_model=$(echo "$cpu_info" | grep "Processor Name" | sed 's/.*: \(.*\)/\1/')
+	system__cpu_speed=$(echo "$cpu_speed_in_ghz * 1000" | bc)
+	system__cpu_cores=$(echo "$cpu_info" | grep "Total Number Of Cores" | sed 's/.*: \(.*\)/\1/')
 }
 
 get_memory_info(){
 
-	local mem_full_info=`system_profiler SPMemoryDataType`
+	local mem_full_info=$(system_profiler SPMemoryDataType)
 
-	ram_size=`echo "$mem_full_info"	| awk 'BEGIN {
+	system__ram_size=$(echo "$mem_full_info" | awk 'BEGIN {
 		TOTAL_MEM = 0
 		}
 		/Size: /{	TOTAL_MEM=TOTAL_MEM+$2 }
 
 		END {
 			print TOTAL_MEM*1024
-		}'`
+		}')
 
-	ram_modules=`echo "$mem_full_info"	| awk 'BEGIN {
+	system__ram_modules=$(echo "$mem_full_info" | awk 'BEGIN {
 		BANK_NUM = 0
 		TOTAL_MEM = 0
 		ORS = "#"}
@@ -58,12 +60,12 @@ get_memory_info(){
 
 		END {
 			print "BANKS="BANK_NUM
-		}'`
+		}')
 
 }
 
 get_hdd_info(){
-	hdd_info=`system_profiler SPSerialATADataType | awk 'BEGIN {
+	local hdd_info=$(system_profiler SPSerialATADataType | awk 'BEGIN {
 	UNIT = 0
 	ORS = "#"}
 
@@ -71,6 +73,6 @@ get_hdd_info(){
 	/Model: /{ print UNIT"_model="$2" "$3 }
 	/Serial Number: /{ print UNIT"_serial=$3 }
 	/Revision: /{ print UNIT"_firmware=$3 }
-	/Capacity: / && cap==0 { print UNIT"_size="$2$3 ; cap=1}'`
+	/Capacity: / && cap==0 { print UNIT"_size="$2$3 ; cap=1}')
 
 }

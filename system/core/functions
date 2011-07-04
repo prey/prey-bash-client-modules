@@ -8,25 +8,51 @@
 scan_system_hardware(){
 
 	get_system_ids 2> /dev/null
-	if [ "$os" != "mac" ]; then
-		get_mb_info 2> /dev/null
-	fi
+	[ "$os" != "mac" ] && get_mb_info 2> /dev/null
 	get_cpu_info 2> /dev/null
 	get_memory_info 2> /dev/null
 	get_bios_info 2> /dev/null
-	# get_hdd_info 2> /dev/null
+
+	get_storage_devices 2> /dev/null
+	get_network_interfaces 2> /dev/null
 
 }
 
-parse_hardware_params(){
-	for var in `echo "$system__vars"`; do
-		echo -n "device[hardware_attributes][$var]=`eval echo $\`echo $var\``&"
+store_system_value(){
+	store_key_value 'system' "hardware_attributes__${1}" "$(urlencode "$2")"
+}
+
+store_network_interface_value(){
+	store_key_value 'network_interfaces' "${1}__${2}" "$(urlencode "$3")"
+}
+
+store_storage_device_value(){
+	store_key_value 'storage_devices' "${1}__${2}" "$(urlencode "$3")"
+}
+
+store_system_params(){
+
+	for key in $(echo $system__vars); do
+		local value=$(eval echo "\$system__${key}")
+		[ -n "$value" ] && store_system_value "$key" "$value"
 	done
+
 }
 
 send_updated_hardware_data(){
 
-	system_params=`parse_hardware_params`
-	update_device_info_with "$system_params"
+	store_system_params
+
+	local system_params=$(generate_query_string 'system' '&device')
+	# log "$system_params"
+
+	local network_params=$(generate_query_string 'network_interfaces' '&device[hardware_attributes][network]')
+	# log "$network_params"
+
+	local storage_params=$(generate_query_string 'storage_devices' '&device[hardware_attributes][storage]')
+	# log "$storage_params"
+
+	local full_hardware_params="${system_params}${network_params}${storage_params}"
+	update_device_info_with "$full_hardware_params"
 
 }
