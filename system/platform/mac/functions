@@ -76,3 +76,80 @@ get_hdd_info(){
 	/Capacity: / && cap==0 { print UNIT"_size="$2$3 ; cap=1}')
 
 }
+
+get_ioreg_vendor_and_model(){
+	local filter_regex="$1"
+	ioreg -L | egrep "IOVendor|IOModel" | egrep "$filter_regex" -B1 | sed 's/.*"\(.*\)"$/\1/'
+}
+
+get_network_interfaces(){
+
+		networksetup -listnetworkserviceorder 2> /dev/null | grep -v Bluetooth | grep Hardware | while read $line; do
+
+		local human_name=$(echo "$line" | cut -d',' -f1 | awk -F ': ' '{print $2}'
+		local name=$(echo "$line" | sed "s/.* \(.*\))$/\1/"
+
+		store_network_interface_value $name 'name' "$human_name"
+
+		if [[ "$human_name" =~ "Ethernet" ]]; then
+			get_ioreg_vendor_and_model "Ethernet|Gigabit" | tr "\n" ";" | while read output; do
+				local vendor=$(echo "$output" | cut -d";" -f1)
+				local model=$(echo "$output" | cut -d";" -f2)
+			done
+		elif [[ "$human_name" =~ "Airport" ]]; then
+			get_ioreg_vendor_and_model "802.11" | tr "\n" ";" | while read output; do
+				local vendor=$(echo "$output" | cut -d";" -f1)
+				local model=$(echo "$output" | cut -d";" -f2)
+			done
+		elif [[ "$human_name" =~ "Firewire" ]]; then
+			local interface_type="Firewire"
+			local vendor="Apple"
+			local model="fw+"
+		fi
+
+		store_network_interface_value $name 'interface_type' "$interface_type"
+		store_network_interface_value $name 'vendor' "$vendor"
+		store_network_interface_value $name 'model' "$model"
+
+		local mac_address=$(get_mac_address $name)
+		store_network_interface_value $name 'mac_address' "$mac_address"
+
+		local ip_address=$(get_ip_address $name)
+		store_network_interface_value $name 'ip_address' "$ip_address"
+
+		local gateway_ip=$(get_gateway_ip $name)
+		store_network_interface_value $name 'gateway_ip' "$gateway_ip"
+
+		local netmask=$(get_netmask $name)
+		store_network_interface_value $name 'netmask' "$netmask"
+
+	done
+}
+
+get_storage_devices(){
+
+	for path in $(find /dev/disk* | grep -v "s[0-9]$"); do
+
+		local name=$(echo "$path" | sed "s/.*\/\(.*\)$/\1/")
+		store_storage_device_value "$name" 'name' "$name"
+
+		local interface=$(diskutil info "$name" | grep "Protocol" | awk '{print $2}')
+		store_storage_device_value "$name" 'interface' "$interface"
+
+		# local model=$(diskutil info "$name" | grep "Device" | grep Name | sed "s/.*  //")
+		local model=$(system_profiler SPSerialATAType | grep "${name}$" -B10 | grep Model | awk -F ': ' '{print $2}')
+		store_storage_device_value "$name" 'model' "$model"
+
+		local model=$(system_profiler SPSerialATAType | grep "${name}$" -B10 | grep Serial | awk -F ': ' '{print $2}')
+		store_storage_device_value "$name" 'serial_number' "$serial_number"
+
+		local capacity=$(system_profiler SPSerialATAType | grep "${name}$" -B10 | grep Capacity | awk -F ': ' '{print $2}')
+		store_storage_device_value "$name" 'capacity' "$capacity"
+
+		local free_space=$(system_profile SPSerialATAType | egrep -i "${name}|available" | sed "s/[^0-9\.]//g" | awk '{sum += $1} END {print sum}')
+		local used_space=$(($capacity-$free_space))
+		store_storage_device_value "$name" 'used_space' "$used_space"
+
+	done
+
+}
