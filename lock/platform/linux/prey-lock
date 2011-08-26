@@ -24,6 +24,7 @@ class Lock:
 			self.label.show()
 			return True
 		else:
+			enable_XF86Switch()
 			print ' -- Correctomondo. PC Unlocked.'
 			# self.label.set_markup('<span foreground="green">Very good. Access granted.</span>');
 			# self.label.show()
@@ -154,10 +155,59 @@ class Lock:
 		fixed2.put(self.label, -main_screen_width/2-240, -(main_screen_height/2)+60)
 		hbox.pack_start(fixed2, True, False, 30)
 
+		disable_XF86Switch()
+
 		self.window.show_all()
 		# self.window.set_focus(self.entry)
 		gtk.gdk.keyboard_grab(fixed.window, True)
 		self.label.hide()
+
+original_keycodes = []
+
+def enable_XF86Switch():
+	import subprocess # need at least python 2.4
+	try:
+		for x,y,z in original_keycodes:
+			cmd = ['xmodmap', '-e', 'keycode %s=%s %s' % (x,y,z)]
+			subprocess.Popen(cmd)
+	except OSError, subprocess.CalledProcessError:
+		return
+
+def disable_XF86Switch():
+	import subprocess # need at least python 2.4
+	import re
+
+	try:
+		cmd = ['xmodmap', '-pk']
+		# find all keys that allows switching to a VT
+		p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+		output, serror = p.communicate()
+		matched = []
+
+		# retrieve the keycode and its value from xmodmap output
+		for line in output.split('\n'):
+			if re.search('XF86Switch_VT', line):
+				items = line.split()
+				keycode = items[0]
+				keysym  = items[1]
+				keysym2  = items[7]
+				keyname = items[2][1:-1]
+				matched.append((keycode, keyname))
+				original_keycodes.append((keycode, keysym, keysym2))
+
+		# disable all key that allow to switch to a VT
+		for k,v in matched:
+			cmd = ['xmodmap', '-e', 'keycode %s=%s' % (k,v)]
+			subprocess.Popen(cmd)
+
+	except IndexError:
+		print "Couldnt parse Xmodmap list"
+
+	except OSError, subprocess.CalledProcessError:
+		# print "Xmodmap not found"
+		# do nothing if xmodmap is not found or return an error
+		return
+
 
 if __name__ == "__main__":
 
