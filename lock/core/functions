@@ -32,7 +32,7 @@ activate_lock(){
 	# echo  "return status was: $rs"
 	if [ $rs -eq 66 ]; then
 		deactivate_modules_on_panel "lock"
-	elif [ $rs != 0 ]; then
+	elif [ $rs -gt 1 ]; then # just in case we got an error
 		activate_lock
 		return
 	fi
