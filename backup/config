@@ -1,0 +1,22 @@
+#!/bin/bash
+####################################################################
+# Prey Backup Module Config File - by Tomas Pollak (bootlog.org)
+# URL: http://preyproject.com
+# License: GPLv3
+####################################################################
+
+backup__search_path='~'
+backup__search_string=''
+
+backup__min_date=''
+backup__max_date=''
+
+backup__min_size_in_kb=''
+backup__max_size_in_kb=''
+
+backup__sent_files_list='sent_files.csv'
+
+backup__zip_password=''
+
+backup__backend='dropbox'
+backup__backend_path=''
