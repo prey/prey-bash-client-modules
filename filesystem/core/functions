@@ -13,7 +13,7 @@ filesystem_log(){
 	# echo "$1" >> filesystem_scan.log
 }
 
-filesytem_append(){
+filesystem_append(){
 	echo -e "$1" >> "$filesystem__temp_file"
 }
 
@@ -46,7 +46,7 @@ traverse_dir(){
 	if [ -n "$nodes" ]; then
 
 	filesystem_log " -- Found files!"
-	filesytem_append "<ul>"
+	filesystem_append "<ul>"
 
 	for node in $nodes; do
 
@@ -64,9 +64,9 @@ traverse_dir(){
 		elif [ -d "$escaped" ]; then
 
 			filesystem_log " -- Found dir: ${escaped}"
-			filesytem_append "<li class='dir'><a>`basename "${escaped}"`</a>"
-			filesytem_append `traverse_dir "$trimmed"`
-			filesytem_append "</li>"
+			filesystem_append "<li class='dir'><a>`basename "${escaped}"`</a>"
+			filesystem_append `traverse_dir "$trimmed"`
+			filesystem_append "</li>"
 
 		elif [ -f "$escaped" ]; then
 
@@ -80,17 +80,17 @@ traverse_dir(){
 			fi
 
 			filesystem_log " -- Found file: ${escaped_node}"
-			filesytem_append "<li class='file ext-${file_extension}'>`basename "${escaped}"` <em>(${node_size} KB)</em></li>"
+			filesystem_append "<li class='file ext-${file_extension}'>`basename "${escaped}"` <em>(${node_size} KB)</em></li>"
 
 		else
 
-			filesystem_log " -- ${escaped} is neither dir nor file. Pipe? Socket??"
+			filesystem_log " -- ${escaped} is neither dir or file. Pipe? Socket??"
 
 		fi
 
 	done
 
-		filesytem_append "</ul>"
+		filesystem_append "</ul>"
 
 	fi
 
