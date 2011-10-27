@@ -10,29 +10,26 @@ perform_backup(){
 	local find_args=$(parse_arguments)
 
 	if [ -z "$find_args" ]; then
-		echo ' !! No arguments for query given. You need to enter a string, date range or file size range'
+		log ' !! No arguments for query given. You need to enter a search string, date range or file size range.'
 		return 1
 	fi
 
 	local upload_count=0
 
-	# excluded_formats="jpg jpeg png gif bmp raw avi mpg mkf mov pdf chm html css js"
-	# exclude=`echo $excluded_formats | sed -s "s/\([a-z]*\)/-not -iname '*.\1'/g"`
-#	local exclude="-not -empty" # exclude hidden files
 	local exclude="-not -empty -not -regex '.*/\..*'" # exclude hidden files
-
-	local valid_formats='txt|rtf|pdf|doc|docx|xls|xlsx|pps|ppt|pptx|odf|odp|ods|keynote|pages|numbers|dwg|svg|svgz|ai|eps|html|css|js|php|rb|erb|py|cs|cpp'
-	local escaped_formats=$(echo $valid_formats | sed "s/|/\\\|/g")
+ 	local escaped_extensions=$(echo $backup__search_extensions | sed "s/|/\\\|/g")
 
 	local search_path=$(eval echo "$backup__search_path")
-	local find_command="find "$search_path" -type f $find_args -regex \".*\.\(${escaped_formats}\)\" $exclude -printf \"%T@\t%s\t%p\n\""
+	local find_command="find "$search_path" -type f $find_args -regex \".*\.\(${escaped_extensions}\)\" $exclude -printf \"%T@\t%s\t%p\n\""
 
 	# currently sorting by size, from small to big, so we get to send as many as possible
 	# reverse sort -n -r
 	local found_files=$(eval "$find_command" | sort -n)
 
-	local found_files_count=$(echo "$found_files" | wc -l)
-	echo " -- ${found_files_count} files were found using the following criteria: ${find_args}"
+	local found_files_count=$(echo "$found_files" | grep -v '^$' | wc -l)
+	log " -- ${found_files_count} files were found using the following criteria: ${find_args}"
+
+	[ $found_files_count -eq 0 ] && return 0
 
 	while read file; do
 
@@ -42,25 +39,26 @@ perform_backup(){
 
 		[ ! -f "$file_name" ] && continue
 
-		echo " -- Found file: $file_name"
+		log " -- Found file: $file_name"
 
 		if [ -n "$(is_file_sent "$file_name" "$file_date")" ]; then
 		
-			echo " -- File has already been sent! Skipping..."
+			log " -- File has already been sent! Skipping..."
 
 		else
 		
 			zip_and_upload "$file_name"
 			if [ $? -eq 0 ]; then
 			
-				echo " -- File sent! Marking as uploaded..."
+				log " -- File sent! Marking as uploaded..."
 				mark_as_sent "$file_date" "$file_size" "$file_name"
+				store_in_memory "$file_name" "$file_size"
 				upload_count=$(($upload_count+1))
 				break
 			
 			else
 
-				echo " -- Unable to upload to backend. Check your login/pass and that you have available storage space."
+				log " -- Unable to upload to backend. Check your login/pass and that you have available storage space."
 				break
 			
 			fi
@@ -69,8 +67,18 @@ perform_backup(){
 
 	done <<< "$found_files"
 
-	update_device_info_with "backed_up_files=${upload_count}"
+	log " -- ${upload_count} files backed up!"
 
+	local file_list=$(generate_query_string 'backup_files', '&device')
+	local full_query="device[backup][backend]=${backup__backend}$file_list"
+
+	update_device_info_with "$full_query"
+
+}
+
+store_in_memory(){
+	local sanitized=$(echo "$1" | sed "s/[ '()]/:/g")
+	store_key_value 'backup_files' "backup__${sanitized}" "$2"
 }
 
 parse_arguments(){
@@ -93,14 +101,13 @@ parse_arguments(){
 
 zip_and_upload(){
 
-	echo -e "\n -- Processing $file_name..."
+	log " -- Processing $file_name..."
 
-	local file_name=$1
-
+	local file_name="$1"
 	local normalized=$(normalize_file_name "$file_name")
 	local zip_file_name="${tmpdir}/$(basename $normalized).zip"
 
-	echo -e " -- Zipping to ${zip_file_name}..."
+	log " -- Zipping to ${zip_file_name}..."
 	zip_file "$file_name" "$zip_file_name"
 
 	[ $? -ne  0 ] && echo " -- Error while zipping!" && return 2
@@ -140,7 +147,7 @@ zip_file(){
 }
 
 upload_file(){
-	echo " -- Uploading $1 to ${backup__backend}!"
+	log " -- Uploading to ${backup__backend}!"
 	eval upload_to_${backup__backend} "$1"
 }
 
@@ -166,7 +173,7 @@ upload_to_amazon_s3(){
 
 	[ -z "$backup__backend_path" ] && get_last_bucket_in_s3
 
-	echo " -- Uploading to bucket $backup__backend_path at Amazon S3..."
+	log " -- Uploading to bucket $backup__backend_path at Amazon S3..."
 
 	S3_ACCESS_KEY_ID="$backup__backend_user" \
 	S3_SECRET_ACCESS_KEY="$secret_key_file" \
@@ -181,7 +188,7 @@ upload_to_amazon_s3(){
 
 get_last_bucket_in_s3(){
 
-	echo "Getting bucket list..."
+	log " -- Getting bucket list..."
 
 	backup__backend_path=$(S3_ACCESS_KEY_ID="$backup__backend_user" \
 	S3_SECRET_ACCESS_KEY="$secret_key_file" \
