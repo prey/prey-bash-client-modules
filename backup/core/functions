@@ -54,7 +54,7 @@ perform_backup(){
 				mark_as_sent "$file_date" "$file_size" "$file_name"
 				store_in_memory "$file_name" "$file_size"
 				upload_count=$(($upload_count+1))
-				break
+				# break
 			
 			else
 
@@ -148,7 +148,7 @@ zip_file(){
 
 upload_file(){
 	log " -- Uploading to ${backup__backend}!"
-	eval upload_to_${backup__backend} "$1"
+ 	eval upload_to_${backup__backend} "$1"
 }
 
 upload_to_dropbox(){
