@@ -25,10 +25,9 @@ check_s3() {
   for x in S3_ACCESS_KEY_ID S3_SECRET_ACCESS_KEY; do
     check_or_die ${x};
   done
-  [[ -f ${S3_SECRET_ACCESS_KEY} ]] || die "S3_SECRET_ACCESS_KEY must point to a file!"
-  sak="$(wc -c "${S3_SECRET_ACCESS_KEY}")"
-  (( ${sak%%[!0-9 ]*} == 40 )) || \
-    die "S3 Secret Access Key is not exactly 40 bytes long.  Please fix it."
+  # [[ -f ${S3_SECRET_ACCESS_KEY} ]] || die "S3_SECRET_ACCESS_KEY must point to a file!"
+  local sak="$(echo -n "${S3_SECRET_ACCESS_KEY}" | wc -c)"
+  [ $sak -ne 40 ] && die "S3 Secret Access Key is not exactly 40 bytes long. Please fix it."
 }
 # check to see if our external dependencies exist
 check_dep() {
@@ -64,7 +63,7 @@ urlenc() {
        s/	/%09/g'
 }
 
-xmldec() { 
+xmldec() {
   # no parameters.
   # accept input on stdin, put it on stdout.
   # patches accepted to get more stuff
@@ -82,7 +81,7 @@ s3_signature_string() {
   # $3 = bucket name, if any
   # $4 = resource path, if any
   # $5 = content md5, if any
-  # $6 = content MIME type, if any 
+  # $6 = content MIME type, if any
   # $7 = canonicalized headers, if any
   # signature string will be output on stdout
   local verr="Must pass a verb to s3_signature_string!"
@@ -94,6 +93,7 @@ s3_signature_string() {
   local mime="${6}"
   local md5="${5}"
   local headers="${7}"
+
   printf "%s\n%s\n%s\n%s\n%s%s%s" \
     "${verb}" "${md5}" "${mime}" "${date}" \
     "${headers}" "${bucket}" "${resource}" | \
@@ -122,29 +122,40 @@ s3_curl() {
   remote="$(urlenc "${3}")" # if you don't, strange things may happen.
   stdopts="--connect-timeout 10 --fail --silent"
   [[ $CURL_S3_DEBUG == true ]] && stdopts="${stdopts} --show-error --fail"
-  case "${1}" in
-   GET) arg="-o" inout="${4:--}" # stdout if no $4
-	;;
-   PUT) [[ ${2} ]] || die "PUT can has bucket?"
-        if [[ ! ${3} ]]; then
-	  arg="-X PUT" 
-	  headers[${#headers[@]}]="Content-Length: 0"
-	elif [[ -f ${4} ]]; then 
-          md5="$(openssl dgst -md5 -binary "${4}"|openssl base64 -e -a)"
-	  arg="-T" inout="${4}"
-	  headers[${#headers[@]}]="Expect: 100-continue"
-	else
-	  die "Cannot write non-existing file ${4}"
-        fi
-	;;
-   DELETE) arg="-X DELETE"
-           ;;
-   HEAD) arg="-I" ;;
-   *) die "Unknown verb ${1}.  It probably would not have worked anyways." ;;
-  esac
-  date="$(TZ=UTC date '+%a, %e %b %Y %H:%M:%S %z')"
-  sig=$(s3_signature_string ${1} "${date}" "${bucket}" "${remote}" "${md5}")
-  
+
+	# [ "$1" == 'PUT' ] && stdopts="${stdopts} --progress-bar"
+
+	case "${1}" in
+		GET)
+			arg="-o" inout="${4:--}" # stdout if no $4
+		;;
+		PUT)
+			[[ ${2} ]] || die "PUT can has bucket?"
+			if [[ ! ${3} ]]; then
+				arg="-X PUT"
+				headers[${#headers[@]}]="Content-Length: 0"
+			elif [[ -f ${4} ]]; then
+				md5="$(openssl dgst -md5 -binary "${4}"|openssl base64 -e -a)"
+				arg="-T" inout="${4}"
+				headers[${#headers[@]}]="Expect: 100-continue"
+			else
+				die "Cannot write non-existing file ${4}"
+			fi
+		;;
+		DELETE)
+			arg="-X DELETE"
+		;;
+		HEAD)
+			arg="-I"
+		;;
+		*)
+			die "Unknown verb ${1}.  It probably would not have worked anyways."
+		;;
+	esac
+
+	date="$(TZ=UTC date '+%a, %e %b %Y %H:%M:%S %z')"
+	sig=$(s3_signature_string ${1} "${date}" "${bucket}" "${remote}" "${md5}")
+
   headers[${#headers[@]}]="Authorization: AWS ${S3_ACCESS_KEY_ID}:${sig}"
   headers[${#headers[@]}]="Date: ${date}"
   [[ ${md5} ]] && headers[${#headers[@]}]="Content-MD5: ${md5}"
@@ -154,11 +165,10 @@ s3_curl() {
 
 s3_put() {
   # $1 = remote bucket to put it into
-  # $2 = remote name to put
-  # $3 = file to put.  This must be present if $2 is.
+  # $2 = file to put
   local remote_name=$(basename "$2")
   s3_curl PUT "${1}" "${remote_name}" "${2:-${remote_name}}"
-} 
+}
 
 s3_get() {
   # $1 = bucket to get file from
@@ -170,14 +180,14 @@ s3_get() {
 
 s3_test() {
   # same args as s3_get, but uses the HEAD verb instead of the GET verb.
-  s3_curl HEAD "${1}" "${2}" >/dev/null 
+  s3_curl HEAD "${1}" "${2}" >/dev/null
 }
 
 # Hideously ugly, but it works well enough.
 s3_buckets() {
   s3_get |grep -o '<Name>[^>]*</Name>' |sed 's/<[^>]*>//g' |xmldec
 }
-  
+
 # this will only return the first thousand entries, alas
 # Mabye some kind soul can fix this without writing an XML parser in bash?
 # Also need to add xml entity handling.
@@ -196,8 +206,8 @@ s3_delete() {
 # because this uses s3_list, it suffers from the same flaws.
 s3_rmrf() {
   # $1 = bucket to delete everything from
-  s3_list "${1}" | while read -r f; do 
-    s3_delete "${1}" "${f}"; 
+  s3_list "${1}" | while read -r f; do
+    s3_delete "${1}" "${f}";
   done
 }
 
@@ -215,4 +225,3 @@ case $cmd in
   *) die "Unknown command ${cmd}."
     ;;
 esac
-

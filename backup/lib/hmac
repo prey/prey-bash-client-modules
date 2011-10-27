@@ -11,7 +11,7 @@ die() {
 
 check_deps() {
   local res=0
-  while [ $# -ne 0 ]; do 
+  while [ $# -ne 0 ]; do
     which "${1}" >& /dev/null || { res=1; echo "${1} not found."; }
     shift
   done
@@ -25,17 +25,18 @@ write_byte() {
 }
 
 # make an hmac pad out of a key.
-# this is not the most secure way of doing it, but it is 
+# this is not the most secure way of doing it, but it is
 # the most expedient.
 make_hmac_pad() {
   # using key in file $1 and byte in $2, create the appropriate hmac pad
   # Pad keys out to $3 bytes
   # if key is longer than $3, use hash $4 to hash the key first.
   local x y a size remainder oifs
-  [[ -f ${1} ]] || die "${1} does not exist when making hmac pads."
+  # [[ -f ${1} ]] || die "${1} does not exist when making hmac pads."
   (( remainder = ${3} ))
+
   # in case someone else was messing with IFS.
-  for x in $(od -v -t u1 < "${1}"|cut -b 9-);
+  for x in $(echo -n "${1}" | od -v -t u1 | cut -b 9-);
   do
     write_byte $((${x} ^ ${2}))
     (( remainder -= 1 ))
@@ -62,7 +63,7 @@ do_hmac() {
   # accepts input on stdin, leaves it on stdout.
   # Output is binary, if you want something else pipe it accordingly.
   local blocklen keysize x
-  case "${1}" in 
+  case "${1}" in
     sha) blocklen=64 ;;
     sha1) blocklen=64 ;;
     md5) blocklen=64 ;;
@@ -71,15 +72,15 @@ do_hmac() {
     sha512) blocklen=128 ;;
     *) die "Unknown hash ${1} passed to hmac!" ;;
   esac
-  keysize="$(wc -c "${2}")"
+  keysize="$(echo -n "$2" | wc -c)"
   (( ${keysize%%[!0-9 ]*} > blocklen )) && \
     die "Prehashing large-size keys not implemented yet. Sorry."
-  cat <(hmac_ipad ${2} ${blocklen} "${1}") "${3:--}" | openssl dgst "-${1}" -binary | \
-  cat <(hmac_opad ${2} ${blocklen} "${1}") - | openssl dgst "-${1}" -binary 
+  cat <(hmac_ipad "${2}" ${blocklen} "${1}") "${3:--}" | openssl dgst "-${1}" -binary | \
+  cat <(hmac_opad "${2}" ${blocklen} "${1}") - | openssl dgst "-${1}" -binary
 }
 
 [[ ${1} ]] || die "Must pass the name of the hash function to use to ${0}".
+# [[ -f ${2} ]] || die "Must pass file containing the secret to $0"
 
-[[ -f ${2} ]] || die "Must pass file containing the secret to $0"
 check_deps od openssl
 do_hmac "${@}"
