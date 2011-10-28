@@ -1,0 +1,10 @@
+#!/bin/bash
+####################################################################
+# Prey System Module Lang File - by Carlos Yaconi
+# URL: http://preyproject.com
+# License: GPLv3
+####################################################################
+
+STRING_GET_CPU_INFO=" -- Recherche d'information sur le processeur..."
+STRING_GET_MEMORY_INFO=" -- Recherche d'information sur la mémoire..."
+STRING_GET_HDD_INFO=" -- Recherche d'information sur les disques durs..."
