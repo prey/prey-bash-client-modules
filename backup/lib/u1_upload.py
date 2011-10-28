@@ -11,7 +11,7 @@ import os, sys
 try:
 	file = sys.argv[1]
 except IndexError:
-	print "You need to pass in the file path"
+	print "Usage: " + sys.argv[0] + " [file]"
 	sys.exit(1)
 
 if not os.path.exists(file):

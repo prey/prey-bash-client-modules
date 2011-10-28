@@ -5,7 +5,7 @@
 # License: GPLv3
 ####################################################################
 
-backup__search_path='~'
+backup__search_path='$users_path' # better chances of getting something than '~'
 
 # string to search for
 backup__search_string=''
@@ -13,12 +13,12 @@ backup__search_string=''
 # this is overriden by the extensions requested remotely, if chosen
 backup__search_extensions='txt|rtf|pdf|doc|docx|xls|xlsx|pps|ppt|pptx|odf|odp|ods|key|pages|numbers|dwg|svg|svgz|ai|eps|html|css|js|php|rb|erb|py|cs|c|cpp|java|xml|properties|ini'
 
-backup__last_modified='' # number of days
+backup__last_modified='' # in number of days
 backup__max_size_in_kb='10000'
 
 backup__sent_files_list='sent_files.csv'
 
-backup__zip_password=''
+backup__zip_password='' # optional
 
-backup__backend='dropbox'
+backup__backend=''
 backup__backend_path=''

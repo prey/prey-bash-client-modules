@@ -22,12 +22,14 @@ perform_backup(){
 	local search_path=$(eval echo "$backup__search_path")
 	local find_command="find "$search_path" -type f $find_args -regex \".*\.\(${escaped_extensions}\)\" $exclude -printf \"%T@\t%s\t%p\n\""
 
+	log " -- Looking for files in ${search_path} using criteria: ${find_args}"
+
 	# currently sorting by size, from small to big, so we get to send as many as possible
 	# reverse sort -n -r
 	local found_files=$(eval "$find_command" | sort -n)
-
 	local found_files_count=$(echo "$found_files" | grep -v '^$' | wc -l)
-	log " -- ${found_files_count} files were found using the following criteria: ${find_args}"
+
+	log " -- ${found_files_count} matches found!"
 
 	[ $found_files_count -eq 0 ] && return 0
 
@@ -40,7 +42,7 @@ perform_backup(){
 
 		[ ! -f "$file_name" ] && continue
 
-		log " -- Found file: (${file_size_human}KB) $file_name"
+		log " -- Found file: (${file_size_human} KB) $file_name"
 
 		if [ -n "$(is_file_sent "$file_name" "$file_date")" ]; then
 
@@ -55,7 +57,7 @@ perform_backup(){
 				mark_as_sent "$file_date" "$file_size" "$file_name"
 				store_in_memory "$file_name" "$file_size"
 				upload_count=$(($upload_count+1))
-				# break
+				# [ -n "$test_mode" ] && break
 
 			else
 
@@ -68,18 +70,22 @@ perform_backup(){
 
 	done <<< "$found_files"
 
-	log " -- ${upload_count} files backed up!"
+	log " ++ ${upload_count} files backed up!"
 
-	local file_list=$(generate_query_string 'backup_files', '&device')
-	local full_query="device[backup][backend]=${backup__backend}$file_list"
+	if [ $upload_count -gt 0 ]; then
 
-	update_device_info_with "$full_query"
+		local file_list=$(generate_query_string 'backup_files', '&device')
+		local full_query="device[backup][backend]=${backup__backend}$file_list"
+
+		update_device_info_with "$full_query"
+
+	fi
 
 }
 
 store_in_memory(){
-	local sanitized=$(echo "$1" | sed "s/[ '()]/:/g")
-	store_key_value 'backup_files' "backup__${sanitized}" "$2"
+	local urlencoded=$(urlencode "$1")
+	store_key_value 'backup_files' "backup__${urlencoded}" "$2"
 }
 
 parse_arguments(){
@@ -102,7 +108,7 @@ parse_arguments(){
 
 zip_and_upload(){
 
-	log " -- Processing $file_name..."
+	log " ++ Processing $file_name..."
 
 	local file_name="$1"
 	local normalized=$(normalize_file_name "$file_name")
@@ -116,14 +122,14 @@ zip_and_upload(){
 	upload_file "$zip_file_name"
 	local rs=$?
 
-	echo -e " -- Removing zipped file..."
+	log " -- Removing zipped file..."
 	rm -f "$zip_file_name"
 	return $rs
 
 }
 
 normalize_file_name(){
-	echo "$1" | sed "s/[^a-zA-Z0-9\.\/]/_/g"
+	echo "$1" | sed "s/[^a-zA-Z0-9\.-\/]/_/g"
 }
 
 is_file_sent(){
@@ -132,6 +138,10 @@ is_file_sent(){
 
 mark_as_sent(){
 	echo -e "$1,$2,$3" >> "${module_path}/${backup__sent_files_list}"
+}
+
+clear_sent_files(){
+	echo "" > "${module_path}/${backup__sent_files_list}"
 }
 
 # gets filename, normalized
@@ -149,6 +159,7 @@ zip_file(){
 
 upload_file(){
 	log " -- Uploading to ${backup__backend}!"
+	# [ -n "$test_mode" ] && return 0
  	eval upload_to_${backup__backend} "$1"
 }
 
@@ -170,6 +181,7 @@ upload_to_amazon_s3(){
 	local file_to_upload="$1"
 
 	[ -z "$backup__backend_path" ] && get_last_bucket_in_s3
+	[ $? -ne 0 ] && return 1
 
 	log " -- Uploading to bucket $backup__backend_path at Amazon S3..."
 
@@ -178,7 +190,6 @@ upload_to_amazon_s3(){
 	"${module_path}/lib/s3" put "$backup__backend_path" "$file_to_upload"
 
 	return $?
-
 }
 
 get_last_bucket_in_s3(){
@@ -189,6 +200,8 @@ get_last_bucket_in_s3(){
 	S3_SECRET_ACCESS_KEY="$backup__backend_pass" \
 	"${module_path}/lib/s3" buckets | head -1)
 
+	return $?
+
 }
 
 upload_to_ubuntu_one(){
@@ -196,14 +209,37 @@ upload_to_ubuntu_one(){
 	[ -z "$(which python)" ] && log " -- Python interpreter not found! Cannot continue." && return 1
 
 	local file_to_upload="$1"
+	local credentials_file='credentialfile.txt'
 
-	PYTHONPATH="${module_path}/lib" "${module_path}/lib/u1rest/createfilekeystore.py" \
-		--email "$backup__backend_user" \
-		--password "$backup__backend_pass" \
-		--name PreyBackup
+	if [ -z "$ubuntu_one_oauth_tokens" ]; then
+
+		log " -- Getting OAuth tokens..."
+
+		PYTHONPATH="${module_path}/lib" "${module_path}/lib/u1rest/createfilekeystore.py" \
+			--email "$backup__backend_user" \
+			--password "$backup__backend_pass" \
+			--name PreyBackup &> /dev/null
+
+		[ $? -ne 0 ] && return 1
+
+		log " -- Done! Pushing file to Ubuntu One's servers..."
+
+		# keep them in memory to avoid checking every time
+		ubuntu_one_oauth_tokens=$(cat "$credentials_file")
+
+	else
+
+		log " -- Reusing previous OAuth tokens!"
+
+		# dump in memory oauth tokens to u1rest's credentials file
+		echo "$ubuntu_one_oauth_tokens" > "$credentials_file"
+
+	fi
 
 	python "${module_path}/lib/u1_upload.py" "$file_to_upload"
+	rs=$?
 
-	rm -f credentialsfile.txt
+	rm -f "$credentials_file"
+	return $rs
 
 }
