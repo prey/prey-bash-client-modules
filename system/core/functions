@@ -19,15 +19,21 @@ scan_system_hardware(){
 }
 
 store_system_value(){
-	store_key_value 'system' "hardware_attributes__${1}" "$(urlencode "$2")"
+	if [ -n "$2" ]; then
+		store_key_value 'system' "hardware_attributes__${1}" "$(urlencode "$2")"
+	fi
 }
 
 store_network_interface_value(){
-	store_key_value 'network_interfaces' "${1}__${2}" "$(urlencode "$3")"
+	if [ -n "$3" ]; then
+		store_key_value 'network_interfaces' "${1}__${2}" "$(urlencode "$3")"
+	fi
 }
 
 store_storage_device_value(){
-	store_key_value 'storage_devices' "${1}__${2}" "$(urlencode "$3")"
+	if [ -n "$3" ]; then
+		store_key_value 'storage_devices' "${1}__${2}" "$(urlencode "$3")"
+	fi
 }
 
 store_system_params(){
