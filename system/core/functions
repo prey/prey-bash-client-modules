@@ -19,21 +19,15 @@ scan_system_hardware(){
 }
 
 store_system_value(){
-	if [ -n "$2" ]; then
-		store_key_value 'system' "hardware_attributes__${1}" "$(urlencode "$2")"
-	fi
+	[ -n "$2" ] && store_key_value 'system' "hardware_attributes__${1}" "$(urlencode "$2")"
 }
 
 store_network_interface_value(){
-	if [ -n "$3" ]; then
-		store_key_value 'network_interfaces' "${1}__${2}" "$(urlencode "$3")"
-	fi
+	[ -n "$3" ] && store_key_value 'network_interfaces' "${1}__${2}" "$(urlencode "$3")"
 }
 
 store_storage_device_value(){
-	if [ -n "$3" ]; then
-		store_key_value 'storage_devices' "${1}__${2}" "$(urlencode "$3")"
-	fi
+	[ -n "$3" ] && store_key_value 'storage_devices' "${1}__${2}" "$(urlencode "$3")"
 }
 
 store_system_params(){
@@ -45,8 +39,7 @@ store_system_params(){
 
 }
 
-send_updated_hardware_data(){
-
+full_hardware_params(){
 	store_system_params
 
 	local system_params=$(generate_query_string 'system' '&device')
@@ -58,7 +51,9 @@ send_updated_hardware_data(){
 	local storage_params=$(generate_query_string 'storage_devices' '&device[hardware_attributes][storage]')
 	# log "$storage_params"
 
-	local full_hardware_params="${system_params}${network_params}${storage_params}"
-	update_device_info_with "$full_hardware_params"
+	echo "${system_params}${network_params}${storage_params}"
+}
 
+send_updated_hardware_data(){
+	update_device_info_with "$(full_hardware_params)"
 }
