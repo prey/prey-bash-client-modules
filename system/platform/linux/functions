@@ -61,11 +61,13 @@ get_storage_devices(){
 #	done
 
 	local disks_path="/dev/disk/by-id"
+	local last_path=""
 
-	# awk removes entries that point to the same path, so we avoid duplicate HD's
-	for disk in $(stat -c "%n" ${disks_path}/* | awk 'a !~ $10; {a=$10}' | grep -v "\-part[1-9]" | awk '{print $8}'); do
+	for disk in $(stat -c "%n" ${disks_path}/* | grep -v "\-part[1-9]"); do
 
 		local path=$(readlink -f "$disk")
+		[ "$path" == "$last_path" ] && continue
+
 		local name=$(basename "$path")
 		store_storage_device_value "$name" 'name' "$name"
 
@@ -88,6 +90,7 @@ get_storage_devices(){
 		local serial_number=$(echo "$full_name" | sed "s/.*_\(.*\)/\1/")
 		store_storage_device_value "$name" 'serial_number' "$serial_number"
 
+		last_path="$path"
 	done
 
 }
