@@ -49,11 +49,14 @@ get_network_interfaces(){
 
 	local nic_list=$(echo "nic list full" | wmic 2> /dev/null | grep "MACAddress=." -A4)
 
+	local last_mac=""
 	local id=0
 	while read line; do
 
 		local key=$(echo "$line" | cut -d '=' -f1)
 		local value=$(echo "$line" | cut -d '=' -f2)
+
+		[ "$value" == "$last_mac" ] && continue # skip duplicates
 
 		if [ "$key" == "MACAddress" ]; then
 
@@ -81,9 +84,11 @@ get_network_interfaces(){
 
 		fi
 
+		last_mac="$mac_address"
+
 	done <<< "$nic_list"
 }
 
 get_storage_devices(){
-	log " -- Storage devices getter still in the works!"
+	return 0
 }
