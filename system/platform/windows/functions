@@ -47,7 +47,7 @@ get_memory_info(){
 
 get_network_interfaces(){
 
-	local nic_list=$(echo "nic list full" | wmic 2> /dev/null | grep "MACAddress=." -A4)
+	local nic_list=$(echo "nic list full" | wmic 2> /dev/null | grep "NetConnectionID=." -B5)
 
 	local last_mac=""
 	local id=0
