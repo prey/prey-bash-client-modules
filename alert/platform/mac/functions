@@ -19,7 +19,7 @@ change_wallpaper() {
 alert_user() {
 
 	show_message_script="
-		tell application \"Finder\"
+		tell application \"System Events\"
 			activate
 			set dd to display dialog \"\n$alert__alert_message\n\" buttons {\"OK\"} default button 1 with icon caution
 		end tell"
