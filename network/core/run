@@ -29,7 +29,7 @@ if [ "$network__get_nearby_wifi_hotspots" == 'y' ]; then
 	[ -n "$wifi_info" ] && add_trace wifi_info "$wifi_info"
 fi
 
-if [ "$network__trace_route" == 'y' ]; then
+if [[ "$network__trace_route" == 'y' && -z "$proxy_server" ]]; then
 	log "$STRING_TRACE"
 	trace_route
 	add_trace complete_trace "$complete_trace"
