@@ -7,15 +7,25 @@
 
 get_current_location() {
 	if [ -n "$wifi_points" ]; then
-		current_location_json=`getter -X POST -H "Content-Type: application/json" -d "{ 'version': '1.1.0', 'host': '$check_url', 'request_address': true, 'wifi_towers': [ ${wifi_points} ] }" http://www.google.com/loc/json`
+
+		local query=$(echo $wifi_points | tr -d '}"\\' | \
+			awk 'BEGIN {RS=","; FS=":"}
+			/mac_address/ { gsub(/ /,"", $2); printf "wifi=mac:%s",$2 }
+			/signal_strength/ { gsub(/ /,"", $2); printf "|ss:%s",$2 }
+			/ssid/ { gsub(/^ */,"", $2); gsub(/ /,"%20",$2); printf "|ssid:%s&",$2 }')
+
+		local url="https://maps.googleapis.com/maps/api/browserlocation/json"
+		local full_req="${url}?browser=true&sensor=true&${query}"
+
+		current_location_json="$(getter ${full_req})"
 	fi
 }
 
 parse_location_response() {
 
-	current_lat=`echo $current_location_json | LANG=en_EN.UTF-8 sed 's/.*latitude":\(-*[0-9.]*\),.*/\1/'`
-	current_lng=`echo $current_location_json | LANG=en_EN.UTF-8 sed 's/.*longitude":\(-*[0-9.]*\),.*/\1/'`
+	current_lat=$(echo $current_location_json | LANG=en_EN.UTF-8 sed 's/.*lat":\(-*[0-9.]*\),.*/\1/')
+	current_lng=$(echo $current_location_json | LANG=en_EN.UTF-8 sed 's/.*lng":\(-*[0-9.]*\),.*/\1/')
 	# current_address=`echo $current_location_json | LANG=en_EN.UTF-8 sed 's/.*address":\(.*\)/\1/'`
-	spot_accuracy=`echo $current_location_json | LANG=en_EN.UTF-8 sed 's/.*accuracy":\([0-9.]*\)}.*/\1/'`
+	spot_accuracy=$(echo $current_location_json | LANG=en_EN.UTF-8 sed 's/.*accuracy":\([0-9.]*\)}.*/\1/')
 
 }
