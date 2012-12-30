@@ -10,12 +10,13 @@ get_current_location() {
 
 		local query=$(echo $wifi_points | tr -d '}"\\' | \
 			awk 'BEGIN {RS=","; FS=":"}
-			/mac_address/ { gsub(/ /,"", $2); printf "wifi=mac:%s",$2 }
+			/mac_address/ { gsub(/ /,"", $2); printf "&wifi=mac:%s",$2 }
+			/ssid/ { gsub(/^ */,"", $2); gsub(/ /,"%20",$2); printf "|ssid:%s",$2 }
 			/signal_strength/ { gsub(/ /,"", $2); printf "|ss:%s",$2 }
-			/ssid/ { gsub(/^ */,"", $2); gsub(/ /,"%20",$2); printf "|ssid:%s&",$2 }')
+			')
 
 		local url="https://maps.googleapis.com/maps/api/browserlocation/json"
-		local full_req="${url}?browser=true&sensor=true&${query}"
+		local full_req="${url}?browser=true&sensor=true${query}"
 
 		current_location_json="$(getter ${full_req})"
 	fi
