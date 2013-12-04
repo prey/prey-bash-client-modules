@@ -19,7 +19,7 @@ take_picture() {
 	# "$module_platform_path/snapshot.exe" -q 100 "$tmpdir/prey-picture"
 	
 	#New module call
-	"$module_platform_path/prey-webcam.exe" -invalid youcam,cyberlink,google -frame 10 -outfile "$tmpdir/prey-picture.jpg"
+	"$module_platform_path/prey-webcam.exe" -invalid youcam,cyberlink,google -frame 90 -outfile "$tmpdir/prey-picture.jpg"
 }
 
 capture_video() {
