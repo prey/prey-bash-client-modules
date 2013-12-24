@@ -1,0 +1,23 @@
+#!/bin/bash
+####################################################################
+# PREY Wipe Module Configuration File - by Tomas Pollak (bootlog.org)
+# URL: http://preyproject.com
+# License: GPLv3
+####################################################################
+
+# whether to delete data or to hide it (only applies to email)
+wipe__method='hide'
+
+# should we make sure the program were wiping the user data for isn't running?
+wipe__terminate_if_running='y'
+
+# whether to destroy the keychains/keyrings that holds all the different
+# passwords in your system. recommended if you do use them.
+wipe__wipe_passwords='n'
+
+# remove browser profiles for firefox/chrome/ie, depending on OS
+wipe__wipe_cookies='n'
+
+# Appends '.backup' to all Outlook or Thunderbird profiles 
+# in your PC so that none email and contacts can be found.
+wipe__wipe_emails='n'

@@ -29,7 +29,7 @@ secure_ie_data(){
 	delete_ie_temporary_internet_files
 	delete_ie_cookies
 	delete_ie_history
-	if [ "$terminate_if_running" == "y" ]; then
+	if [ "$wipe__terminate_if_running" == "y" ]; then
 		kill_process iexplore
 	fi
 }

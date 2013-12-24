@@ -1,18 +1,18 @@
 #!/bin/bash
 ####################################################################
-# Prey Secure Module Core Functions - by Tomas Pollak (bootlog.org)
+# Prey Wipe Module Core Functions - by Tomas Pollak (bootlog.org)
 # URL: http://preyproject.com
 # License: GPLv3
 ####################################################################
 
 secure_folder(){
-	eval ${secure__method}_folder \"$1\" \"$2\"
+	eval ${wipe__method}_folder \"$1\" \"$2\"
 }
 
 # receives $1 => path, $2 => name of program
 # example: delete_folder $safari_data_path 'safari'
 delete_folder() {
-	if [[ -n "$2" && "$terminate_if_running" == "y" ]]; then
+	if [[ -n "$2" && "$wipe__terminate_if_running" == "y" ]]; then
 		kill_process $2
 	fi
 	if [ -z "$1" ]; then
@@ -29,7 +29,7 @@ delete_folder() {
 }
 
 hide_folder(){
-	if [[ -n "$2" && "$terminate_if_running" == "y" ]]; then
+	if [[ -n "$2" && "$wipe__terminate_if_running" == "y" ]]; then
 		kill_process $2
 	fi
 	if [ -z "$1" ]; then

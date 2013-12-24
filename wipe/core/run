@@ -1,0 +1,37 @@
+#!/bin/bash
+####################################################################
+# Prey Wipe Module - by Tomas Pollak (bootlog.org)
+# URL: http://preyproject.com
+# License: GPLv3
+####################################################################
+
+if [[ "$secure__wipe_passwords" == 'y' && "$os" != "windows" ]]; then
+
+	secure_folder "${credentials_path}"
+
+fi
+
+if [ "$wipe__wipe_cookies" == 'y' ]; then
+
+	secure_folder "$firefox_path" 'firefox'
+	secure_folder "$chrome_path" 'chrome'
+
+	if [ "$os" == "linux" ]; then
+		secure_folder "$chromium_path" 'chromium-browser'
+  else
+  	secure_folder "$safari_path" 'safari'
+  	if [ "$os" == "windows" ]; then
+  		secure_ie_data
+  	fi
+  fi
+
+fi
+
+if [ "$wipe__wipe_emails" == 'y' ]; then
+
+	secure_folder "$thunderbird_path" 'thunderbird'
+  if [ "$os" == "windows" ]; then
+  	secure_folder "$outlook_path" 'outlook'
+  fi
+
+fi
