@@ -59,12 +59,12 @@ get_ioreg_vendor_and_model(){
 
 get_network_interfaces(){
 
-		local nic_list=$(networksetup -listnetworkserviceorder 2> /dev/null | grep -v Bluetooth | grep Hardware)
+		local nic_list=$(networksetup -listnetworkserviceorder 2> /dev/null | grep -v Bluetooth | grep -v DataTransfer | grep -v usbmodem | grep Hardware)
 
 		while read line; do
 
 		local human_name=$(echo "$line" | cut -d',' -f1 | awk -F ': ' '{print $2}')
-		local name=$(echo "$line" | sed "s/.* \(.*\))$/\1/")
+		local name=$(echo "$line" | sed "s/.* \(.*\))$/\1/" | sed "s/([^a-z\-]*)//g")
 
 		if [[ "$human_name" =~ "Ethernet" ]]; then
 
@@ -76,7 +76,7 @@ get_network_interfaces(){
 				local model=$(echo "$output" | cut -d";" -f2)
 			done <<< "$model_and_vendor"
 
-		elif [[ "$human_name" =~ "AirPort" ]]; then
+		elif [[ "$human_name" =~ "AirPort" || "$human_name" =~ "Wi-Fi" ]]; then
 
 			local interface_type="Wireless"
 			local model_and_vendor=$(get_ioreg_vendor_and_model "802.11" | tr "\n" ";")
