@@ -7,6 +7,15 @@
 
 get_current_location() {
 	if [ -n "$wifi_points" ]; then
+    
+    # count number of access points (by occurrences of the } char)
+    local count="$(echo $wifi_points | awk -F} '{print NF-1}')"
+
+    if [ $count -gt 30 ]; then
+      # make sure we don't have more than 30 items,
+      # otherwise we'll get a nasty 'request too large' error
+      local wifi_points="$(echo "$wifi_points" | cut -d "}" -f 1-30)}"
+    fi
 
 		local query=$(echo $wifi_points | tr -d '}"\\' | \
 			awk 'BEGIN {RS=","; FS=":"}
