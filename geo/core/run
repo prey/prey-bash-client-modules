@@ -14,9 +14,9 @@ if [ -n "$wifi_points" ]; then
 	get_current_location
 	parse_location_response
 
-	local parsed_lat=`echo $current_lat | sed 's/[^0-9]//g'`
+	local any_chars_in_lat=$(echo $current_lat | sed 's/[^a-z]//g')
 
-	if [ -n "$parsed_lat" ]; then
+	if [ -z "$any_chars_in_lat" ]; then
 
 		add_trace 'lat' $current_lat
 		add_trace 'lng' $current_lng
@@ -24,9 +24,15 @@ if [ -n "$wifi_points" ]; then
 		# add_trace 'address' "$current_address"
 		# add_trace 'full' "$current_location_json"
 
+	elif [ -n "$current_location_json" ]; then
+    
+		notify_exception "Bad Geolocation Response" "$current_location_json"
+		log " !! Invalid response from geocoder service. Skipping geolocation data."
+    
 	else
 
-		log " !! Couldn't grab lat/lng coordinates. The geocoder service may be down."
+		notify_exception "No Geolocation Response"
+		log " !! Couldn't get a response from geocoder service. Skipping geolocation data."
 
 	fi
 
