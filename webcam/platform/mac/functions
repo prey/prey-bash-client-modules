@@ -7,7 +7,7 @@
 
 take_picture() {
 
-	run_as_current_user "$module_platform_path/imagesnap $webcam__picture" &> /dev/null
+	run_as_current_user "$module_platform_path/imagesnap -w 1 $webcam__picture" &> /dev/null
 
 }
 
