@@ -5,5 +5,5 @@
 # License: GPLv3
 ####################################################################
 
-STRING_TAKE_PICTURE=" -- Tar foto av tjuven..."
-STRING_CAPTURE_VIDEO=" -- Capturing $video_capture_time seconds of video..."
+STRING_TAKE_PICTURE=" -- Tar ett fotografi av tjuven ..."
+STRING_CAPTURE_VIDEO=" -- Fångar in $video_capture_time sekunder video ..."
