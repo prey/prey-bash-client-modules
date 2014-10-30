@@ -5,6 +5,6 @@
 # License: GPLv3
 ####################################################################
 
-STRING_GET_CPU_INFO=" -- Getting CPU info..."
-STRING_GET_MEMORY_INFO=" -- Getting memory info..."
-STRING_GET_HDD_INFO=" -- Getting HDDs info..."
+STRING_GET_CPU_INFO=" -- Hämtar processorinformation ..."
+STRING_GET_MEMORY_INFO=" -- Hämtar minnesinformation..."
+STRING_GET_HDD_INFO=" -- Hämtar hårddiskinformation..."
