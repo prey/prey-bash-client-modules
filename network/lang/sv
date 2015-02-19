@@ -5,7 +5,7 @@
 # License: GPLv3
 ####################################################################
 
-STRING_GET_IP=" -- Hämtar publik IP adress..."
-STRING_GET_LAN_IP=" -- Hämtar privat LAN IP adress..."
-STRING_GET_WIFI=" -- Hämtar trådlös info..."
-STRING_TRACE=" -- Spårar vår route till internet..."
+STRING_GET_IP=" -- Hämtar publik IP-adress ..."
+STRING_GET_LAN_IP=" -- Hämtar IP-adress för privat LAN ..."
+STRING_GET_WIFI=" -- Hämtar information om trådlösa nätverk ..."
+STRING_TRACE=" -- Spårar vår fullständiga väg till internet ..."
