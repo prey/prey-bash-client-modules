@@ -2,7 +2,7 @@
 
 These modules provide the core functionality for the Prey Bash client.
 They are run when triggered remotely, either the official Control Panel
-(panel.preyproject.com) or through the [Standalone Panel](/prey/prey-standalone-control-panel).
+(panel.preyproject.com) or through the [Standalone Panel](https://github.com/prey/prey-standalone-control-panel).
 
 # How they work
 
